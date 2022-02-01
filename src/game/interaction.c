@@ -641,11 +641,11 @@ void bounce_back_from_attack(struct MarioState *m, u32 interaction) {
             m->action = ACT_MOVE_PUNCHING;
         }
 
-        if (m->action & ACT_FLAG_AIR) {
-            mario_set_forward_vel(m, -16.0f);
-        } else {
-            mario_set_forward_vel(m, -48.0f);
-        }
+        //if (m->action & ACT_FLAG_AIR) {
+        //    mario_set_forward_vel(m, -6.0f);
+        //} else {
+        //    mario_set_forward_vel(m, -8.0f);
+        //}
 
         set_camera_shake_from_hit(SHAKE_ATTACK);
         m->particleFlags |= PARTICLE_TRIANGLE;
@@ -769,6 +769,9 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
     u32 noExit = (obj->oInteractionSubtype & INT_SUBTYPE_NO_EXIT) != 0;
 #endif
     u32 grandStar = (obj->oInteractionSubtype & INT_SUBTYPE_GRAND_STAR) != 0;
+    level_control_timer(TIMER_CONTROL_STOP);
+    save_file_set_num_lives(m->numLives);
+    save_file_do_save(gCurrSaveFileNum - 1);
 
     if (m->health >= 0x100) {
         mario_stop_riding_and_holding(m);
@@ -1359,10 +1362,10 @@ u32 interact_bounce_top(struct MarioState *m, UNUSED u32 interactType, struct Ob
 
         if (interaction & INT_HIT_FROM_ABOVE) {
             if (obj->oInteractionSubtype & INT_SUBTYPE_TWIRL_BOUNCE) {
-                bounce_off_object(m, obj, 80.0f);
-                reset_mario_pitch(m);
-                play_sound(SOUND_MARIO_TWIRL_BOUNCE, m->marioObj->header.gfx.cameraToObject);
-                return drop_and_set_mario_action(m, ACT_TWIRLING, 0);
+            	bounce_off_object(m, obj, 80.0f);
+            	reset_mario_pitch(m);
+            	play_sound(SOUND_MARIO_TWIRL_BOUNCE, m->marioObj->header.gfx.cameraToObject);
+            	return drop_and_set_mario_action(m, ACT_TRIPLE_JUMP, 0);
             } else {
                 bounce_off_object(m, obj, 30.0f);
             }
@@ -1408,7 +1411,7 @@ u32 interact_damage(struct MarioState *m, UNUSED u32 interactType, struct Object
 }
 
 u32 interact_breakable(struct MarioState *m, UNUSED u32 interactType, struct Object *obj) {
-    u32 interaction = determine_interaction(m, obj);
+    u32 interaction = INT_PUNCH;
 
     if (interaction & INT_ATTACK_NOT_WEAK_FROM_ABOVE) {
         attack_object(obj, interaction);

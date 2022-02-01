@@ -14,7 +14,7 @@
  * Used by act_punching() to determine Mario's forward velocity during each
  * animation frame.
  */
-s8 sPunchingForwardVelocities[8] = { 0, 1, 1, 2, 3, 5, 7, 10 };
+s8 sPunchingForwardVelocities[8] = { 10, 10, 10, 10, 10, 10, 10, 10 };
 
 void animated_stationary_ground_step(struct MarioState *m, s32 animation, u32 endAction) {
     stationary_ground_step(m);
@@ -102,7 +102,7 @@ s32 mario_update_punch_sequence(struct MarioState *m) {
             }
 
             if (m->input & INPUT_B_PRESSED) {
-                m->actionArg = ACT_ARG_PUNCH_SEQUENCE_GROUND_KICK;
+                m->actionArg = ACT_ARG_PUNCH_SEQUENCE_YAH;
             }
 
             if (is_anim_at_end(m)) {
@@ -157,15 +157,15 @@ s32 act_punching(struct MarioState *m) {
         return set_mario_action(m, ACT_JUMP_KICK, 0);
     }
 
-    m->actionState = ACT_STATE_PUNCHING_NO_JUMP_KICK;
-    if (m->actionArg == 0) {
-        m->actionTimer = 7;
-    }
+    //m->actionState = ACT_STATE_PUNCHING_CAN_JUMP_KICK;
+    //if (m->actionArg == 0) {
+    //    m->actionTimer = 7;
+    //}
 
-    mario_set_forward_vel(m, sPunchingForwardVelocities[m->actionTimer]);
-    if (m->actionTimer > 0) {
-        m->actionTimer--;
-    }
+    //mario_set_forward_vel(m, sPunchingForwardVelocities[m->actionTimer]);
+    //if (m->actionTimer > 0) {
+    //    m->actionTimer--;
+    //}
 
     mario_update_punch_sequence(m);
     perform_ground_step(m);

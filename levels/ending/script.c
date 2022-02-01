@@ -15,6 +15,7 @@
 
 #include "make_const_nonconst.h"
 #include "levels/ending/header.h"
+#include "levels/intro/header.h"
 
 const LevelScript level_ending_entry[] = {
     /*0*/ INIT_LEVEL(),
@@ -32,6 +33,8 @@ const LevelScript level_ending_entry[] = {
     /*14*/ SLEEP(/*frames*/ 120),
     /*15*/ CALL(/*arg*/ 0, /*func*/ lvl_play_the_end_screen_sound),
     // L1:
-    /*17*/ SLEEP(/*frames*/ 1),
-    /*18*/ JUMP(level_ending_entry + 17), // goto L1 (loop sleep 1 forever)
+    /*17*/ CALL_LOOP(/*arg*/ 0, /*func*/ credits_end_wait_for_reset),
+    /*18*/ TRANSITION(/*transType*/ WARP_TRANSITION_FADE_INTO_COLOR, /*time*/ 75, /*color*/ 0x00, 0x00, 0x00),
+    /*19*/ SLEEP(/*frames*/ 120),
+    /*20*/ EXIT_AND_EXECUTE_WITH_CODE(/*seg*/ SEGMENT_MENU_INTRO, _introSegmentRomStart, _introSegmentRomEnd, level_intro_mario_head_regular, _introSegmentBssStart, _introSegmentBssEnd),
 };

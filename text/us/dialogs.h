@@ -13,45 +13,52 @@
 #endif
 
 DEFINE_DIALOG(DIALOG_000, 1, 6, 30, 200, _("\
-Wow! You're smack in the\n\
-middle of the battlefield.\n\
-You'll find the Power\n\
-Stars that Bowser stole\n\
-inside the painting\n\
-worlds.\n\
-First, talk to the\n\
-Bob-omb Buddy. (Press [B]\n\
-to talk.) He'll certainly\n\
-help you out, and so will\n\
-his " COMRADES " in other\n\
-areas.\n\
-To read signs, stop, face\n\
-them and press [B]. Press [A]\n\
-or [B] to scroll ahead. You\n\
-can talk to some other\n\
-characters by facing them\n\
-and pressing [B]."))
+Hey there, \n\
+@0000FFFFS@FFFF00FF4@FF0000FFY@00FF00FFS @--------here.\n\
+This is a @FF0000FFDEMO \n\
+@--------of a crossover\n\
+between SM64, CUPHEAD,\n\
+and other Run and Guns.\n\
+This a @FF0000FFRUN and PUNCH.\n\
+@--------Press [B] to @00FF00FFPUNCH\n\
+@--------Press [A] to @0000FFFFJUMP\n\
+@--------Press @FFFF00FFZ @--------to @FFFF00FFLONG-JUMP\n\
+Long jumps work like\n\
+dashing, even airborne!\n\
+@FF0000FFNO DIVE!\n\
+@FF0000FFNO GROUND POUND!\n\
+@--------If you die, you'll\n\
+restart the current\n\
+section, but won't\n\
+lose @FF0000FFCOINS.\n\
+Made for RHDC\n\
+@FF0000FFCROSS@00FF00FFOVER @--------Competition.\n\
+\n\
+Thanks to @FFFF00FFHackerSM64!\n\
+\n\
+"))
 
 DEFINE_DIALOG(DIALOG_001, 1, 4, 95, 200, _("\
-Watch out! If you wander\n\
-around here, you're liable\n\
-to be " PLASTERED " by a\n\
-water bomb!\n\
-Those enemy Bob-ombs love\n\
-to fight, and they're\n\
-always finding ways to\n\
-attack.\n\
-This meadow has become\n\
-a battlefield ever since\n\
-the Big Bob-omb got his\n\
-paws on the Power Star.\n\
-Can you recover the Star\n\
-for us? Cross the bridge\n\
-and go left up the path\n\
-to find the Big Bob-omb.\n\
-Please come back to see\n\
-me after you've retrieved\n\
-the Power Star!"))
+@FFFF00FFCongrats! @--------You defeated\n\
+@FF0000FFKing Bob-omb.\n\
+@--------Now, one last\n\
+@00FF00FFCHALLENGE!\n\
+In the spirit of\n\
+the competition,\n\
+the finale is\n\
+@FF0000FFCROSS@00FF00FFOVERS@--------!!!\n\
+The difficulty of\n\
+this section was\n\
+chosen by the\n\
+boss fight difficulty.\n\
+@FFFF00FFThank you for playing!\n\
+@00FF00FFSHOUTOUTS TO\n\
+@--------Simpleflips, RHDC,\n\
+the community, and\n\
+all of the devs,\n\
+modders and hackers\n\
+keeping SM64 alive\n\
+and well."))
 
 DEFINE_DIALOG(DIALOG_002, 1, 4, 95, 200, _("\
 Hey, you! It's dangerous\n\
@@ -211,13 +218,13 @@ Do you want to Save?\n\
 //Yes////No"))
 
 DEFINE_DIALOG(DIALOG_014, 1, 4, 30, 200, _("\
-Wow! Another Power Star!\n\
-Mario gains more courage\n\
-from the power of the\n\
-castle.\n\
-Do you want to Save?\n\
+Wow! Another @FFFF00FFPower Star!\n\
+@--------Mario gains more courage\n\
+from the power.\n\
 \n\
-//You Bet//Not Now"))
+Do you want to @FFFF00FFSave?\n\
+\n\
+//@00FF00FFAight Bet//@FF0000FFNah"))
 
 DEFINE_DIALOG(DIALOG_015, 1, 4, 30, 200, _("\
 You can punch enemies to\n\
@@ -235,7 +242,7 @@ ride wherever you want to\n\
 go! Shred those enemies!"))
 
 DEFINE_DIALOG(DIALOG_017, 1, 4, 30, 200, _("\
-I'm the Big Bob-omb, lord\n\
+I'm the @FF0000FFBig Bob-omb, @--------lord\n\
 of all blasting matter,\n\
 king of ka-booms the\n\
 world over!\n\
@@ -248,7 +255,7 @@ guards, but you'll never\n\
 escape my grasp...\n\
 \n\
 ...and you'll never take\n\
-away my Power Star. I\n\
+away my @FFFF00FFPower Star. @--------I\n\
 hereby challenge you,\n\
 Mario!\n\
 If you want the Star I\n\
@@ -256,9 +263,9 @@ hold, you must prove\n\
 yourself in battle.\n\
 \n\
 Can you pick me up from\n\
-the back and hurl me to\n\
-this royal turf? I think\n\
-that you cannot!"))
+the back and hurl me\n\
+from this @00FF00FFroyal turf@--------?\n\
+I think not!"))
 
 DEFINE_DIALOG(DIALOG_018, 1, 4, 30, 200, _("\
 I'm sleeping because...\n\
@@ -1706,22 +1713,16 @@ Left: Black Hole\n\
 ///Elevator 1\n\
 Arrow: You are here"))
 
-DEFINE_DIALOG(DIALOG_141, 1, 5, 150, 200, _("\
-You've recovered one of\n\
-the stolen Power Stars!\n\
-Now you can open some of\n\
-the sealed doors in the\n\
-castle.\n\
-Try the Princess's room\n\
-on the second floor and\n\
-the room with the\n\
-painting of Whomp's\n\
-Fortress on Floor 1.\n\
-Bowser's troops are still\n\
-gaining power, so you\n\
-can't give up. Save us,\n\
-Mario! Keep searching for\n\
-Stars!"))
+DEFINE_DIALOG(DIALOG_141, 1, 3, 150, 200, _("\
+You've mastered the\n\
+@FF0000FFRED COIN CHALLENGE!\n\
+@--------\n\
+The @00FF00FFPIPE @--------to your right\n\
+leads to the @FF0000FFREGULAR\n\
+@--------difficulty boss fight!\n\
+Try the pipe on the\n\
+left for the easier\n\
+@00FF00FFSIMPLE @--------difficulty."))
 
 DEFINE_DIALOG(DIALOG_142, 1, 5, 150, 200, _("\
 You've recovered three\n\

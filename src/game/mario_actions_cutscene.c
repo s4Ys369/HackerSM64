@@ -28,7 +28,7 @@
 #include "sound_init.h"
 #include "rumble_init.h"
 
-static struct Object *sIntroWarpPipeObj;
+//static struct Object *sIntroWarpPipeObj;
 static struct Object *sEndPeachObj;
 static struct Object *sEndRightToadObj;
 static struct Object *sEndLeftToadObj;
@@ -1166,7 +1166,7 @@ s32 act_death_exit(struct MarioState *m) {
 #if ENABLE_RUMBLE
         queue_rumble_data(5, 80);
 #endif
-        m->numLives--;
+        m->numLives++;
 #ifdef SAVE_NUM_LIVES
         save_file_set_num_lives(m->numLives);
 #endif
@@ -1184,7 +1184,7 @@ s32 act_death_exit(struct MarioState *m) {
 s32 act_unused_death_exit(struct MarioState *m) {
     if (launch_mario_until_land(m, ACT_FREEFALL_LAND_STOP, MARIO_ANIM_GENERAL_FALL, 0.0f)) {
         play_sound(SOUND_MARIO_OOOF2, m->marioObj->header.gfx.cameraToObject);
-        m->numLives--;
+        m->numLives++;
 #ifdef SAVE_NUM_LIVES
         save_file_set_num_lives(m->numLives);
 #endif
@@ -1205,7 +1205,7 @@ s32 act_falling_death_exit(struct MarioState *m) {
 #if ENABLE_RUMBLE
         queue_rumble_data(5, 80);
 #endif
-        m->numLives--;
+        m->numLives++;
 #ifdef SAVE_NUM_LIVES
         save_file_set_num_lives(m->numLives);
 #endif
@@ -1261,7 +1261,7 @@ s32 act_special_death_exit(struct MarioState *m) {
 #if ENABLE_RUMBLE
         queue_rumble_data(5, 80);
 #endif
-        m->numLives--;
+        m->numLives++;
 #ifdef SAVE_NUM_LIVES
         save_file_set_num_lives(m->numLives);
 #endif
@@ -1670,96 +1670,96 @@ static void advance_cutscene_step(struct MarioState *m) {
     m->actionArg++;
 }
 
-static void intro_cutscene_hide_hud_and_mario(struct MarioState *m) {
-    gHudDisplay.flags = HUD_DISPLAY_NONE;
-    m->statusForCamera->cameraEvent = CAM_EVENT_START_INTRO;
-    m->marioObj->header.gfx.node.flags &= ~GRAPH_RENDER_ACTIVE;
-    advance_cutscene_step(m);
-}
+//static void intro_cutscene_hide_hud_and_mario(struct MarioState *m) {
+//    gHudDisplay.flags = HUD_DISPLAY_NONE;
+//    m->statusForCamera->cameraEvent = CAM_EVENT_START_INTRO;
+//    m->marioObj->header.gfx.node.flags &= ~GRAPH_RENDER_ACTIVE;
+//    advance_cutscene_step(m);
+//}
 
-#define TIMER_SPAWN_PIPE 37
+//#define TIMER_SPAWN_PIPE 37
 
-static void intro_cutscene_peach_lakitu_scene(struct MarioState *m) {
-    if ((s16) m->statusForCamera->cameraEvent != CAM_EVENT_START_INTRO) {
-        if (m->actionTimer++ == TIMER_SPAWN_PIPE) {
-            sIntroWarpPipeObj =
-                spawn_object_abs_with_rot(gCurrentObject, 0, MODEL_CASTLE_GROUNDS_WARP_PIPE,
-                                          bhvStaticObject, -1328, 60, 4664, 0, 180, 0);
-            advance_cutscene_step(m);
-        }
-    }
-}
-#undef TIMER_SPAWN_PIPE
+//static void intro_cutscene_peach_lakitu_scene(struct MarioState *m) {
+//    if ((s16) m->statusForCamera->cameraEvent != CAM_EVENT_START_INTRO) {
+//        if (m->actionTimer++ == TIMER_SPAWN_PIPE) {
+//            sIntroWarpPipeObj =
+//                spawn_object_abs_with_rot(gCurrentObject, 0, MODEL_CASTLE_GROUNDS_WARP_PIPE,
+//                                          bhvStaticObject, -1328, 60, 4664, 0, 180, 0);
+//            advance_cutscene_step(m);
+//        }
+//    }
+//}
+//#undef TIMER_SPAWN_PIPE
 
-#define TIMER_RAISE_PIPE 38
+//#define TIMER_RAISE_PIPE 38
 
-static void intro_cutscene_raise_pipe(struct MarioState *m) {
-    sIntroWarpPipeObj->oPosY = camera_approach_f32_symmetric(sIntroWarpPipeObj->oPosY, 260.0f, 10.0f);
+//static void intro_cutscene_raise_pipe(struct MarioState *m) {
+//    sIntroWarpPipeObj->oPosY = camera_approach_f32_symmetric(sIntroWarpPipeObj->oPosY, 260.0f, 10.0f);
 
-    if (m->actionTimer == 0) {
-        play_sound(SOUND_MENU_EXIT_PIPE, sIntroWarpPipeObj->header.gfx.cameraToObject);
-    }
+//    if (m->actionTimer == 0) {
+//        play_sound(SOUND_MENU_EXIT_PIPE, sIntroWarpPipeObj->header.gfx.cameraToObject);
+//    }
 
-    if (m->actionTimer++ == TIMER_RAISE_PIPE) {
-        m->vel[1] = 60.0f;
-        advance_cutscene_step(m);
-    }
-}
-#undef TIMER_RAISE_PIPE
+//    if (m->actionTimer++ == TIMER_RAISE_PIPE) {
+//        m->vel[1] = 60.0f;
+//        advance_cutscene_step(m);
+//    }
+//}
+//#undef TIMER_RAISE_PIPE
 
-static void intro_cutscene_jump_out_of_pipe(struct MarioState *m) {
-    if (m->actionTimer == 25) {
-        gHudDisplay.flags = HUD_DISPLAY_DEFAULT;
-    }
+//static void intro_cutscene_jump_out_of_pipe(struct MarioState *m) {
+//    if (m->actionTimer == 25) {
+//        gHudDisplay.flags = HUD_DISPLAY_DEFAULT;
+//    }
+//
+//    if (m->actionTimer++ >= 118) {
+//        m->marioObj->header.gfx.node.flags |= GRAPH_RENDER_ACTIVE;
+//
+//        play_sound_if_no_flag(m, SOUND_ACTION_HIT_3, MARIO_ACTION_SOUND_PLAYED);
+//        play_sound_if_no_flag(m, SOUND_MARIO_YAHOO, MARIO_MARIO_SOUND_PLAYED);
+//
+//        set_mario_animation(m, MARIO_ANIM_SINGLE_JUMP);
+//        mario_set_forward_vel(m, 10.0f);
+//        if (perform_air_step(m, AIR_STEP_CHECK_NONE) == AIR_STEP_LANDED) {
+//            sound_banks_enable(SEQ_PLAYER_SFX, SOUND_BANKS_DISABLED_DURING_INTRO_CUTSCENE);
+//            play_mario_landing_sound(m, SOUND_ACTION_TERRAIN_LANDING);
+//            play_sound(SOUND_MARIO_HAHA, m->marioObj->header.gfx.cameraToObject);
+//            advance_cutscene_step(m);
+//        }
+//    }
+//}
 
-    if (m->actionTimer++ >= 118) {
-        m->marioObj->header.gfx.node.flags |= GRAPH_RENDER_ACTIVE;
+//static void intro_cutscene_land_outside_pipe(struct MarioState *m) {
+//    set_mario_animation(m, MARIO_ANIM_LAND_FROM_SINGLE_JUMP);
+//
+//    if (is_anim_at_end(m)) {
+//        advance_cutscene_step(m);
+//    }
+//
+//    stop_and_set_height_to_floor(m);
+//}
 
-        play_sound_if_no_flag(m, SOUND_ACTION_HIT_3, MARIO_ACTION_SOUND_PLAYED);
-        play_sound_if_no_flag(m, SOUND_MARIO_YAHOO, MARIO_MARIO_SOUND_PLAYED);
-
-        set_mario_animation(m, MARIO_ANIM_SINGLE_JUMP);
-        mario_set_forward_vel(m, 10.0f);
-        if (perform_air_step(m, AIR_STEP_CHECK_NONE) == AIR_STEP_LANDED) {
-            sound_banks_enable(SEQ_PLAYER_SFX, SOUND_BANKS_DISABLED_DURING_INTRO_CUTSCENE);
-            play_mario_landing_sound(m, SOUND_ACTION_TERRAIN_LANDING);
-            play_sound(SOUND_MARIO_HAHA, m->marioObj->header.gfx.cameraToObject);
-            advance_cutscene_step(m);
-        }
-    }
-}
-
-static void intro_cutscene_land_outside_pipe(struct MarioState *m) {
-    set_mario_animation(m, MARIO_ANIM_LAND_FROM_SINGLE_JUMP);
-
-    if (is_anim_at_end(m)) {
-        advance_cutscene_step(m);
-    }
-
-    stop_and_set_height_to_floor(m);
-}
-
-static void intro_cutscene_lower_pipe(struct MarioState *m) {
-    if (m->actionTimer++ == 0) {
-        play_sound(SOUND_MENU_ENTER_PIPE, sIntroWarpPipeObj->header.gfx.cameraToObject);
-        set_mario_animation(m, MARIO_ANIM_FIRST_PERSON);
-    }
-
-    sIntroWarpPipeObj->oPosY -= 5.0f;
-    if (sIntroWarpPipeObj->oPosY <= 50.0f) {
-        obj_mark_for_deletion(sIntroWarpPipeObj);
-        advance_cutscene_step(m);
-    }
-
-    stop_and_set_height_to_floor(m);
-}
+//static void intro_cutscene_lower_pipe(struct MarioState *m) {
+//    if (m->actionTimer++ == 0) {
+//        play_sound(SOUND_MENU_ENTER_PIPE, sIntroWarpPipeObj->header.gfx.cameraToObject);
+//        set_mario_animation(m, MARIO_ANIM_FIRST_PERSON);
+//    }
+//
+//    sIntroWarpPipeObj->oPosY -= 5.0f;
+//    if (sIntroWarpPipeObj->oPosY <= 50.0f) {
+//        obj_mark_for_deletion(sIntroWarpPipeObj);
+//        advance_cutscene_step(m);
+//    }
+//
+//    stop_and_set_height_to_floor(m);
+//}
 
 static void intro_cutscene_set_mario_to_idle(struct MarioState *m) {
     if (gCamera->cutscene == CUTSCENE_NONE) {
-        gCameraMovementFlags &= ~CAM_MOVE_C_UP_MODE;
+        //gCameraMovementFlags &= ~CAM_MOVE_C_UP_MODE;
         set_mario_action(m, ACT_IDLE, 0);
     }
-
+    m->action &= ~ACT_UNINITIALIZED;
     stop_and_set_height_to_floor(m);
 }
 
@@ -1775,24 +1775,24 @@ enum {
 
 static s32 act_intro_cutscene(struct MarioState *m) {
     switch (m->actionArg) {
-        case INTRO_CUTSCENE_HIDE_HUD_AND_MARIO:
-            intro_cutscene_hide_hud_and_mario(m);
-            break;
-        case INTRO_CUTSCENE_PEACH_LAKITU_SCENE:
-            intro_cutscene_peach_lakitu_scene(m);
-            break;
-        case INTRO_CUTSCENE_RAISE_PIPE:
-            intro_cutscene_raise_pipe(m);
-            break;
-        case INTRO_CUTSCENE_JUMP_OUT_OF_PIPE:
-            intro_cutscene_jump_out_of_pipe(m);
-            break;
-        case INTRO_CUTSCENE_LAND_OUTSIDE_PIPE:
-            intro_cutscene_land_outside_pipe(m);
-            break;
-        case INTRO_CUTSCENE_LOWER_PIPE:
-            intro_cutscene_lower_pipe(m);
-            break;
+        //case INTRO_CUTSCENE_HIDE_HUD_AND_MARIO:
+        //    intro_cutscene_hide_hud_and_mario(m);
+        //    break;
+        //case INTRO_CUTSCENE_PEACH_LAKITU_SCENE:
+        //    intro_cutscene_peach_lakitu_scene(m);
+        //    break;
+        //case INTRO_CUTSCENE_RAISE_PIPE:
+        //    intro_cutscene_raise_pipe(m);
+        //    break;
+        //case INTRO_CUTSCENE_JUMP_OUT_OF_PIPE:
+        //    intro_cutscene_jump_out_of_pipe(m);
+        //    break;
+        //case INTRO_CUTSCENE_LAND_OUTSIDE_PIPE:
+        //    intro_cutscene_land_outside_pipe(m);
+        //    break;
+        //case INTRO_CUTSCENE_LOWER_PIPE:
+        //    intro_cutscene_lower_pipe(m);
+        //    break;
         case INTRO_CUTSCENE_SET_MARIO_TO_IDLE:
             intro_cutscene_set_mario_to_idle(m);
             break;

@@ -416,7 +416,7 @@ void init_mario_after_warp(void) {
 void warp_area(void) {
     if (sWarpDest.type != WARP_TYPE_NOT_WARPING) {
         if (sWarpDest.type == WARP_TYPE_CHANGE_AREA) {
-            level_control_timer(TIMER_CONTROL_HIDE);
+            //level_control_timer(TIMER_CONTROL_HIDE);
             unload_mario_area();
             load_area(sWarpDest.areaIdx);
         }
@@ -713,14 +713,15 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
 
             case WARP_OP_DEATH:
 #ifndef DISABLE_LIVES
-                if (m->numLives == 0) {
-                    sDelayedWarpOp = WARP_OP_GAME_OVER;
-                }
+                //if (m->numLives == 0) {
+                //    sDelayedWarpOp = WARP_OP_GAME_OVER;
+                //}
 #endif
                 sDelayedWarpTimer = 48;
                 sSourceWarpNodeId = WARP_NODE_DEATH;
                 play_transition(WARP_TRANSITION_FADE_INTO_BOWSER, sDelayedWarpTimer, 0x00, 0x00, 0x00);
                 play_sound(SOUND_MENU_BOWSER_LAUGH, gGlobalSoundSource);
+                m->numLives++;
 #ifdef PREVENT_DEATH_LOOP
                 m->isDead = TRUE;
 #endif
@@ -730,18 +731,20 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
                 sSourceWarpNodeId = WARP_NODE_WARP_FLOOR;
                 if (area_get_warp_node(sSourceWarpNodeId) == NULL) {
 #ifndef DISABLE_LIVES
-                    if (m->numLives == 0) {
-                        sDelayedWarpOp = WARP_OP_GAME_OVER;
-                    } else {
+                    //if (m->numLives == 0) {
+                    //    sDelayedWarpOp = WARP_OP_GAME_OVER;
+                    //} else {
                         sSourceWarpNodeId = WARP_NODE_DEATH;
-                    }
+                    //}
 #else
                     sSourceWarpNodeId = WARP_NODE_DEATH;
 #endif
                 }
 
-                sDelayedWarpTimer = 20;
-                play_transition(WARP_TRANSITION_FADE_INTO_CIRCLE, sDelayedWarpTimer, 0x00, 0x00, 0x00);
+                sDelayedWarpTimer = 48;
+                play_transition(WARP_TRANSITION_FADE_INTO_BOWSER, sDelayedWarpTimer, 0x00, 0x00, 0x00);
+                play_sound(SOUND_MENU_BOWSER_LAUGH, gGlobalSoundSource);
+                m->numLives++;
                 break;
 
             case WARP_OP_LOOK_UP: // enter totwc
@@ -897,18 +900,18 @@ void update_hud_values(void) {
             }
         }
 
-#ifdef SAVE_NUM_LIVES
-        if (gMarioState->numLives > MAX_NUM_LIVES) {
-            gMarioState->numLives = MAX_NUM_LIVES;
-            save_file_set_num_lives(MAX_NUM_LIVES);
-        }
-#else
+//#ifdef SAVE_NUM_LIVES
+//        if (gMarioState->numLives > MAX_NUM_LIVES) {
+//            gMarioState->numLives = MAX_NUM_LIVES;
+//            save_file_set_num_lives(MAX_NUM_LIVES);
+//        }
+//#else
         if (gMarioState->numLives > 100) {
             gMarioState->numLives = 100;
         }
-#endif
+//#endif
 
-#if BUGFIX_MAX_LIVES
+//#if BUGFIX_MAX_LIVES
         if (gMarioState->numCoins > 999) {
             gMarioState->numCoins = 999;
         }
@@ -916,11 +919,11 @@ void update_hud_values(void) {
         if (gHudDisplay.coins > 999) {
             gHudDisplay.coins = 999;
         }
-#else
-        if (gMarioState->numCoins > 999) {
-            gMarioState->numLives = (s8) 999; //! Wrong variable
-        }
-#endif
+//#else
+//        if (gMarioState->numCoins > 999) {
+//            gMarioState->numLives = (s8) 999; //! Wrong variable
+//        }
+//#endif
 
         gHudDisplay.stars = gMarioState->numStars;
         gHudDisplay.lives = gMarioState->numLives;
@@ -1204,7 +1207,7 @@ s32 init_level(void) {
                     if (save_file_exists(gCurrSaveFileNum - 1)) {
                         set_mario_action(gMarioState, ACT_IDLE, 0);
                     } else {
-                        set_mario_action(gMarioState, ACT_INTRO_CUTSCENE, 0);
+                        set_mario_action(gMarioState, ACT_READING_AUTOMATIC_DIALOG, 0);
                         fadeFromColor = TRUE;
                     }
                 }
@@ -1301,6 +1304,10 @@ s32 lvl_set_current_level(UNUSED s16 initOrUpdate, s32 levelNum) {
     sWarpCheckpointActive = FALSE;
     gCurrLevelNum = levelNum;
     gCurrCourseNum = gLevelToCourseNumTable[levelNum - 1];
+	if (gCurrLevelNum == LEVEL_JRB) return 0;
+	if (gCurrLevelNum == LEVEL_CCM) return 0;
+	if (gCurrLevelNum == LEVEL_WF) return 0;
+	if (gCurrLevelNum == LEVEL_BOB) return 0;
 
     if (gCurrDemoInput != NULL || gCurrCreditsEntry != NULL || gCurrCourseNum == COURSE_NONE) {
         return FALSE;
@@ -1331,4 +1338,9 @@ s32 lvl_set_current_level(UNUSED s16 initOrUpdate, s32 levelNum) {
 s32 lvl_play_the_end_screen_sound(UNUSED s16 initOrUpdate, UNUSED s32 levelNum) {
     play_sound(SOUND_MENU_THANK_YOU_PLAYING_MY_GAME, gGlobalSoundSource);
     return TRUE;
+}
+
+#pragma GCC diagnostic ignored "-Wreturn-type"
+s32 credits_end_wait_for_reset() {
+    if (gPlayer1Controller->buttonPressed) return TRUE;
 }

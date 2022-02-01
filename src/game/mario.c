@@ -1794,6 +1794,7 @@ void init_mario(void) {
     gMarioState->framesSinceB = 0xFF;
 
     gMarioState->invincTimer = 0;
+    level_control_timer(TIMER_CONTROL_START);
 
     if (save_file_get_flags()
         & (SAVE_FLAG_CAP_ON_GROUND | SAVE_FLAG_CAP_ON_KLEPTO | SAVE_FLAG_CAP_ON_UKIKI
@@ -1874,9 +1875,13 @@ void init_mario_from_save_file(void) {
 
 #ifdef SAVE_NUM_LIVES
     s8 savedLives = save_file_get_num_lives();
-    gMarioState->numLives = (savedLives > DEFAULT_NUM_LIVES) ? savedLives : DEFAULT_NUM_LIVES;
+    if (savedLives > 0) {
+        gMarioState->numLives = savedLives;
+    } else {
+        gMarioState->numLives = 0;
+    }
 #else
-    gMarioState->numLives = DEFAULT_NUM_LIVES;
+    gMarioState->numLives = 0;
 #endif
     gMarioState->health = 0x880;
 #ifdef BREATH_METER

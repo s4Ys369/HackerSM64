@@ -21,7 +21,7 @@ void bhv_bobomb_init(void) {
 
 void bobomb_spawn_coin(void) {
     if (!(GET_BPARAM3(o->oBehParams) & RESPAWN_INFO_TYPE_NORMAL)) {
-        obj_spawn_yellow_coins(o, 1);
+        //obj_spawn_yellow_coins(o, 1);
         SET_FULL_BPARAM3(o->oBehParams, RESPAWN_INFO_TYPE_NORMAL);
         set_object_respawn_info_bits(o, RESPAWN_INFO_TYPE_NORMAL);
     }
@@ -34,8 +34,8 @@ void bobomb_act_explode(void) {
         struct Object *explosion = spawn_object(o, MODEL_EXPLOSION, bhvExplosion);
         explosion->oGraphYOffset += 100.0f;
 
-        bobomb_spawn_coin();
-        create_respawner(MODEL_BLACK_BOBOMB, bhvBobomb, 3000);
+        //bobomb_spawn_coin();
+        create_respawner(MODEL_BLACK_BOBOMB, bhvBobomb, 1750);
 
         o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
     }

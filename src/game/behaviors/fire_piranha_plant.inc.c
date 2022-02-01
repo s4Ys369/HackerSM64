@@ -5,7 +5,7 @@ struct ObjectHitbox sFirePiranhaPlantHitbox = {
     /* downOffset:        */ 0,
     /* damageOrCoinValue: */ 2,
     /* health:            */ 0,
-    /* numLootCoins:      */ 1,
+    /* numLootCoins:      */ 0,
     /* radius:            */ 80,
     /* height:            */ 160,
     /* hurtboxRadius:     */ 50,
@@ -38,7 +38,7 @@ void bhv_fire_piranha_plant_init(void) {
         if (GET_BPARAM3(o->oBehParams)) {
             o->oNumLootCoins = 0;
         } else {
-            o->oNumLootCoins = 2;
+            o->oNumLootCoins = 0;
         }
     }
 

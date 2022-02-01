@@ -12,16 +12,16 @@
 // #define ENABLE_VANILLA_LEVEL_SPECIFIC_CHECKS
 
 // Disable lives and hide the lives counter
-#define DISABLE_LIVES
+//#define DISABLE_LIVES
 
 // Save number of lives to the save file (Does nothing if DISABLE_LIVES is enabled)
 #define SAVE_NUM_LIVES
 
 // The number of lives Mario starts with after a game over or starting the game for the first time (must be lower than 127)
-#define DEFAULT_NUM_LIVES 4
+//#define DEFAULT_NUM_LIVES 1
 
 // This can be 0..127
-#define MAX_NUM_LIVES   100
+#define MAX_NUM_LIVES   127
 
 // This can be 0..32767
 #define MAX_NUM_COINS   999
@@ -37,7 +37,7 @@
  * In v2.0 there are numerous issues with this define that can be seen here https://github.com/Reonu/HackerSM64/issues/258
  * Use at your own risk.
 */
-// #define NON_STOP_STARS
+//#define NON_STOP_STARS
 
 // Uncomment this if you want global star IDs (useful for creating an open world hack ala MVC)
 // #define GLOBAL_STAR_IDS
@@ -72,4 +72,4 @@
 #define PREVENT_DEATH_LOOP
 
 // The level that the game starts in after file select. The levelscript needs to have a MARIO_POS command for this to work.
-#define START_LEVEL LEVEL_CASTLE_GROUNDS
+#define START_LEVEL LEVEL_BOB

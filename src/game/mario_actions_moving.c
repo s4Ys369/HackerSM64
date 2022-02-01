@@ -488,7 +488,7 @@ s32 check_ground_dive_or_punch(struct MarioState *m) {
         //! Speed kick (shoutouts to SimpleFlips)
         if (m->forwardVel >= 29.0f && m->controller->stickMag > 48.0f) {
             m->vel[1] = 20.0f;
-            return set_mario_action(m, ACT_DIVE, 1);
+            return set_mario_action(m, ACT_MOVE_PUNCHING, 1);
         }
 
         return set_mario_action(m, ACT_MOVE_PUNCHING, 0);
@@ -786,7 +786,7 @@ s32 act_walking(struct MarioState *m) {
     }
 
     if (m->input & INPUT_Z_PRESSED) {
-        return set_mario_action(m, ACT_CROUCH_SLIDE, 0);
+        return set_mario_action(m, ACT_LONG_JUMP, 0);
     }
 
     m->actionState = ACT_STATE_WALKING_NO_WALL;
@@ -827,18 +827,19 @@ s32 act_move_punching(struct MarioState *m) {
         return set_mario_action(m, ACT_JUMP_KICK, 0);
     }
 
-    m->actionState = ACT_STATE_MOVE_PUNCHING_NO_JUMP_KICK;
+    m->actionState = ACT_STATE_MOVE_PUNCHING_CAN_JUMP_KICK;
 
     mario_update_punch_sequence(m);
+    update_walking_speed(m);
 
-    if (m->forwardVel >= 0.0f) {
-        apply_slope_decel(m, 0.5f);
-    } else {
-        if ((m->forwardVel += 8.0f) >= 0.0f) {
-            m->forwardVel = 0.0f;
-        }
-        apply_slope_accel(m);
-    }
+    //if (m->forwardVel >= 0.0f) {
+    //    apply_slope_decel(m, 0.5f);
+    //} else {
+    //    if ((m->forwardVel += 8.0f) >= 0.0f) {
+    //        m->forwardVel = 0.0f;
+    //    }
+    //    apply_slope_accel(m);
+    //}
 
     switch (perform_ground_step(m)) {
         case GROUND_STEP_LEFT_GROUND:
@@ -879,7 +880,7 @@ s32 act_hold_walking(struct MarioState *m) {
     }
 
     if (m->input & INPUT_Z_PRESSED) {
-        return drop_and_set_mario_action(m, ACT_CROUCH_SLIDE, 0);
+        return drop_and_set_mario_action(m, ACT_LONG_JUMP, 0);
     }
 
     m->intendedMag *= 0.4f;
@@ -1086,7 +1087,7 @@ s32 act_decelerating(struct MarioState *m) {
         }
 
         if (m->input & INPUT_Z_PRESSED) {
-            return set_mario_action(m, ACT_CROUCH_SLIDE, 0);
+            return set_mario_action(m, ACT_LONG_JUMP, 0);
         }
     }
 
@@ -1147,7 +1148,7 @@ s32 act_hold_decelerating(struct MarioState *m) {
     }
 
     if (m->input & INPUT_Z_PRESSED) {
-        return drop_and_set_mario_action(m, ACT_CROUCH_SLIDE, 0);
+        return drop_and_set_mario_action(m, ACT_LONG_JUMP, 0);
     }
 
     if (m->input & INPUT_NONZERO_ANALOG) {
@@ -1205,7 +1206,7 @@ s32 act_riding_shell_ground(struct MarioState *m) {
         if (m->forwardVel < 24.0f) {
             mario_set_forward_vel(m, 24.0f);
         }
-        return set_mario_action(m, ACT_CROUCH_SLIDE, 0);
+        return set_mario_action(m, ACT_LONG_JUMP, 0);
     }
 
     update_shell_speed(m);
@@ -1262,7 +1263,7 @@ s32 act_crawling(struct MarioState *m) {
     }
 
     if (!(m->input & INPUT_Z_DOWN)) {
-        return set_mario_action(m, ACT_STOP_CRAWLING, 0);
+        return set_mario_action(m, ACT_LONG_JUMP, 0);
     }
 
     m->intendedMag *= 0.1f;
@@ -1454,7 +1455,7 @@ s32 act_crouch_slide(struct MarioState *m) {
 
     if (m->input & INPUT_B_PRESSED) {
         if (m->forwardVel >= 10.0f) {
-            return set_mario_action(m, ACT_SLIDE_KICK, 0);
+            return set_mario_action(m, ACT_MOVE_PUNCHING, 0);
         } else {
             return set_mario_action(m, ACT_MOVE_PUNCHING, 0x9);
         }
