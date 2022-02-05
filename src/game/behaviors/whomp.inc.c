@@ -29,7 +29,7 @@ void whomp_init(void) {
                 seq_player_lower_volume(SEQ_PLAYER_LEVEL, 60, 40);
             } else {
                 cur_obj_set_pos_to_home();
-                o->oHealth = 3;
+                o->oHealth = 10;
             }
         } else if (cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_UP, 
             DIALOG_FLAG_TURN_TO_MARIO, CUTSCENE_DIALOG, DIALOG_114)) {
@@ -69,7 +69,6 @@ void whomp_patrol(void) {
 #else
     f32 patrolDist = 700.0f;
 #endif
-
     cur_obj_init_animation_with_accel_and_sound(0, 1.0f);
     o->oForwardVel = 3.0f;
 
@@ -90,14 +89,14 @@ void whomp_patrol(void) {
 
 void king_whomp_chase(void) {
     cur_obj_init_animation_with_accel_and_sound(0, 1.0f);
-    o->oForwardVel = 3.0f;
+    o->oForwardVel = 6.0f;
     cur_obj_rotate_yaw_toward(o->oAngleToMario, 0x200);
 
     if (o->oTimer > 30) {
         s16 marioAngle = abs_angle_diff(o->oAngleToMario, o->oMoveAngleYaw);
         if (marioAngle < 0x2000) {
             if (o->oDistanceToMario < 1500.0f) {
-                o->oForwardVel = 9.0f;
+                o->oForwardVel = 18.0f;
                 cur_obj_init_animation_with_accel_and_sound(0, 3.0f);
             }
             if (o->oDistanceToMario < 300.0f) {
@@ -153,7 +152,7 @@ void whomp_land(void) {
 
 void king_whomp_on_ground(void) {
     if (o->oSubAction == 0) {
-        if (cur_obj_is_mario_ground_pounding_platform()) {
+        if (cur_obj_is_mario_on_platform()) {
             Vec3f pos;
             o->oHealth--;
             cur_obj_play_sound_2(SOUND_OBJ2_WHOMP_SOUND_SHORT);
@@ -167,6 +166,7 @@ void king_whomp_on_ground(void) {
                 spawn_triangle_break_particles(20, MODEL_DIRT_ANIMATION, 3.0f, 4);
                 cur_obj_shake_screen(SHAKE_POS_SMALL);
                 vec3f_copy(&o->oPosVec, pos);
+                cur_obj_push_mario_away(150.0f);
             }
             o->oSubAction++;
         }
@@ -214,7 +214,7 @@ void whomp_on_ground_general(void) {
         } else {
             whomp_on_ground();
         }
-        if (o->oTimer > 100 || (gMarioState->action == ACT_SQUISHED && o->oTimer > 30)) {
+        if (o->oTimer > 50 || (gMarioState->action == ACT_SQUISHED && o->oTimer > 30)) {
             o->oSubAction = 10;
         }
     } else if (o->oFaceAnglePitch > 0) {
@@ -279,6 +279,9 @@ void bhv_whomp_loop(void) {
     cur_obj_move_standard(-20);
     if (o->oAction != 9) {
         if (o->oBehParams2ndByte != 0) {
+        	if (o->oDistanceToMario < 2000.0f) {
+    			print_text_fmt_int(10, 10, "KING WHOMP %d", o->oHealth);
+   			}
             cur_obj_hide_if_mario_far_away_y(2000.0f);
         } else {
             cur_obj_hide_if_mario_far_away_y(1000.0f);

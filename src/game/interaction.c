@@ -1357,17 +1357,23 @@ u32 interact_bounce_top(struct MarioState *m, UNUSED u32 interactType, struct Ob
 #if ENABLE_RUMBLE
         queue_rumble_data(5, 80);
 #endif
+        if (obj->oInteractionSubtype & INT_SUBTYPE_TWIRL_BOUNCE) {
+            if (m->controller->buttonPressed & A_BUTTON) {
+                attack_object(obj, interaction);
+                bounce_off_object(m, obj, 80.0f);
+                reset_mario_pitch(m);
+                play_sound(SOUND_MARIO_TWIRL_BOUNCE, m->marioObj->header.gfx.cameraToObject);
+                return drop_and_set_mario_action(m, ACT_TRIPLE_JUMP, 0);
+            }
+        }
         attack_object(obj, interaction);
         bounce_back_from_attack(m, interaction);
 
         if (interaction & INT_HIT_FROM_ABOVE) {
-            if (obj->oInteractionSubtype & INT_SUBTYPE_TWIRL_BOUNCE) {
-            	bounce_off_object(m, obj, 80.0f);
-            	reset_mario_pitch(m);
-            	play_sound(SOUND_MARIO_TWIRL_BOUNCE, m->marioObj->header.gfx.cameraToObject);
-            	return drop_and_set_mario_action(m, ACT_TRIPLE_JUMP, 0);
-            } else {
+            if (!(obj->oInteractionSubtype & INT_SUBTYPE_TWIRL_BOUNCE)) {
                 bounce_off_object(m, obj, 30.0f);
+            } else {
+                bounce_off_object(m, obj, 10.0f);
             }
         }
     } else if (take_damage_and_knock_back(m, obj)) {
