@@ -21,13 +21,17 @@ void bullet_bill_act_0(void) {
 
 void bullet_bill_act_1(void) {
     s16 sp1E = abs_angle_diff(o->oAngleToMario, o->oMoveAngleYaw);
-    if (sp1E < 0x2000 && 400.0f < o->oDistanceToMario && o->oDistanceToMario < 1500.0f) {
-        o->oAction = 2;
+    if (o->oBehParams2ndByte == 0) {
+    	if (sp1E < 0x2000 && 400.0f < o->oDistanceToMario && o->oDistanceToMario < 1500.0f) {
+    	    o->oAction = 2;
+    	}
+    } else {
+    	o->oAction = 2;
     }
 }
 
 void bullet_bill_act_2(void) {
-    obj_attack_collided_from_other_object(o);
+
     if (o->oTimer < 40) {
         o->oForwardVel = 3.0f;
     } else if (o->oTimer < 50) {
@@ -45,7 +49,9 @@ void bullet_bill_act_2(void) {
         o->oForwardVel = 30.0f;
 
         if (o->oDistanceToMario > 300.0f) {
-            cur_obj_rotate_yaw_toward(o->oAngleToMario, 0x100);
+        	if (o->oBehParams2ndByte == 0) {
+            	cur_obj_rotate_yaw_toward(o->oAngleToMario, 0x100);
+        	}
         }
 
         if (o->oTimer == 50) {

@@ -41,3 +41,6 @@
 #include "levels/jrb/areas/2/movtext.inc.c"
 
 #include "levels/jrb/leveldata.inc.c"
+
+#include "levels/jrb/bbc2/model.inc.c"
+#include "levels/jrb/bbc2/collision.inc.c"

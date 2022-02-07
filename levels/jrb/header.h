@@ -66,4 +66,8 @@ extern const LevelScript level_jrb_entry[];
 
 #include "levels/jrb/header.inc.h"
 
+#include "levels/jrb/bbc2/geo_header.h"
+
+#include "levels/jrb/bbc2/collision_header.h"
+
 #endif

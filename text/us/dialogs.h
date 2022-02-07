@@ -1368,19 +1368,19 @@ courses to activate the\n\
 Cap Blocks."))
 
 DEFINE_DIALOG(DIALOG_114, 1, 5, 95, 200, _("\
-It makes me so mad! We\n\
-build your houses, your\n\
-castles. We pave your\n\
-roads, and still you\n\
-walk all over us.\n\
+It makes me so @FF0000FFMAD! @--------We\n\
+build your @00FF00FFhouses@--------, your\n\
+@00FF00FFcastles@--------. We pave your\n\
+@00FF00FFroads@--------, and still you\n\
+@FF0000FFwalk all over us.\n\
 Do you ever say thank\n\
-you? No! Well, you're not\n\
+you? @FF0000FFNo! @--------Well, you're not\n\
 going to wipe your feet\n\
 on me! I think I'll crush\n\
 you just for fun!\n\
 Do you have a problem\n\
-with that? Just try to\n\
-pound me, wimp! Ha!"))
+with that? @FF0000FFJust try to\n\
+stop me, wimp! Ha!"))
 
 DEFINE_DIALOG(DIALOG_115, 1, 5, 95, 200, _("\
 No! Crushed again!\n\

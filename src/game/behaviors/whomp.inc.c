@@ -89,14 +89,22 @@ void whomp_patrol(void) {
 
 void king_whomp_chase(void) {
     cur_obj_init_animation_with_accel_and_sound(0, 1.0f);
-    o->oForwardVel = 6.0f;
+    if (o->oHealth > 5) {
+        o->oForwardVel = 6.0f;
+    } else {
+       o->oForwardVel = 9.0f; 
+    }
     cur_obj_rotate_yaw_toward(o->oAngleToMario, 0x200);
 
     if (o->oTimer > 30) {
         s16 marioAngle = abs_angle_diff(o->oAngleToMario, o->oMoveAngleYaw);
         if (marioAngle < 0x2000) {
             if (o->oDistanceToMario < 1500.0f) {
-                o->oForwardVel = 18.0f;
+                if (o->oHealth > 5) {
+                    o->oForwardVel = 18.0f;
+                } else {
+                    o->oForwardVel = 21.0f;
+                }
                 cur_obj_init_animation_with_accel_and_sound(0, 3.0f);
             }
             if (o->oDistanceToMario < 300.0f) {
@@ -242,7 +250,7 @@ void whomp_die(void) {
             spawn_triangle_break_particles(20, MODEL_DIRT_ANIMATION, 3.0f, 4);
             cur_obj_shake_screen(SHAKE_POS_SMALL);
             o->oPosY += 100.0f;
-            spawn_default_star(180.0f, 3880.0f, 340.0f);
+            spawn_default_star(28.0f, 1895.0f, -37.0f);
             cur_obj_play_sound_2(SOUND_OBJ_KING_WHOMP_DEATH);
             o->oAction = 9;
         }
@@ -279,9 +287,12 @@ void bhv_whomp_loop(void) {
     cur_obj_move_standard(-20);
     if (o->oAction != 9) {
         if (o->oBehParams2ndByte != 0) {
-        	if (o->oDistanceToMario < 2000.0f) {
+        	if (o->oDistanceToMario < 1900.0f) {
     			print_text_fmt_int(10, 10, "KING WHOMP %d", o->oHealth);
    			}
+            if (o->oHealth > 0){
+                cur_obj_scale(1.0f + (o->oHealth * 0.1f));
+            }
             cur_obj_hide_if_mario_far_away_y(2000.0f);
         } else {
             cur_obj_hide_if_mario_far_away_y(1000.0f);

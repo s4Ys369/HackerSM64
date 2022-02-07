@@ -23,3 +23,5 @@
 #include "levels/jrb/areas/2/geo.inc.c"
 
 #include "levels/jrb/geo.inc.c"
+
+#include "levels/jrb/bbc2/geo.inc.c"
