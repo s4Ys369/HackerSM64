@@ -85,6 +85,10 @@
 #define TEXT_PAUSE _("PAUSE") // Pause text, Castle Courses
 #define TEXT_HUD_CONGRATULATIONS _("CONGRATULATIONS") // Course Complete Text, Bowser Courses
 
+#define TEXT_HUD_ENABLED _("SMOKE BOMB: ON")
+#define TEXT_HUD_DISABLED _("SMOKE BOMB: OFF")
+#define TEXT_HUD_PRESS_DOWN _("PRESS D PAD DOWN")
+
 //Widescreen stuff
 #if defined(WIDE) && !defined(PUPPYCAM)
 #define TEXT_HUD_CURRENT_RATIO_43 _("ASPECT RATIO: 4:3")
@@ -198,7 +202,7 @@
  */
 // Main Screens
 #define TEXT_MARIO _("MARIO") // View Score Menu
-#define TEXT_SELECT_FILE _("SELECT FILE")
+#define TEXT_SELECT_FILE _("SM64 X CH")
 #define TEXT_CHECK_FILE _("CHECK FILE")
 #define TEXT_COPY_FILE _("COPY FILE")
 #define TEXT_ERASE_FILE _("ERASE FILE")

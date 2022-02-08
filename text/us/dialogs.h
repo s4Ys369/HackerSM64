@@ -41,24 +41,20 @@ Thanks to @FFFF00FFHackerSM64!\n\
 DEFINE_DIALOG(DIALOG_001, 1, 4, 95, 200, _("\
 @FFFF00FFCongrats! @--------You defeated\n\
 @FF0000FFKing Bob-omb.\n\
-@--------Now, one last\n\
-@00FF00FFCHALLENGE!\n\
-In the spirit of\n\
-the competition,\n\
-the finale is\n\
-@FF0000FFCROSS@00FF00FFOVERS@--------!!!\n\
-The difficulty of\n\
-this section was\n\
-chosen by the\n\
-boss fight difficulty.\n\
-@FFFF00FFThank you for playing!\n\
-@00FF00FFSHOUTOUTS TO\n\
-@--------Simpleflips, RHDC,\n\
-the community, and\n\
-all of the devs,\n\
-modders and hackers\n\
-keeping SM64 alive\n\
-and well."))
+@--------Now, you have\n\
+@00FF00FFunlocked\n\
+the @FF0000FFSMOKE BOMB\n\
+@--------ability!\n\
+While dashing,\n\
+Mario is invulnerable.\n\
+\n\
+Did you know\n\
+about the @00FF00FFPARRY?\n\
+\n\
+Mario can triple\n\
+jump off some\n\
+enemies with a\n\
+well timed [A] press."))
 
 DEFINE_DIALOG(DIALOG_002, 1, 4, 95, 200, _("\
 Hey, you! It's dangerous\n\
@@ -1383,11 +1379,11 @@ with that? @FF0000FFJust try to\n\
 stop me, wimp! Ha!"))
 
 DEFINE_DIALOG(DIALOG_115, 1, 5, 95, 200, _("\
-No! Crushed again!\n\
-I'm just a stepping stone,\n\
-after all. I won't gravel,\n\
-er, grovel. Here, you win.\n\
-Take this with you!"))
+@FF0000FFNo! Crushed again!\n\
+@--------I'm just a stepping stone,\n\
+after all. I won't @FF0000FFgravel@--------,\n\
+er, @00FF00FFgrovel@--------. Here, you win.\n\
+Take @FFFF00FFthis @--------with you!"))
 
 DEFINE_DIALOG(DIALOG_116, 1, 5, 95, 200, _("\
 Whaaa....Whaaat?\n\

@@ -9,6 +9,7 @@
 #include "engine/math_util.h"
 #include "game_init.h"
 #include "interaction.h"
+#include "ingame_menu.h"
 #include "level_update.h"
 #include "mario.h"
 #include "mario_step.h"
@@ -384,6 +385,7 @@ u32 common_air_action_step(struct MarioState *m, u32 landAction, s32 animation, 
             break;
 
         case AIR_STEP_HIT_WALL:
+            cur_obj_become_tangible();
             set_mario_animation(m, animation);
 
             if (m->forwardVel > 16.0f) {
@@ -427,15 +429,18 @@ u32 common_air_action_step(struct MarioState *m, u32 landAction, s32 animation, 
             break;
 
         case AIR_STEP_GRABBED_LEDGE:
+            cur_obj_become_tangible();
             set_mario_animation(m, MARIO_ANIM_IDLE_ON_LEDGE);
             drop_and_set_mario_action(m, ACT_LEDGE_GRAB, 0);
             break;
 
         case AIR_STEP_GRABBED_CEILING:
+            cur_obj_become_tangible();
             set_mario_action(m, ACT_START_HANGING, 0);
             break;
 
         case AIR_STEP_HIT_LAVA_WALL:
+            cur_obj_become_tangible();
             lava_boost_on_wall(m);
             break;
     }
@@ -637,10 +642,35 @@ s32 act_wall_kick_air(struct MarioState *m) {
 
 s32 act_long_jump(struct MarioState *m) {
     s32 animation;
+    // Smoke Bomb
+    if (m->numStars > 0 && gConfigDash) {
+        m->marioObj->oSubAction = 0;
+
+        switch (m->marioObj->oSubAction) {
+            case 0:
+                cur_obj_become_intangible();
+                m->marioObj->header.gfx.node.flags |= GRAPH_RENDER_INVISIBLE;
+                spawn_mist_particles_variable(0, 0, 30.0f);
+                m->marioObj->oSubAction = 1;
+                break;
+            case 1:
+            default:
+                cur_obj_become_tangible();
+                m->marioObj->header.gfx.node.flags = ~GRAPH_RENDER_INVISIBLE;
+                spawn_mist_particles_variable(0, 0, 30.0f);
+                break;
+        }
+    }
     if (!m->marioObj->oMarioLongJumpIsSlow) {
         animation = MARIO_ANIM_FAST_LONGJUMP;
     } else {
         animation = MARIO_ANIM_SLOW_LONGJUMP;
+    }
+
+    //Dash Cancel
+    if (m->input & INPUT_B_PRESSED) {
+        cur_obj_become_tangible();
+        return set_mario_action(m, ACT_JUMP_KICK, 0);
     }
 
     play_mario_sound(m, SOUND_ACTION_TERRAIN_JUMP, SOUND_MARIO_YAHOO);
@@ -653,6 +683,7 @@ s32 act_long_jump(struct MarioState *m) {
     common_air_action_step(m, ACT_LONG_JUMP_LAND, animation, AIR_STEP_CHECK_LEDGE_GRAB);
 #if ENABLE_RUMBLE
     if (m->action == ACT_LONG_JUMP_LAND) {
+        cur_obj_become_tangible();
         queue_rumble_data(5, 40);
     }
 #endif
@@ -1617,6 +1648,13 @@ s32 act_jump_kick(struct MarioState *m) {
     }
 
     update_air_without_turn(m);
+
+    //Multiple jump kicks
+    if(animFrame > 12) {
+        if (m->input & INPUT_B_PRESSED) {
+            return set_mario_action(m, ACT_JUMP_KICK, 0);
+        }
+    }
 
     switch (perform_air_step(m, 0)) {
         case AIR_STEP_LANDED:

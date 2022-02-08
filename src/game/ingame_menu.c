@@ -14,6 +14,7 @@
 #include "ingame_menu.h"
 #include "level_update.h"
 #include "levels/castle_grounds/header.h"
+#include "mario.h"
 #include "memory.h"
 #include "print.h"
 #include "save_file.h"
@@ -39,6 +40,10 @@ u16 gDialogTextAlpha;
 s16 gCutsceneMsgXOffset;
 s16 gCutsceneMsgYOffset;
 s8 gRedCoinsCollected;
+u8 gConfigDash;
+u8 textDisabled[] = { TEXT_HUD_DISABLED };
+u8 textEnabled[] = { TEXT_HUD_ENABLED };
+u8 textPressDown[] = { TEXT_HUD_PRESS_DOWN };
 #if defined(WIDE) && !defined(PUPPYCAM)
 u8 textCurrRatio43[] = { TEXT_HUD_CURRENT_RATIO_43 };
 u8 textCurrRatio169[] = { TEXT_HUD_CURRENT_RATIO_169 };
@@ -1519,6 +1524,22 @@ void render_pause_red_coins(void) {
     }
 }
 
+void render_dash_setting(void) {
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
+    gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, gDialogTextAlpha);
+    if (!gConfigDash) {
+        print_generic_string(210, 20, textDisabled);
+        print_generic_string(210,  7, textPressDown);
+    } else {
+        print_generic_string(210, 20, textEnabled);
+        print_generic_string(210,  7, textPressDown);
+    }
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
+    if (gPlayer1Controller->buttonPressed & D_JPAD){
+        gConfigDash ^= 1;
+    }
+}
+
 /// By default, not needed as puppycamera has an option, but should you wish to revert that, you are legally allowed.
 
 #if defined(WIDE) && !defined(PUPPYCAM)
@@ -1915,6 +1936,11 @@ s32 render_pause_courses_and_castle(void) {
             }
             break;
     }
+
+    if (gMarioState->numStars > 0) {
+        render_dash_setting();
+    }
+
 #if defined(WIDE) && !defined(PUPPYCAM)
         render_widescreen_setting();
 #endif
