@@ -166,6 +166,8 @@ unsigned char textYes[] = { TEXT_YES };
 
 unsigned char textNo[] = { TEXT_NO };
 
+unsigned char textBy[] = { TEXT_BY };
+
 
 /**
  * Yellow Background Menu Initial Action
@@ -1421,7 +1423,7 @@ void print_save_file_star_count(s8 fileIndex, s16 x, s16 y) {
     }
 }
 
-#define SELECT_FILE_X 93
+#define SELECT_FILE_X 50
 #define SCORE_X       52
 #define COPY_X       117
 #define ERASE_X      177
@@ -1442,6 +1444,7 @@ void print_main_menu_strings(void) {
     gSPDisplayList(gDisplayListHead++, dl_rgba16_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha);
     print_hud_lut_string(HUD_LUT_DIFF, SELECT_FILE_X, 35, textSelectFile);
+    print_hud_lut_string(HUD_LUT_DIFF, 100, 210, textBy);
     // Print file star counts
     print_save_file_star_count(SAVE_FILE_A, SAVEFILE_X1, 78);
     print_save_file_star_count(SAVE_FILE_B, SAVEFILE_X2, 78);

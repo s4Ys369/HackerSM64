@@ -38,41 +38,34 @@ Thanks to @FFFF00FFHackerSM64!\n\
 \n\
 "))
 
-DEFINE_DIALOG(DIALOG_001, 1, 4, 95, 200, _("\
+DEFINE_DIALOG(DIALOG_001, 1, 5, 95, 200, _("\
 @FFFF00FFCongrats! @--------You defeated\n\
 @FF0000FFKing Bob-omb.\n\
 @--------Now, you have\n\
 @00FF00FFunlocked\n\
-the @FF0000FFSMOKE BOMB\n\
-@--------ability!\n\
+the @FF0000FFSMOKE BOMB!\n\
 While dashing,\n\
 Mario is invulnerable.\n\
 \n\
+This can be toggled\n\
+in the pause menu.\n\
 Did you know\n\
 about the @00FF00FFPARRY?\n\
-\n\
+@--------\n\
 Mario can triple\n\
 jump off some\n\
 enemies with a\n\
-well timed [A] press."))
+well timed [A] press.\n\
+Try it on these\n\
+@FF0000FFBULLET BILLS!"))
 
-DEFINE_DIALOG(DIALOG_002, 1, 4, 95, 200, _("\
-Hey, you! It's dangerous\n\
-ahead, so listen up! Take\n\
-my advice.\n\
-\n\
-Cross the two\n\
-bridges ahead, then\n\
-watch for falling\n\
-water bombs.\n\
-The Big Bob-omb at the\n\
-top of the mountain is\n\
-very powerful--don't let\n\
-him grab you!\n\
-We're Bob-omb Buddies,\n\
-and we're on your side.\n\
-You can talk to us\n\
-whenever you'd like to!"))
+DEFINE_DIALOG(DIALOG_002, 1, 6, 95, 200, _("\
+@00FF00FFFLYING CONTROLS\n\
+@--------Mario can @00FF00FFJUMP KICK\n\
+@--------and @FFFF00FFDASH @--------while flying.\n\
+Press [A] after to start\n\
+@FF0000FFflying @--------again,\n\
+or while flying to @FF0000FFROLL!"))
 
 DEFINE_DIALOG(DIALOG_003, 1, 5, 95, 200, _("\
 Thank you, Mario! The Big\n\
@@ -1386,25 +1379,16 @@ er, @00FF00FFgrovel@--------. Here, you win.\n\
 Take @FFFF00FFthis @--------with you!"))
 
 DEFINE_DIALOG(DIALOG_116, 1, 5, 95, 200, _("\
-Whaaa....Whaaat?\n\
-Can it be that a\n\
-pipsqueak like you has\n\
-defused the Bob-omb\n\
+@FF0000FFWhaaa....Whaaat?\n\
+@--------Can it be that a\n\
+@FF0000FFpipsqueak @--------like you has\n\
+defused the @00FF00FFBob-omb\n\
 king????\n\
-You might be fast enough\n\
-to ground me, but you'll\n\
-have to pick up the pace\n\
-if you want to take King\n\
-Bowser by the tail.\n\
-Methinks my troops could\n\
-learn a lesson from you!\n\
-Here is your Star, as I\n\
-promised, Mario.\n\
-\n\
-If you want to see me\n\
-again, select this Star\n\
-from the menu. For now,\n\
-farewell."))
+@--------You might be fast enough\n\
+to ground the @00FF00FFWhomp king\n\
+@--------but you'll have to go\n\
+through @FF0000FFme @--------to make it to\n\
+@FF0000FFKing Bowser!"))
 
 DEFINE_DIALOG(DIALOG_117, 1, 1, 95, 200, _("\
 Who...walk...here?\n\

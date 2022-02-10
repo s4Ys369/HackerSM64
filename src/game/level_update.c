@@ -1,3 +1,4 @@
+#include "texscroll.h"
 #include <ultra64.h>
 
 #include "sm64.h"
@@ -244,8 +245,9 @@ void set_mario_initial_cap_powerup(struct MarioState *m) {
             break;
 
         case COURSE_TOTWC - COURSE_CAP_COURSES:
+            save_file_set_flags(SAVE_FLAG_HAVE_WING_CAP);
             m->flags |= MARIO_WING_CAP | MARIO_CAP_ON_HEAD;
-            m->capTimer = 1200;
+            m->capTimer = 2400;
             break;
 
         case COURSE_VCUTM - COURSE_CAP_COURSES:
@@ -288,7 +290,9 @@ void set_mario_initial_action(struct MarioState *m, u32 spawnType, u32 actionArg
             set_mario_action(m, ACT_SPAWN_SPIN_AIRBORNE, 0);
             break;
         case MARIO_SPAWN_FLYING:
-            set_mario_action(m, ACT_FLYING, 2);
+            set_mario_action(m, ACT_FLYING, 0);
+            m->flags |= (MARIO_WING_CAP | MARIO_CAP_ON_HEAD);
+            m->capTimer = 2400;
             break;
         case MARIO_SPAWN_SWIMMING:
             set_mario_action(m, ACT_WATER_IDLE, 1);
@@ -388,7 +392,7 @@ void init_mario_after_warp(void) {
         }
 
         if (gMarioState->flags & (MARIO_VANISH_CAP | MARIO_WING_CAP)) {
-            play_cap_music(SEQUENCE_ARGS(4, SEQ_EVENT_POWERUP));
+            play_cap_music(SEQUENCE_ARGS(4, SEQ_EVENT_BOSS));
         }
 
 #ifdef ENABLE_VANILLA_LEVEL_SPECIFIC_CHECKS
@@ -1131,7 +1135,7 @@ s32 update_level(void) {
 
     switch (sCurrPlayMode) {
         case PLAY_MODE_NORMAL:
-            changeLevel = play_mode_normal();
+            changeLevel = play_mode_normal(); scroll_textures();
             break;
         case PLAY_MODE_PAUSED:
             changeLevel = play_mode_paused();
@@ -1304,6 +1308,7 @@ s32 lvl_set_current_level(UNUSED s16 initOrUpdate, s32 levelNum) {
     sWarpCheckpointActive = FALSE;
     gCurrLevelNum = levelNum;
     gCurrCourseNum = gLevelToCourseNumTable[levelNum - 1];
+	if (gCurrLevelNum == LEVEL_TOTWC) return 0;
 	if (gCurrLevelNum == LEVEL_JRB) return 0;
 	if (gCurrLevelNum == LEVEL_CCM) return 0;
 	if (gCurrLevelNum == LEVEL_WF) return 0;

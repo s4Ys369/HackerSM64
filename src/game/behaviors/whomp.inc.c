@@ -250,7 +250,7 @@ void whomp_die(void) {
             spawn_triangle_break_particles(20, MODEL_DIRT_ANIMATION, 3.0f, 4);
             cur_obj_shake_screen(SHAKE_POS_SMALL);
             o->oPosY += 100.0f;
-            spawn_default_star(28.0f, 1895.0f, -37.0f);
+            spawn_default_star(28.0f, 1995.0f, -37.0f);
             cur_obj_play_sound_2(SOUND_OBJ_KING_WHOMP_DEATH);
             o->oAction = 9;
         }
@@ -286,17 +286,19 @@ void bhv_whomp_loop(void) {
     cur_obj_call_action_function(sWhompActions);
     cur_obj_move_standard(-20);
     if (o->oAction != 9) {
+        load_object_collision_model();
         if (o->oBehParams2ndByte != 0) {
         	if (o->oDistanceToMario < 1900.0f) {
     			print_text_fmt_int(10, 10, "KING WHOMP %d", o->oHealth);
    			}
-            if (o->oHealth > 0){
+            if (o->oHealth > 5){
                 cur_obj_scale(1.0f + (o->oHealth * 0.1f));
+            } else {
+                cur_obj_scale(1.5f);
             }
             cur_obj_hide_if_mario_far_away_y(2000.0f);
         } else {
             cur_obj_hide_if_mario_far_away_y(1000.0f);
         }
-        load_object_collision_model();
     }
 }

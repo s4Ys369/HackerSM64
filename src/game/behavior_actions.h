@@ -242,6 +242,7 @@ void bhv_floor_trap_in_castle_loop(void);
 void bhv_sparkle_spawn_loop(void);
 void bhv_scuttlebug_loop(void);
 void bhv_scuttlebug_spawn_loop(void);
+void bhv_kamek_loop(void);
 void bhv_whomp_loop(void);
 void bhv_water_splash_spawn_droplets(void);
 void bhv_water_droplet_loop(void);

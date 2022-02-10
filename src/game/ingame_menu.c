@@ -40,7 +40,7 @@ u16 gDialogTextAlpha;
 s16 gCutsceneMsgXOffset;
 s16 gCutsceneMsgYOffset;
 s8 gRedCoinsCollected;
-u8 gConfigDash;
+u8 gConfigDash = 1;
 u8 textDisabled[] = { TEXT_HUD_DISABLED };
 u8 textEnabled[] = { TEXT_HUD_ENABLED };
 u8 textPressDown[] = { TEXT_HUD_PRESS_DOWN };

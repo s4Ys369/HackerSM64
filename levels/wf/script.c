@@ -61,7 +61,7 @@ const LevelScript level_wf_entry[] = {
 		WARP_NODE(0x0A, LEVEL_WF, 0x02, 0x0A, WARP_NO_CHECKPOINT),
 		WARP_NODE(0xF0, LEVEL_JRB, 0x01, 0x0A, WARP_NO_CHECKPOINT),
 		WARP_NODE(0xF1, LEVEL_WF, 0x02, 0x0A, WARP_CHECKPOINT),
-		OBJECT(MODEL_KING_BOBOMB, 28, 100, -1454, 0, 0, 0, 0x01000000, bhvKingBobomb),
+		OBJECT(MODEL_KING_BOBOMB, 28, 100, -1454, 0, 0, 0, 0x00000000, bhvKingBobomb),
 		OBJECT(MODEL_NONE, 0, 473, 1428, 0, 0, 0, 0x000A0000, bhvSpinAirborneWarp),
 		TERRAIN(wf_area_2_collision),
 		MACRO_OBJECTS(wf_area_2_macro_objs),

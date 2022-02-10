@@ -231,6 +231,7 @@ void set_obj_anim_with_accel_and_sound(s16 frame1, s16 frame2, s32 sound) {
 #include "behaviors/sparkle_spawn.inc.c"
 #include "behaviors/scuttlebug.inc.c" // :scuttleeyes:
 #include "behaviors/whomp.inc.c"
+#include "behaviors/kamek.inc.c"
 #include "behaviors/water_splashes_and_waves.inc.c"
 #include "behaviors/strong_wind_particle.inc.c"
 #include "behaviors/sl_snowman_wind.inc.c"

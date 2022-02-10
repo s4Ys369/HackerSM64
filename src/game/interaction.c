@@ -1164,9 +1164,10 @@ u32 interact_flame(struct MarioState *m, UNUSED u32 interactType, struct Object 
 
             if ((m->action & ACT_FLAG_AIR) && m->vel[1] <= 0.0f) {
                 burningAction = ACT_BURNING_FALL;
-            }
-
-            return drop_and_set_mario_action(m, burningAction, 1);
+                return set_mario_action(m, burningAction, 1);
+            } else {
+                return drop_and_set_mario_action(m, burningAction, 1);
+            }   
         }
     }
 
@@ -1417,7 +1418,7 @@ u32 interact_damage(struct MarioState *m, UNUSED u32 interactType, struct Object
 }
 
 u32 interact_breakable(struct MarioState *m, UNUSED u32 interactType, struct Object *obj) {
-    u32 interaction = INT_PUNCH;
+    u32 interaction = determine_interaction(m, obj);
 
     if (interaction & INT_ATTACK_NOT_WEAK_FROM_ABOVE) {
         attack_object(obj, interaction);
@@ -1578,9 +1579,9 @@ u32 interact_cap(struct MarioState *m, UNUSED u32 interactType, struct Object *o
         m->flags |= capFlag;
 
         switch (capFlag) {
-            case MARIO_VANISH_CAP: capTime =  600; capMusic = SEQUENCE_ARGS(4, SEQ_EVENT_POWERUP  ); break;
+            case MARIO_VANISH_CAP: capTime =  600; capMusic = SEQUENCE_ARGS(4, SEQ_EVENT_METAL_CAP  ); break;
             case MARIO_METAL_CAP:  capTime =  600; capMusic = SEQUENCE_ARGS(4, SEQ_EVENT_METAL_CAP); break;
-            case MARIO_WING_CAP:   capTime = 1800; capMusic = SEQUENCE_ARGS(4, SEQ_EVENT_POWERUP  ); break;
+            case MARIO_WING_CAP:   capTime = 1800; capMusic = SEQUENCE_ARGS(4, SEQ_EVENT_BOSS  ); break;
         }
 
         if (capTime > m->capTimer) {

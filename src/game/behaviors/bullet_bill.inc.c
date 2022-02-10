@@ -52,6 +52,11 @@ void bullet_bill_act_2(void) {
         	if (o->oBehParams2ndByte == 0) {
             	cur_obj_rotate_yaw_toward(o->oAngleToMario, 0x100);
         	}
+            if (o->oBehParams2ndByte == 2) {
+                cur_obj_rotate_yaw_toward(o->oAngleToMario, 0x100);
+                o->oMoveAngleRoll = approach_s16_symmetric(o->oMoveAngleRoll, o->oAngleToMario, 0x100);
+                o->oMoveAnglePitch = approach_s16_symmetric(o->oMoveAnglePitch, o->oAngleToMario, 0x100);
+            }
         }
 
         if (o->oTimer == 50) {
@@ -67,6 +72,9 @@ void bullet_bill_act_2(void) {
 }
 
 void bullet_bill_act_3(void) {
+    if (o->oBehParams2ndByte == 2) {
+        obj_mark_for_deletion(o);
+    }
     o->oAction = 0;
 }
 
@@ -81,6 +89,9 @@ void bullet_bill_act_4(void) {
     o->oPosY += 20.0f;
 
     if (o->oTimer > 90) {
+        if (o->oBehParams2ndByte == 2) {
+            obj_mark_for_deletion(o);
+        }
         o->oAction = 0;
     }
 }
@@ -97,5 +108,10 @@ void bhv_bullet_bill_loop(void) {
     cur_obj_call_action_function(sBulletBillActions);
     if (cur_obj_check_interacted()) {
         o->oAction = 4;
+    }
+    if (o->oBehParams2ndByte == 2) {
+        if (o->oTimer > 175) {
+            obj_mark_for_deletion(o);
+        }
     }
 }

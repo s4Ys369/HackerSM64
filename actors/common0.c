@@ -79,3 +79,6 @@ UNUSED static const u64 binid_17 = 17;
 
 #include "koopa_shell/model.inc.c"
 UNUSED static const u64 binid_18 = 18;
+
+#include "kamek/model.inc.c"
+#include "wand/model.inc.c"

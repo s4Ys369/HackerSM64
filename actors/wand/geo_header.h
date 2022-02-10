@@ -1,0 +1,12 @@
+extern const GeoLayout wand_geo[];
+extern Lights1 wand_gold_lights;
+extern Lights1 wand_red_lights;
+extern Vtx wand_Cylinder_mesh_layer_1_vtx_cull[8];
+extern Vtx wand_Cylinder_mesh_layer_1_vtx_0[88];
+extern Gfx wand_Cylinder_mesh_layer_1_tri_0[];
+extern Vtx wand_Cylinder_mesh_layer_1_vtx_1[17];
+extern Gfx wand_Cylinder_mesh_layer_1_tri_1[];
+extern Gfx mat_wand_gold[];
+extern Gfx mat_wand_red[];
+extern Gfx wand_Cylinder_mesh_layer_1[];
+extern Gfx wand_material_revert_render_settings[];

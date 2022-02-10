@@ -81,6 +81,6 @@ void bhv_grand_star_loop(void) {
     }
 
     o->oFaceAngleYaw += o->oAngleVelYaw;
-    cur_obj_scale(2.0f);
+    //cur_obj_scale(2.0f);
     o->oGraphYOffset = 110.0f;
 }

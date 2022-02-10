@@ -1935,7 +1935,7 @@ const BehaviorScript bhvGrandStar[] = {
     OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
     SET_INTERACT_TYPE(INTERACT_STAR_OR_KEY),
     SET_INT(oInteractionSubtype, INT_SUBTYPE_GRAND_STAR),
-    SET_HITBOX(/*Radius*/ 160, /*Height*/ 100),
+    SET_HITBOX(/*Radius*/ 200, /*Height*/ 400),
     SET_HOME(),
     BEGIN_LOOP(),
         CALL_NATIVE(bhv_grand_star_loop),
@@ -3237,6 +3237,17 @@ const BehaviorScript bhvScuttlebugSpawn[] = {
     OR_INT(oFlags, (OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
     BEGIN_LOOP(),
         CALL_NATIVE(bhv_scuttlebug_spawn_loop),
+    END_LOOP(),
+};
+
+const BehaviorScript bhvKamek[] = {
+    BEGIN(OBJ_LIST_GENACTOR),
+    OR_INT(oFlags, (OBJ_FLAG_COMPUTE_ANGLE_TO_MARIO | OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_SET_FACE_YAW_TO_MOVE_YAW | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    SET_HOME(),
+    SET_FLOAT(oDrawingDistance, 5000),
+    SET_OBJ_PHYSICS(/*Wall hitbox radius*/ 50, /*Gravity*/ 0, /*Bounciness*/ 600, /*Drag strength*/ 0, /*Friction*/ 1000, /*Buoyancy*/ 600, /*Unused*/ 0, 0),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_kamek_loop),
     END_LOOP(),
 };
 

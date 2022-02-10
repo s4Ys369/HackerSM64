@@ -46,9 +46,9 @@ const LevelScript level_jrb_entry[] = {
 	/* Fast64 end persistent block [level commands] */
 
 	AREA(1, jrb_area_1),
-		WARP_NODE(0x0A, LEVEL_JRB, 0x01, 0x0A, WARP_NO_CHECKPOINT),
+		WARP_NODE(0x0A, LEVEL_JRB, 0x01, 0x0A, WARP_CHECKPOINT),
 		WARP_NODE(0xF0, LEVEL_CCM, 0x01, 0x0A, WARP_NO_CHECKPOINT),
-		WARP_NODE(0xF1, LEVEL_JRB, 0x01, 0x0A, WARP_NO_CHECKPOINT),
+		WARP_NODE(0xF1, LEVEL_JRB, 0x01, 0x0A, WARP_CHECKPOINT),
 		WARP_NODE(0x0B, LEVEL_JRB, 0x02, 0x0A, WARP_NO_CHECKPOINT),
 		OBJECT(MODEL_LEVEL_GEOMETRY_03, -6986, -295, 5474, 0, 90, 0, 0x00000000, bhvBulletBillCannon),
 		OBJECT(MODEL_BULLET_BILL, -7126, -270, 5474, 0, 90, 0, 0x00010000, bhvBulletBill),
@@ -70,7 +70,7 @@ const LevelScript level_jrb_entry[] = {
 		TERRAIN(jrb_area_1_collision),
 		MACRO_OBJECTS(jrb_area_1_macro_objs),
 		SHOW_DIALOG(/*index*/ 0x00, DIALOG_001),
-		SET_BACKGROUND_MUSIC(0x00, SEQ_LEVEL_GRASS),
+		SET_BACKGROUND_MUSIC(0x00, SEQ_LEVEL_KOOPA_ROAD),
 		TERRAIN_TYPE(TERRAIN_STONE),
 		/* Fast64 begin persistent block [area commands] */
 		/* Fast64 end persistent block [area commands] */
@@ -110,10 +110,11 @@ const LevelScript level_jrb_entry[] = {
 		OBJECT(MODEL_LEVEL_GEOMETRY_03, 2947, 181, 1855, 0, -90, 0, 0x00000000, bhvBulletBillCannon),
 		OBJECT(MODEL_BULLET_BILL, 3087, 206, 1855, 0, -90, 0, 0x00010000, bhvBulletBill),
 		OBJECT(MODEL_CASTLE_GROUNDS_WARP_PIPE, 2521, -340, 1942, 0, 0, 0, 0x000B0000, bhvWarpPipe),
+		OBJECT(MODEL_STAR, -2500, -1500, 1910, 0, 90, 0, 0x00000000, bhvStar),
 		OBJECT(MODEL_NONE, -6419, 0, 1910, 0, 90, 0, 0x000A0000, bhvSpinAirborneWarp),
 		TERRAIN(jrb_area_2_collision),
 		MACRO_OBJECTS(jrb_area_2_macro_objs),
-		SET_BACKGROUND_MUSIC(0x00, SEQ_LEVEL_GRASS),
+		SET_BACKGROUND_MUSIC(0x00, SEQ_LEVEL_KOOPA_ROAD),
 		TERRAIN_TYPE(TERRAIN_STONE),
 		/* Fast64 begin persistent block [area commands] */
 		/* Fast64 end persistent block [area commands] */

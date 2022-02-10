@@ -1920,7 +1920,11 @@ static void jumbo_star_cutscene_flying(struct MarioState *m) {
     m->particleFlags |= PARTICLE_SPARKLES;
 
     if (m->actionTimer++ == 500) {
-        level_trigger_warp(m, WARP_OP_CREDITS_START);
+        if(m->numStars >= 5) {
+            level_trigger_warp(m, WARP_OP_CREDITS_START);
+        } else {
+            level_trigger_warp(m, WARP_OP_CREDITS_END);
+        }
     }
 }
 
@@ -2447,7 +2451,7 @@ static void end_peach_cutscene_run_to_castle(struct MarioState *m) {
 
 static void end_peach_cutscene_fade_out(struct MarioState *m) {
     if (m->actionState == ACT_STATE_END_PEACH_CUTSCENE_FADE_OUT_WARP) {
-        level_trigger_warp(m, WARP_OP_CREDITS_NEXT);
+        level_trigger_warp(m, WARP_OP_CREDITS_END);
         gPaintingMarioYEntry = 1500.0f; // ensure medium water level in WDW credits cutscene
         m->actionState = ACT_STATE_END_PEACH_CUTSCENE_FADE_OUT_END;
     }

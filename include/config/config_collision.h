@@ -9,13 +9,13 @@
 #define FAST_FLOOR_ALIGN 10
 
 // Automatically calculate the optimal collision distance for an object based on its vertices.
-#define AUTO_COLLISION_DISTANCE
+//#define AUTO_COLLISION_DISTANCE
 
 // Allow all surfaces types to have force, (doesn't require setting force, just allows it to be optional).
 #define ALL_SURFACES_HAVE_FORCE
 
 // Number of walls that can push Mario at once. Vanilla is 4.
-#define MAX_REFERENCED_WALLS 4
+#define MAX_REFERENCED_WALLS 6
 
 // Collision data is the type that the collision system uses. All data by default is stored as an s16, but you may change it to s32.
 // Naturally, that would double the size of all collision data, but would allow you to use 32 bit values instead of 16.

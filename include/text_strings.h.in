@@ -202,7 +202,7 @@
  */
 // Main Screens
 #define TEXT_MARIO _("MARIO") // View Score Menu
-#define TEXT_SELECT_FILE _("SM64 X CH")
+#define TEXT_SELECT_FILE _("SM64 X CUPHEAD DEMO")
 #define TEXT_CHECK_FILE _("CHECK FILE")
 #define TEXT_COPY_FILE _("COPY FILE")
 #define TEXT_ERASE_FILE _("ERASE FILE")
@@ -211,6 +211,7 @@
 #define TEXT_FILE_MARIO_B _("MARIO B")
 #define TEXT_FILE_MARIO_C _("MARIO C")
 #define TEXT_FILE_MARIO_D _("MARIO D")
+#define TEXT_BY _("S4YS 2022")
 
 // Menu Options
 #define TEXT_SCORE _("SCORE")

@@ -274,6 +274,7 @@ extern const BehaviorScript bhvSparkleParticleSpawner[];
 extern const BehaviorScript bhvSomeGfx[];
 extern const BehaviorScript bhvScuttlebug[];
 extern const BehaviorScript bhvScuttlebugSpawn[];
+extern const BehaviorScript bhvKamek[];
 extern const BehaviorScript bhvWhompKingBoss[];
 extern const BehaviorScript bhvSmallWhomp[];
 extern const BehaviorScript bhvWaterSplash[];
