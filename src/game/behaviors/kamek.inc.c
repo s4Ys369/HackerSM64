@@ -121,7 +121,7 @@ void bhv_kamek_loop(void) {
 
     if (o->oAction < 4) {
     	if (o->oDistanceToMario < 3000.0f) {
-			print_text_fmt_int(15, 10, "KAMEK %d", o->oHealth);
+			print_text_fmt_int(22, 10, "KAMEK %d", o->oHealth);
 		}
         cur_obj_hide_if_mario_far_away_y(6000.0f);
     }

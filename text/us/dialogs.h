@@ -14,7 +14,7 @@
 
 DEFINE_DIALOG(DIALOG_000, 1, 6, 30, 200, _("\
 Hey there, \n\
-@0000FFFFS@FF0000FF4@89D1D6FFY@0000FFFFS @--------here.\n\
+@00FF00FFS@FF0000FF4@89D1D6FFY@00FF00FFS @--------here.\n\
 This is a @FF0000FFDEMO \n\
 @--------of a crossover\n\
 between SM64, CUPHEAD,\n\

@@ -289,7 +289,7 @@ void bhv_whomp_loop(void) {
         load_object_collision_model();
         if (o->oBehParams2ndByte != 0) {
         	if (o->oDistanceToMario < 1900.0f) {
-    			print_text_fmt_int(15, 10, "KING WHOMP %d", o->oHealth);
+    			print_text_fmt_int(22, 10, "KING WHOMP %d", o->oHealth);
    			}
             if (o->oHealth > 5){
                 cur_obj_scale(1.0f + (o->oHealth * 0.1f));
