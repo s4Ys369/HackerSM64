@@ -14,14 +14,14 @@
 
 DEFINE_DIALOG(DIALOG_000, 1, 6, 30, 200, _("\
 Hey there, \n\
-@0000FFFFS@FFFF00FF4@FF0000FFY@00FF00FFS @--------here.\n\
+@0000FFFFS@FF0000FF4@89D1D6FFY@0000FFFFS @--------here.\n\
 This is a @FF0000FFDEMO \n\
 @--------of a crossover\n\
 between SM64, CUPHEAD,\n\
 and other Run and Guns.\n\
 This a @FF0000FFRUN and PUNCH.\n\
 @--------Press [B] to @00FF00FFPUNCH\n\
-@--------Press [A] to @0000FFFFJUMP\n\
+@--------Press [A] to @89D1D6FFJUMP\n\
 @--------Press @FFFF00FFZ @--------to @FFFF00FFLONG-JUMP\n\
 Long jumps work like\n\
 dashing, even airborne!\n\
@@ -43,10 +43,10 @@ DEFINE_DIALOG(DIALOG_001, 1, 5, 95, 200, _("\
 @FF0000FFKing Bob-omb.\n\
 @--------Now, you have\n\
 @00FF00FFunlocked\n\
-the @FF0000FFSMOKE BOMB!\n\
+@--------the @FF0000FFSMOKE BOMB!\n\
 While dashing,\n\
-Mario is invulnerable.\n\
-\n\
+Mario is @00FF00FFinvulnerable.\n\
+@--------\n\
 This can be toggled\n\
 in the pause menu.\n\
 Did you know\n\

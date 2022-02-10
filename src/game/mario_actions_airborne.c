@@ -682,10 +682,12 @@ s32 act_long_jump(struct MarioState *m) {
 
     if (m->floor->type == SURFACE_VERTICAL_WIND && m->actionState == 0) {
         play_sound(SOUND_MARIO_HERE_WE_GO, m->marioObj->header.gfx.cameraToObject);
+        cur_obj_become_tangible();
         m->actionState = 1;
     }
 
     if ((m->flags & MARIO_WING_CAP) && (m->input & INPUT_A_PRESSED)) {
+    	cur_obj_become_tangible();
         set_mario_action(m, ACT_FLYING, 2);
     }
     common_air_action_step(m, ACT_LONG_JUMP_LAND, animation, AIR_STEP_CHECK_LEDGE_GRAB);
