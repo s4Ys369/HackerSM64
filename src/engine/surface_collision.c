@@ -51,7 +51,7 @@ static s32 find_wall_collisions_from_list(struct SurfaceNode *surfaceNode, struc
         radius = 200;
     }
 
-    f32 margin_radius = radius - 1.0f;
+    f32 margin_radius = radius - 1.5f;
 
     // Stay in this loop until out of walls.
     while (surfaceNode != NULL) {
