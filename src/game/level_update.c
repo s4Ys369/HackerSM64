@@ -910,8 +910,8 @@ void update_hud_values(void) {
 //            save_file_set_num_lives(MAX_NUM_LIVES);
 //        }
 //#else
-        if (gMarioState->numLives > 100) {
-            gMarioState->numLives = 100;
+        if (gMarioState->numLives > 999) {
+            gMarioState->numLives = 999;
         }
 //#endif
 
@@ -931,7 +931,7 @@ void update_hud_values(void) {
 
         gHudDisplay.stars = gMarioState->numStars;
         gHudDisplay.lives = gMarioState->numLives;
-        gHudDisplay.keys = gMarioState->numKeys;
+        //gHudDisplay.keys = gMarioState->numKeys;
 
         if (numHealthWedges > gHudDisplay.wedges) {
             play_sound(SOUND_MENU_POWER_METER, gGlobalSoundSource);
@@ -980,7 +980,7 @@ s32 play_mode_normal(void) {
     warp_area();
     check_instant_warp();
 
-    if (sTimerRunning && gHudDisplay.timer < 17999) {
+    if (sTimerRunning && gHudDisplay.timer < 54000) {
         gHudDisplay.timer++;
     }
 

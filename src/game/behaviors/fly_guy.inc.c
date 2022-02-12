@@ -10,7 +10,7 @@ static struct ObjectHitbox sFlyGuyHitbox = {
     /* interactType:      */ INTERACT_BOUNCE_TOP,
     /* downOffset:        */ 0,
     /* damageOrCoinValue: */ 4,
-    /* health:            */ 1,
+    /* health:            */ 0,
     /* numLootCoins:      */ 0,
     /* radius:            */ 70,
     /* height:            */ 60,

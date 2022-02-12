@@ -31,8 +31,8 @@ struct SaveFile {
     u8 capLevel;
     u8 capArea;
 #ifdef SAVE_NUM_LIVES
-    s8 numLives;
-    u8 filler[5];
+    s16 numLives;
+    u8 filler[4];
 #else
     // Note: the coordinates get set, but are never actually used, since the
     // cap can always be found in a fixed spot within the course
@@ -192,7 +192,7 @@ void save_file_set_cap_pos(s16 x, s16 y, s16 z);
 s32 save_file_get_cap_pos(Vec3s capPos);
 #ifdef SAVE_NUM_LIVES
 s32 save_file_get_num_lives(void);
-void save_file_set_num_lives(s8 numLives);
+void save_file_set_num_lives(s16 numLives);
 #endif
 void save_file_set_sound_mode(u16 mode);
 u32 save_file_get_sound_mode(void);

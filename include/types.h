@@ -464,8 +464,8 @@ struct MarioState {
     /*0xA4*/ u32 collidedObjInteractTypes;
     /*0xA8*/ s16 numCoins;
     /*0xAA*/ s16 numStars;
-    /*0xAC*/ s8 numKeys; // Unused key mechanic
-    /*0xAD*/ s8 numLives;
+    /*0xAC*/ //s8 numKeys; // Unused key mechanic
+    /*0xAC*/ s16 numLives;
     /*0xAE*/ s16 health;
     /*0xB0*/ s16 animYTrans;
     /*0xB2*/ u8 hurtCounter;

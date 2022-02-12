@@ -677,7 +677,7 @@ s32 save_file_get_cap_pos(Vec3s capPos) {
 }
 
 #ifdef SAVE_NUM_LIVES
-void save_file_set_num_lives(s8 numLives) {
+void save_file_set_num_lives(s16 numLives) {
     struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1][0];
     saveFile->numLives = numLives;
     saveFile->flags |= SAVE_FLAG_FILE_EXISTS;
