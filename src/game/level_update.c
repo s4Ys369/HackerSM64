@@ -391,8 +391,8 @@ void init_mario_after_warp(void) {
             play_cap_music(SEQUENCE_ARGS(4, SEQ_EVENT_METAL_CAP));
         }
 
-        if (gMarioState->flags & (MARIO_VANISH_CAP | MARIO_WING_CAP)) {
-            play_cap_music(SEQUENCE_ARGS(4, SEQ_EVENT_BOSS));
+        if (gMarioState->flags & MARIO_VANISH_CAP) {
+            play_cap_music(SEQUENCE_ARGS(4, SEQ_EVENT_POWERUP));
         }
 
 #ifdef ENABLE_VANILLA_LEVEL_SPECIFIC_CHECKS
@@ -723,6 +723,7 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
 #endif
                 sDelayedWarpTimer = 48;
                 sSourceWarpNodeId = WARP_NODE_DEATH;
+                fadeMusic = !music_unchanged_through_warp(sSourceWarpNodeId);
                 play_transition(WARP_TRANSITION_FADE_INTO_BOWSER, sDelayedWarpTimer, 0x00, 0x00, 0x00);
                 play_sound(SOUND_MENU_BOWSER_LAUGH, gGlobalSoundSource);
                 m->numLives++;
@@ -746,6 +747,7 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
                 }
 
                 sDelayedWarpTimer = 48;
+                fadeMusic = !music_unchanged_through_warp(sSourceWarpNodeId);
                 play_transition(WARP_TRANSITION_FADE_INTO_BOWSER, sDelayedWarpTimer, 0x00, 0x00, 0x00);
                 play_sound(SOUND_MENU_BOWSER_LAUGH, gGlobalSoundSource);
                 m->numLives++;
@@ -981,7 +983,9 @@ s32 play_mode_normal(void) {
     check_instant_warp();
 
     if (sTimerRunning && gHudDisplay.timer < 54000) {
-        gHudDisplay.timer++;
+        if (!(gTimeStopState & TIME_STOP_ACTIVE)) {
+            gHudDisplay.timer++;
+        }
     }
 
     area_update_objects();

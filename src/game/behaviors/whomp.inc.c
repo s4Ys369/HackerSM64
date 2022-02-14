@@ -117,7 +117,7 @@ void king_whomp_chase(void) {
 
     if (mario_is_far_below_object(1000.0f)) {
         o->oAction = 0;
-        stop_background_music(SEQUENCE_ARGS(4, SEQ_EVENT_BOSS));
+        stop_background_music(SEQUENCE_ARGS(4, SEQ_LEVEL_BOSS));
     }
 }
 
@@ -265,7 +265,7 @@ void whomp_die(void) {
 
 void king_whomp_stop_music(void) {
     if (o->oTimer == 60) {
-        stop_background_music(SEQUENCE_ARGS(4, SEQ_EVENT_BOSS));
+        stop_background_music(SEQUENCE_ARGS(4, SEQ_LEVEL_BOSS));
     }
 }
 

@@ -55,7 +55,7 @@ const LevelScript level_bob_entry[] = {
 		MARIO_POS(0x01, 90, -7284, -420, 6079),
 		TERRAIN(bob_area_1_collision),
 		MACRO_OBJECTS(bob_area_1_macro_objs),
-		SET_BACKGROUND_MUSIC(0x00, SEQ_LEVEL_GRASS),
+		SET_BACKGROUND_MUSIC(0x00, SEQ_LEVEL_BOB),
 		SHOW_DIALOG(0x00, DIALOG_000),
 		TERRAIN_TYPE(TERRAIN_GRASS),
 		/* Fast64 begin persistent block [area commands] */
@@ -75,7 +75,7 @@ const LevelScript level_bob_entry[] = {
 		OBJECT(MODEL_NONE, 7150, 2735, 21, 0, -90, 0, 0x000D0000, bhvInstantActiveWarp),
 		TERRAIN(bob_area_2_collision),
 		MACRO_OBJECTS(bob_area_2_macro_objs),
-		SET_BACKGROUND_MUSIC(0x00, SEQ_LEVEL_GRASS),
+		SET_BACKGROUND_MUSIC(0x00, SEQ_LEVEL_BOB),
 		TERRAIN_TYPE(TERRAIN_GRASS),
 		/* Fast64 begin persistent block [area commands] */
 		/* Fast64 end persistent block [area commands] */
@@ -105,7 +105,7 @@ const LevelScript level_bob_entry[] = {
 		OBJECT(MODEL_CASTLE_GROUNDS_WARP_PIPE, -184, 6636, -4913, 0, 90, 0, 0x000D0000, bhvWarpPipe),
 		TERRAIN(bob_area_3_collision),
 		MACRO_OBJECTS(bob_area_3_macro_objs),
-		SET_BACKGROUND_MUSIC(0x00, SEQ_LEVEL_GRASS),
+		SET_BACKGROUND_MUSIC(0x00, SEQ_LEVEL_BOB),
 		TERRAIN_TYPE(TERRAIN_GRASS),
 		/* Fast64 begin persistent block [area commands] */
 		/* Fast64 end persistent block [area commands] */

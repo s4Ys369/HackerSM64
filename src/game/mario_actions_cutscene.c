@@ -1820,7 +1820,7 @@ static void jumbo_star_cutscene_falling(struct MarioState *m) {
         set_mario_animation(m, MARIO_ANIM_GENERAL_FALL);
 
         if (perform_air_step(m, AIR_STEP_CHECK_LEDGE_GRAB) == AIR_STEP_LANDED) {
-            play_cutscene_music(SEQUENCE_ARGS(15, SEQ_EVENT_CUTSCENE_VICTORY));
+            play_cutscene_music(SEQUENCE_ARGS(15, SEQ_LEVEL_END));
             play_mario_landing_sound(m, SOUND_ACTION_TERRAIN_LANDING);
             m->actionState = ACT_STATE_JUMBO_STAR_CUTSCENE_FALLING_LAND;
         }
@@ -2378,7 +2378,7 @@ static void end_peach_cutscene_star_dance(struct MarioState *m) {
 #ifndef VERSION_JP
             seq_player_unlower_volume(SEQ_PLAYER_LEVEL, 60);
 #endif
-            play_cutscene_music(SEQUENCE_ARGS(15, SEQ_EVENT_CUTSCENE_CREDITS));
+            play_cutscene_music(SEQUENCE_ARGS(15, SEQ_LEVEL_END));
             break;
 
         case 142:

@@ -51,7 +51,7 @@ const LevelScript level_totwc_entry[] = {
 		MARIO_POS(0x01, 90, 556, -1097, 2863),
 		TERRAIN(totwc_area_1_collision),
 		MACRO_OBJECTS(totwc_area_1_macro_objs),
-		SET_BACKGROUND_MUSIC(0x00, SEQ_LEVEL_BOSS_KOOPA_FINAL),
+		SET_BACKGROUND_MUSIC(0x00, SEQ_LEVEL_END),
 		TERRAIN_TYPE(TERRAIN_STONE),
 		/* Fast64 begin persistent block [area commands] */
 		/* Fast64 end persistent block [area commands] */

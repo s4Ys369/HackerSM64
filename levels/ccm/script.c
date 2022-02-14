@@ -69,7 +69,7 @@ const LevelScript level_ccm_entry[] = {
 		OBJECT(MODEL_WHOMP, 28, 1895, -37, 0, 0, 0, 0x00000000, bhvWhompKingBoss),
 		TERRAIN(ccm_area_1_collision),
 		MACRO_OBJECTS(ccm_area_1_macro_objs),
-		SET_BACKGROUND_MUSIC(0x00, SEQ_LEVEL_KOOPA_ROAD),
+		SET_BACKGROUND_MUSIC(0x00, SEQ_LEVEL_ROAD),
 		TERRAIN_TYPE(TERRAIN_STONE),
 		/* Fast64 begin persistent block [area commands] */
 		/* Fast64 end persistent block [area commands] */

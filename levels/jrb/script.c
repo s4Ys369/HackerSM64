@@ -70,7 +70,7 @@ const LevelScript level_jrb_entry[] = {
 		TERRAIN(jrb_area_1_collision),
 		MACRO_OBJECTS(jrb_area_1_macro_objs),
 		SHOW_DIALOG(/*index*/ 0x00, DIALOG_001),
-		SET_BACKGROUND_MUSIC(0x00, SEQ_LEVEL_KOOPA_ROAD),
+		SET_BACKGROUND_MUSIC(0x00, SEQ_LEVEL_ROAD),
 		TERRAIN_TYPE(TERRAIN_STONE),
 		/* Fast64 begin persistent block [area commands] */
 		/* Fast64 end persistent block [area commands] */
@@ -114,7 +114,7 @@ const LevelScript level_jrb_entry[] = {
 		OBJECT(MODEL_NONE, -6419, 0, 1910, 0, 90, 0, 0x000A0000, bhvSpinAirborneWarp),
 		TERRAIN(jrb_area_2_collision),
 		MACRO_OBJECTS(jrb_area_2_macro_objs),
-		SET_BACKGROUND_MUSIC(0x00, SEQ_LEVEL_KOOPA_ROAD),
+		SET_BACKGROUND_MUSIC(0x00, SEQ_LEVEL_ROAD),
 		TERRAIN_TYPE(TERRAIN_STONE),
 		/* Fast64 begin persistent block [area commands] */
 		/* Fast64 end persistent block [area commands] */

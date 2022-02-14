@@ -32,18 +32,18 @@ restart the current\n\
 section, but won't\n\
 lose @FF0000FFCOINS.\n\
 Made for RHDC\n\
-@FF0000FFCROSS@00FF00FFOVER @--------Competition.\n\
-\n\
+@FF0000FFCROSS@FF0000FFOVER @--------Competition,\n\
 Thanks to @FFFF00FFHackerSM64!\n\
-\n\
-"))
+@FF0000FFMUSIC-\n\
+@00FF00FFHang on to Your Hat\n\
+@89D1D6FFVideo Game Jazz Orchestra"))
 
 DEFINE_DIALOG(DIALOG_001, 1, 5, 95, 200, _("\
 @FFFF00FFCongrats! @--------You defeated\n\
 @FF0000FFKing Bob-omb.\n\
 @--------Now, you have\n\
 @00FF00FFunlocked\n\
-@--------the @FF0000FFSMOKE BOMB!\n\
+@--------the @FF0000FFSMOKE BOMB@--------!\n\
 While dashing,\n\
 Mario is @00FF00FFinvulnerable.\n\
 @--------\n\
@@ -60,12 +60,12 @@ Try it on these\n\
 @FF0000FFBULLET BILLS!"))
 
 DEFINE_DIALOG(DIALOG_002, 1, 6, 95, 200, _("\
-@00FF00FFFLYING CONTROLS\n\
-@--------Mario can @00FF00FFJUMP KICK\n\
-@--------and @FFFF00FFDASH @--------while flying.\n\
+@008000FFFLYING CONTROLS\n\
+@--------Mario can @008000FFJUMP KICK\n\
+@--------and @808000FFDASH @--------while flying.\n\
 Press [A] after to start\n\
-@FF0000FFflying @--------again,\n\
-or while flying to @FF0000FFROLL!"))
+@800000FFflying @--------again,\n\
+or while flying to @800000FFROLL!"))
 
 DEFINE_DIALOG(DIALOG_003, 1, 5, 95, 200, _("\
 Thank you, Mario! The Big\n\
@@ -1391,16 +1391,7 @@ through @FF0000FFme @--------to make it to\n\
 @FF0000FFKing Bowser!"))
 
 DEFINE_DIALOG(DIALOG_117, 1, 1, 95, 200, _("\
-Who...walk...here?\n\
-Who...break...seal?\n\
-Wake..ancient..ones?\n\
-We no like light...\n\
-Rrrrummbbble...\n\
-We no like...intruders!\n\
-Now battle...\n\
-...hand...\n\
-...to...\n\
-...hand!"))
+I'll get you, @FF0000FFMario!"))
 
 DEFINE_DIALOG(DIALOG_118, 1, 6, 95, 200, _("\
 Grrrrumbbble!\n\
