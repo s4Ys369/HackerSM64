@@ -1,3 +1,12 @@
+**SM64 x CUPHEAD**
+Crossover between Super Mario 64 and Cuphead, leaning more into the platforming and how these mechanics can
+enhance SM64 gameplay/movement.
+
+This repo will NOT compile as is, certain assets have been purposely excluded.
+
+To contribute, reach me here or on Discord, **s4ys#2030**
+
+
 # ![](https://i.imgur.com/CeOukzk.gif) HackerSM64 ![](https://i.imgur.com/s0LUbTo.gif)
 
 **AFTER CLONING THE REPO, CHECK OUT THE `include/config` FOLDER BEFORE ANYTHING ELSE! THERE'S A LOT OF STUFF IN THIS REPO THAT CAN BE TOGGLED THERE.**
