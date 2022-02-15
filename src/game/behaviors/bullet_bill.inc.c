@@ -53,13 +53,9 @@ void bullet_bill_act_2(void) {
             	cur_obj_rotate_yaw_toward(o->oAngleToMario, 0x100);
         	}
             if (o->oBehParams2ndByte == 2) {
-            	obj_face_yaw_approach(o->oAngleToMario, 0x200);
                 cur_obj_rotate_yaw_toward(o->oAngleToMario, 0x100);
-                o->oBulletBillTargetPitch = obj_turn_pitch_toward_mario(-200.0f, 0);
-                o->oForwardVel = 25.0f * coss(o->oBulletBillTargetPitch);
-                o->oVelY = 25.0f * -sins(o->oBulletBillTargetPitch);
-                obj_face_pitch_approach(o->oBulletBillTargetPitch, 0x200);
-                o->oFaceAngleRoll = approach_s16_symmetric(o->oFaceAngleRoll, o->oAngleToMario, 0x100);
+                o->oMoveAngleRoll = approach_s16_symmetric(o->oMoveAngleRoll, o->oAngleToMario, 0x100);
+                o->oMoveAnglePitch = approach_s16_symmetric(o->oMoveAnglePitch, o->oAngleToMario, 0x100);
             }
         }
 

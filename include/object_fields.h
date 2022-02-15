@@ -371,7 +371,6 @@
 
 /* Bullet Bill */
 #define /*0x0F8*/ oBulletBillInitialMoveYaw OBJECT_FIELD_S32(0x1C)
-#define /*0x0FC*/ oBulletBillTargetPitch OBJECT_FIELD_S32(0x1C)
 
 /* Bully (all variants) */
 #define /*0x0F4*/ oBullySubtype                   OBJECT_FIELD_S32(0x1B)
