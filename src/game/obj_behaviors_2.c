@@ -747,6 +747,7 @@ static void treat_far_home_as_mario(f32 threshold) {
 #include "behaviors/pokey.inc.c"
 #include "behaviors/swoop.inc.c"
 #include "behaviors/fly_guy.inc.c"
+#include "behaviors/bullet_bill.inc.c"
 #include "behaviors/goomba.inc.c"
 #include "behaviors/chain_chomp.inc.c" // TODO: chain_chomp_sub_act_lunge documentation
 #include "behaviors/wiggler.inc.c"     // TODO
