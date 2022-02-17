@@ -56,13 +56,12 @@ void kamek_chase(void) {
 
 void kamek_attack(void) {
     cur_obj_rotate_yaw_toward(o->oAngleToMario, 0x200);
+    if (o->oHealth < 6) {
+    	spawn_object_relative(2, -150, 100, 350, o, MODEL_BULLET_BILL, bhvBulletBill);
+    	spawn_object_relative(0, 0, 0, 350,o, MODEL_BLUE_FLAME, bhvFlameMovingForwardGrowing);
+    }
     if (o->oTimer >= 20) {
-        if (o->oHealth > 5) {
-            spawn_object_relative(0, -0, 0, 350,o, MODEL_RED_FLAME, bhvFlameMovingForwardGrowing);
-        } else {
-            spawn_object_relative(0, 0, 0, 350,o, MODEL_RED_FLAME, bhvFlameMovingForwardGrowing);
-            spawn_object_relative(2, -150, 100, 350, o, MODEL_BULLET_BILL, bhvBulletBill);
-        }
+        spawn_object_relative(0, 0, 0, 350,o, MODEL_RED_FLAME, bhvFlameMovingForwardGrowing);
         o->oAction = 1;
     }
 }
@@ -71,6 +70,9 @@ void kamek_cooldown(void) {
     cur_obj_wait_then_blink(10,30);
     cur_obj_become_intangible();
     if (o->oTimer >= 60) {
+    	if (o->oHealth < 4) {
+    		spawn_object_relative(0, 0, 0, 350,o, MODEL_AMP, bhvHomingAmp);
+    	}
         o->oInteractStatus = INT_STATUS_NONE;
         cur_obj_become_tangible();
         o->oAction = 1;

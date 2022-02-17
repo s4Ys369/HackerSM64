@@ -1367,8 +1367,12 @@ u32 interact_bounce_top(struct MarioState *m, UNUSED u32 interactType, struct Ob
                 return drop_and_set_mario_action(m, ACT_TRIPLE_JUMP, 0);
             }
         }
-        attack_object(obj, interaction);
-        bounce_back_from_attack(m, interaction);
+        if(m->action != ACT_FLYING) {
+            attack_object(obj, interaction);
+            bounce_back_from_attack(m, interaction);
+        } else if (take_damage_and_knock_back(m, obj)) {
+            return TRUE;
+        }
 
         if (interaction & INT_HIT_FROM_ABOVE) {
             if (!(obj->oInteractionSubtype & INT_SUBTYPE_TWIRL_BOUNCE)) {
