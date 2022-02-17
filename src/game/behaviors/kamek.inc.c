@@ -56,12 +56,13 @@ void kamek_chase(void) {
 
 void kamek_attack(void) {
     cur_obj_rotate_yaw_toward(o->oAngleToMario, 0x200);
-    if (o->oHealth < 6) {
-    	spawn_object_relative(2, -150, 100, 350, o, MODEL_BULLET_BILL, bhvBulletBill);
-    	spawn_object_relative(0, 0, 0, 350,o, MODEL_BLUE_FLAME, bhvFlameMovingForwardGrowing);
-    }
     if (o->oTimer >= 20) {
-        spawn_object_relative(0, 0, 0, 350,o, MODEL_RED_FLAME, bhvFlameMovingForwardGrowing);
+    	if (o->oHealth < 6) {
+    		spawn_object_relative(2, -150, 100, 350, o, MODEL_BULLET_BILL, bhvBulletBill);
+    		spawn_object_relative(0, 0, 0, 350, o, MODEL_BLUE_FLAME, bhvFlameMovingForwardGrowing);
+    	} else {
+        	spawn_object_relative(0, 0, 0, 350, o, MODEL_RED_FLAME, bhvFlameMovingForwardGrowing);
+    	}
         o->oAction = 1;
     }
 }
