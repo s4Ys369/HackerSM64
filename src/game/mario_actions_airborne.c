@@ -655,7 +655,7 @@ s32 act_long_jump(struct MarioState *m) {
             case 0:
                 cur_obj_become_intangible();
                 m->marioObj->header.gfx.node.flags |= GRAPH_RENDER_INVISIBLE;
-                spawn_mist_particles_variable(0, 0, 15.0f);
+                spawn_mist_particles_variable(0, 0, 20.0f);
                 m->marioObj->oSubAction = 1;
                 break;
             case 1:
@@ -1303,6 +1303,9 @@ s32 act_soft_bonk(struct MarioState *m) {
 
 s32 act_getting_blown(struct MarioState *m) {
     if (m->actionState == ACT_STATE_GETTING_BLOWN_ACCEL_BACKWARDS) {
+#if ENABLE_RUMBLE
+        queue_rumble_data(5, 80);
+#endif
         if (m->forwardVel > -60.0f) {
             m->forwardVel -= 6.0f;
         } else {
