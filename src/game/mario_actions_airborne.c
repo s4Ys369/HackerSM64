@@ -655,14 +655,14 @@ s32 act_long_jump(struct MarioState *m) {
             case 0:
                 cur_obj_become_intangible();
                 m->marioObj->header.gfx.node.flags |= GRAPH_RENDER_INVISIBLE;
-                spawn_mist_particles_variable(0, 0, 30.0f);
+                spawn_mist_particles_variable(0, 0, 15.0f);
                 m->marioObj->oSubAction = 1;
                 break;
             case 1:
             default:
                 cur_obj_become_tangible();
                 m->marioObj->header.gfx.node.flags = ~GRAPH_RENDER_INVISIBLE;
-                spawn_mist_particles_variable(0, 0, 30.0f);
+                spawn_mist_particles_variable(0, 0, 20.0f);
                 break;
         }
     }
