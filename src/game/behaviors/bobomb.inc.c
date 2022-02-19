@@ -29,13 +29,13 @@ void bobomb_spawn_coin(void) {
 
 void bobomb_act_explode(void) {
     if (o->oTimer < 5) {
-        cur_obj_scale(1.0f + ((f32) o->oTimer / 5.0f));
+        cur_obj_scale(1.0f + ((f32) o->oTimer * 0.4f));
     } else {
         struct Object *explosion = spawn_object(o, MODEL_EXPLOSION, bhvExplosion);
         explosion->oGraphYOffset += 100.0f;
 
         //bobomb_spawn_coin();
-        create_respawner(MODEL_BLACK_BOBOMB, bhvBobomb, 1750);
+        create_respawner(MODEL_BLACK_BOBOMB, bhvBobomb, 2000);
 
         o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
     }

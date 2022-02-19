@@ -1,8 +1,6 @@
 const MacroObject wf_area_2_macro_objs[] = {
 	MACRO_OBJECT(macro_bobomb, 0, -1079, 100, -583),
-	MACRO_OBJECT(macro_bobomb, 0, 1089, 100, -558),
 	MACRO_OBJECT(macro_bobomb, 0, 1089, 100, 942),
-	MACRO_OBJECT(macro_bobomb, 0, -1059, 100, 942),
 	MACRO_OBJECT(macro_breakable_box_no_coins, 0, -286, -78, -389),
 	MACRO_OBJECT(macro_breakable_box_no_coins, 0, -86, -78, -389),
 	MACRO_OBJECT(macro_breakable_box_no_coins, 0, 114, -78, -389),
@@ -22,7 +20,6 @@ const MacroObject wf_area_2_macro_objs[] = {
 	MACRO_OBJECT(macro_chuckya, 44, -1250, 100, 122),
 	MACRO_OBJECT(macro_chuckya, 323, 1228, 100, 122),
 	MACRO_OBJECT(macro_fire_piranha_plant, 232, 1454, -2, 762),
-	MACRO_OBJECT(macro_recovery_heart, 0, 20, 128, 1783),
 	MACRO_OBJECT(macro_fire_piranha_plant, 142, -1484, -2, 762),
 	MACRO_OBJECT(macro_fire_piranha_plant, 52, -1409, -2, -852),
 	MACRO_OBJECT(macro_fire_piranha_plant, 323, 1474, -2, -837),

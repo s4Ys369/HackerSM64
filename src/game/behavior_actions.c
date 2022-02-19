@@ -84,7 +84,7 @@ static struct SpawnParticlesInfo sMistParticles = {
 // generate_wind_puffs/dust (something like that)
 void spawn_mist_particles_variable(s32 count, s32 offsetY, f32 size) {
     sMistParticles.sizeBase = size;
-    sMistParticles.sizeRange = size / 20.0f;
+    sMistParticles.sizeRange = size * 0.05f;
     sMistParticles.offsetY = offsetY;
 
     if (count == 0) {
