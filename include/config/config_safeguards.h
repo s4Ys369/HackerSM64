@@ -28,10 +28,6 @@
     #define F3DLX2_REJ_GBI
 #endif // OBJECTS_REJ
 
-#ifdef DISABLE_AA
-    #undef CHANGE_AA_TO_RA
-#endif
-
 
 /*****************
  * config_debug
