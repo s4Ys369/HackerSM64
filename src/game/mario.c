@@ -1131,23 +1131,41 @@ s32 set_water_plunge_action(struct MarioState *m) {
     m->forwardVel = m->forwardVel / 4.0f;
     m->vel[1] = m->vel[1] / 2.0f;
 
-#ifdef WATER_PLUNGE_UPWARP
+    #ifdef WATER_PLUNGE_UPWARP
     m->pos[1] = m->waterLevel - 100;
-#endif
+    #endif
 
     m->faceAngle[2] = 0;
 
-    vec3_zero(m->angleVel);
+    vec3s_set(m->angleVel, 0, 0, 0);
 
     if (!(m->action & ACT_FLAG_DIVING)) {
         m->faceAngle[0] = 0;
     }
 
-    if (m->area->camera->mode != WATER_SURFACE_CAMERA_MODE) {
-        set_camera_mode(m->area->camera, WATER_SURFACE_CAMERA_MODE, 1);
+    if (m->area->camera->mode != CAMERA_MODE_WATER_SURFACE) {
+        set_camera_mode(m->area->camera, CAMERA_MODE_WATER_SURFACE, 1);
     }
 
+    if (m->actionState == 4 || (m->actionState == 6 && m->heldObj)) {
+        //do the water plunge stuff without entering the water plunge action
+        play_sound(SOUND_ACTION_WATER_PLUNGE, m->marioObj->header.gfx.cameraToObject);
+        if (m->peakHeight - m->pos[1] > 1150.0f) {
+            play_sound(SOUND_MARIO_HAHA_WATER, m->marioObj->header.gfx.cameraToObject);
+        }
+    m->pos[1] -= 200.0f;
+    m->vel[1] = -30.0f;
+        m->particleFlags |= PARTICLE_WATER_SPLASH;
+#if ENABLE_RUMBLE
+        if (m->prevAction & ACT_FLAG_AIR) {
+            queue_rumble_data(5, 80);
+        }
+#endif
+//cut straight to water shell swimming to avoid being slowed down and action transition hell
+            return set_mario_action(m, ACT_WATER_SHELL_SWIMMING, (u32)(s32)m->forwardVel);
+        }
     return set_mario_action(m, ACT_WATER_PLUNGE, 0);
+        
 }
 
 /**
@@ -1164,7 +1182,9 @@ void squish_mario_model(struct MarioState *m) {
     if (m->squishTimer != 0xFF) {
         // If no longer squished, scale back to default.
         if (m->squishTimer == 0) {
+            if (m->action != ACT_RIDING_SHELL_FALL && m->action != ACT_RIDING_SHELL_JUMP) {
             vec3f_set(m->marioObj->header.gfx.scale, 1.0f, 1.0f, 1.0f);
+            }
         }
         // If timer is less than 16, rubber-band Mario's size scale up and down.
         else if (m->squishTimer <= 16) {
