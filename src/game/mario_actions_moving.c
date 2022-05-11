@@ -1292,6 +1292,7 @@ s32 act_riding_shell_ground(struct MarioState *m) {
         m->usedObj = spawn_object(m->marioObj, MODEL_KOOPA_SHELL, bhvKoopaShellUnderwater);
         mario_grab_used_object(m);
         m->marioBodyState->grabPos = GRAB_POS_LIGHT_OBJ;
+        m->pos[1] -= 50;
         set_mario_action(m, ACT_WATER_SHELL_SWIMMING, (u32)(s32)m->forwardVel);
     }
 
