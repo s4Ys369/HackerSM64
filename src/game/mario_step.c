@@ -294,7 +294,7 @@ static s32 perform_ground_quarter_step(struct MarioState *m, Vec3f nextPos) {
 
     if ((m->action & ACT_FLAG_RIDING_SHELL) && floorHeight < waterLevel) {
 
-        if (waterLevel - floorHeight > 200 && waterLevel - m->floorHeight > 200) {
+        if (m->pos[1] < waterLevel - 200) {
             if (m->riddenObj != NULL) {
                 m->riddenObj->oInteractStatus = INT_STATUS_STOP_RIDING;
                 m->riddenObj = NULL;
@@ -302,8 +302,8 @@ static s32 perform_ground_quarter_step(struct MarioState *m, Vec3f nextPos) {
              m->usedObj = spawn_object(m->marioObj, MODEL_KOOPA_SHELL, bhvKoopaShellUnderwater);
             mario_grab_used_object(m);
             m->marioBodyState->grabPos = GRAB_POS_LIGHT_OBJ;
-            m->pos[1] -= 50;
             set_mario_action(m, ACT_WATER_SHELL_SWIMMING, (u32)(s32)m->forwardVel);
+             return GROUND_STEP_LEFT_GROUND;
         }
         else {
         floorHeight = waterLevel;
@@ -499,7 +499,7 @@ s32 perform_air_quarter_step(struct MarioState *m, Vec3f intendedPos, u32 stepAr
 
     if ((m->action & ACT_FLAG_RIDING_SHELL) && floorHeight < waterLevel) {
 
-        if (waterLevel - floorHeight > 200 && waterLevel - m->floorHeight > 200) {
+        if (m->pos[1] < waterLevel - 200) {
             if (m->riddenObj != NULL) {
                 m->riddenObj->oInteractStatus = INT_STATUS_STOP_RIDING;
                 m->riddenObj = NULL;
@@ -507,8 +507,8 @@ s32 perform_air_quarter_step(struct MarioState *m, Vec3f intendedPos, u32 stepAr
              m->usedObj = spawn_object(m->marioObj, MODEL_KOOPA_SHELL, bhvKoopaShellUnderwater);
             mario_grab_used_object(m);
             m->marioBodyState->grabPos = GRAB_POS_LIGHT_OBJ;
-            m->pos[1] -= 50;
             set_mario_action(m, ACT_WATER_SHELL_SWIMMING, (u32)(s32)m->forwardVel);
+             return GROUND_STEP_LEFT_GROUND;
         }
         else {
         floorHeight = waterLevel;
