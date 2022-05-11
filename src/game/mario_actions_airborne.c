@@ -739,7 +739,7 @@ s32 act_riding_shell_air(struct MarioState *m) {
     switch (perform_air_step(m, 0)) {
         case AIR_STEP_LANDED:
             if (m->actionState == 3) {
-                
+
                 // ground pounds go straight into water
                 if (m->floor == &gWaterSurfacePseudoFloor) {
                     if (m->riddenObj != NULL) {
@@ -749,7 +749,9 @@ s32 act_riding_shell_air(struct MarioState *m) {
                     play_sound(SOUND_ACTION_WATER_PLUNGE, m->marioObj->header.gfx.cameraToObject);
                     m->particleFlags |= PARTICLE_WATER_SPLASH;
                     m->pos[1] -= 50;
-                    //changes action but doesnt spawn a shell. the shell will spawn in the action itself.
+                     m->usedObj = spawn_object(m->marioObj, MODEL_KOOPA_SHELL, bhvKoopaShellUnderwater);
+                     mario_grab_used_object(m);
+                    m->marioBodyState->grabPos = GRAB_POS_LIGHT_OBJ;
                     set_mario_action(m, ACT_WATER_SHELL_SWIMMING, (u32)(s32)m->forwardVel);
                 } else {
                     m->particleFlags |= PARTICLE_MIST_CIRCLE;
@@ -767,6 +769,18 @@ s32 act_riding_shell_air(struct MarioState *m) {
 
         case AIR_STEP_HIT_LAVA_WALL:
             lava_boost_on_wall(m);
+            break;
+
+        case AIR_STEP_SHELL_ENTERED_WATER:
+            if (m->riddenObj != NULL) {
+                m->riddenObj->oInteractStatus = INT_STATUS_STOP_RIDING;
+                m->riddenObj = NULL;
+            }
+            play_sound(SOUND_ACTION_WATER_PLUNGE, m->marioObj->header.gfx.cameraToObject);
+            m->particleFlags |= PARTICLE_WATER_SPLASH;
+            m->pos[1] -= 50;
+            //changes action but doesnt spawn a shell. the shell will spawn in the action itself.
+            set_mario_action(m, ACT_WATER_SHELL_SWIMMING, (u32)(s32)m->forwardVel);
             break;
     }
 

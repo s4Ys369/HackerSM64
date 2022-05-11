@@ -1562,19 +1562,38 @@ static s32 check_common_submerged_cancels(struct MarioState *m) {
         if (waterHeight > m->floorHeight) {
             if (m->pos[1] - waterHeight < 50) {
                 m->pos[1] = waterHeight; // lock mario to top if the falloff isn't big enough
-            } else {
+            } 
+            else if (m->action == ACT_WATER_SHELL_SWIMMING && m->heldObj != NULL) {
+                if (m->forwardVel > 50.0f) {
+                    m->forwardVel = 50.0f;
+                }
+                m->actionState = 4;
+                play_sound(SOUND_ACTION_WATER_PLUNGE, m->marioObj->header.gfx.cameraToObject);
+                m->particleFlags |= PARTICLE_WATER_SPLASH;
+                return set_mario_action(m, ACT_HOLD_WATER_JUMP, 40);
+            }
+            else {
                 // m->pos[1] = m->waterLevel - 80; // Vanilla bug: Downwarp swimming out of waterfalls
                 return transition_submerged_to_airborne(m);
             }
         } else {
-            //! If you press B to throw the shell, there is a ~5 frame window
-            // where your held object is the shell, but you are not in the
-            // water shell swimming action. This allows you to hold the water
-            // shell on land (used for cloning in DDD).
             if (m->action == ACT_WATER_SHELL_SWIMMING && m->heldObj != NULL) {
-                m->heldObj->oInteractStatus = INT_STATUS_STOP_RIDING;
+                if (m->pos[1] - m->floorHeight > 100) {
+                //exit the water in the shell spin state
+                if (m->forwardVel > 50.0f) {
+                    m->forwardVel = 50.0f;
+                }
+                m->actionState = 4;
+                play_sound(SOUND_ACTION_WATER_PLUNGE, m->marioObj->header.gfx.cameraToObject);
+                m->particleFlags |= PARTICLE_WATER_SPLASH;
+                return set_mario_action(m, ACT_HOLD_WATER_JUMP, 40);
+            }
+            else {
+                //exit the water in a generic air shell state
                 m->heldObj = NULL;
-                stop_shell_music();
+                set_camera_mode(m->area->camera, m->area->camera->defMode, 1);
+                return set_mario_action(m, ACT_RIDING_SHELL_JUMP, m->actionTimer);
+            }
             }
 
             return transition_submerged_to_walking(m);
