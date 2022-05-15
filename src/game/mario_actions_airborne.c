@@ -750,6 +750,7 @@ s32 act_riding_shell_air(struct MarioState *m) {
                     m->particleFlags |= PARTICLE_WATER_SPLASH;
                     m->pos[1] -= 50;
                      m->usedObj = spawn_object(m->marioObj, MODEL_KOOPA_SHELL, bhvKoopaShellUnderwater);
+                     m->usedObj->oFlags |= OBJ_FLAG_HOLDABLE;
                      mario_grab_used_object(m);
                     m->marioBodyState->grabPos = GRAB_POS_LIGHT_OBJ;
                     set_mario_action(m, ACT_WATER_SHELL_SWIMMING, (u32)(s32)m->forwardVel);
@@ -1018,7 +1019,10 @@ s32 act_hold_water_jump(struct MarioState *m) {
             m->marioObj->header.gfx.angle[2] = 0;
         }
         else {
-            m->heldObj = NULL;
+            if (m->heldObj != NULL) {
+                obj_mark_for_deletion(m->heldObj);
+                m->heldObj = NULL;
+            }
                 set_camera_mode(m->area->camera, m->area->camera->defMode, 1);
             return set_mario_action(m, ACT_RIDING_SHELL_JUMP, m->actionTimer);
         }
@@ -1030,7 +1034,10 @@ s32 act_hold_water_jump(struct MarioState *m) {
             // underwater. still, better safe than sorry
             if (m->actionState == 4 || m->actionState == 6) {
                 set_mario_action(m, ACT_RIDING_SHELL_GROUND, m->actionState);
+                if (m->heldObj != NULL) {
+                obj_mark_for_deletion(m->heldObj);
                 m->heldObj = NULL;
+            }
 
                 set_camera_mode(m->area->camera, m->area->camera->defMode, 1);
             } else {
