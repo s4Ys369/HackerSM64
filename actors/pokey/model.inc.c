@@ -2,10 +2,10 @@
 
 // 0x05011710
 static const Vtx pokey_seg5_vertex_05011710[] = {
-    {{{    26,     26,      0}, 0, {   990,      0}, {0xff, 0xff, 0xff, 0xff}}},
-    {{{   -25,     26,      0}, 0, {     0,      0}, {0xff, 0xff, 0xff, 0xff}}},
-    {{{   -25,    -25,      0}, 0, {     0,    990}, {0xff, 0xff, 0xff, 0xff}}},
-    {{{    26,    -25,      0}, 0, {   990,    990}, {0xff, 0xff, 0xff, 0xff}}},
+    {{{    26,     26,      0}, 0, {   990,      0}, {0x00, 0x00, 0x7f, 0xff}}},
+    {{{   -25,     26,      0}, 0, {     0,      0}, {0x00, 0x00, 0x7f, 0xff}}},
+    {{{   -25,    -25,      0}, 0, {     0,    990}, {0x00, 0x00, 0x7f, 0xff}}},
+    {{{    26,    -25,      0}, 0, {   990,    990}, {0x00, 0x00, 0x7f, 0xff}}},
 };
 
 // 0x05011750
@@ -21,8 +21,7 @@ ALIGNED8 static const Texture pokey_seg5_texture_05011F50[] = {
 // 0x05012750 - 0x05012798
 const Gfx pokey_seg5_dl_05012750[] = {
     gsDPPipeSync(),
-    gsDPSetCombineMode(G_CC_DECALRGBA, G_CC_DECALRGBA),
-    gsSPClearGeometryMode(G_LIGHTING),
+    gsDPSetCombineMode(G_CC_MODULATEIA, G_CC_MODULATEIA),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_ON),
     gsDPTileSync(),
@@ -38,7 +37,6 @@ const Gfx pokey_seg5_dl_05012798[] = {
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_OFF),
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_SHADE, G_CC_SHADE),
-    gsSPSetGeometryMode(G_LIGHTING),
     gsSPEndDisplayList(),
 };
 
@@ -64,10 +62,10 @@ const Gfx pokey_seg5_dl_05012808[] = {
 
 // 0x05012838
 static const Vtx pokey_seg5_vertex_05012838[] = {
-    {{{    26,     26,      0}, 0, {   990,      0}, {0xff, 0xff, 0xff, 0xff}}},
-    {{{   -25,     26,      0}, 0, {     0,      0}, {0xff, 0xff, 0xff, 0xff}}},
-    {{{   -25,    -25,      0}, 0, {     0,    990}, {0xff, 0xff, 0xff, 0xff}}},
-    {{{    26,    -25,      0}, 0, {   990,    990}, {0xff, 0xff, 0xff, 0xff}}},
+    {{{    26,     26,      0}, 0, {   990,      0}, {0x00, 0x00, 0x7f, 0xff}}},
+    {{{   -25,     26,      0}, 0, {     0,      0}, {0x00, 0x00, 0x7f, 0xff}}},
+    {{{   -25,    -25,      0}, 0, {     0,    990}, {0x00, 0x00, 0x7f, 0xff}}},
+    {{{    26,    -25,      0}, 0, {   990,    990}, {0x00, 0x00, 0x7f, 0xff}}},
 };
 
 // 0x05012878
@@ -88,8 +86,7 @@ const Gfx pokey_seg5_dl_05013078[] = {
 // 0x050130B0 - 0x05013120
 const Gfx pokey_seg5_dl_050130B0[] = {
     gsDPPipeSync(),
-    gsDPSetCombineMode(G_CC_DECALRGBA, G_CC_DECALRGBA),
-    gsSPClearGeometryMode(G_LIGHTING),
+    gsDPSetCombineMode(G_CC_MODULATEIA, G_CC_MODULATEIA),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_ON),
     gsDPTileSync(),
@@ -99,6 +96,5 @@ const Gfx pokey_seg5_dl_050130B0[] = {
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_OFF),
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_SHADE, G_CC_SHADE),
-    gsSPSetGeometryMode(G_LIGHTING),
     gsSPEndDisplayList(),
 };

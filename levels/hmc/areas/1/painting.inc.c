@@ -515,11 +515,11 @@ struct Painting cotmc_painting = {
     /* Texture Type */ PAINTING_ENV_MAP,
     /* Floor Status */ 0x00, 0x00 , 0x00 /* which of the painting's nearby special floors Mario's on */,
     /* Ripple Status */ 0x00,
-    /* Rotation */ 270.0f,  0.0f,
-    /* Position */ 2989.055908f, -4485.120117f, 5135.359863f,
+    /* Rotation */ 0.0f,  0.0f,
+    /* Position */ -150.0f, 300.0f, -1573.0f,
     /*                         curr   passive     entry */
-    /* Ripple Magnitude */     0.0f,    10.0f,    30.0f,
-    /* Ripple Decay */         1.0f,     1.0f,    0.98f,
+    /* Ripple Magnitude */     0.0f,    5.0f,    15.0f,
+    /* Ripple Decay */         0.0f,    1.0f,    0.98f,
     /* Ripple Rate */          0.0f,    0.05f,    0.05f,
     /* Ripple Dispersion */    0.0f,    15.0f,    15.0f,
     /* Curr Ripple Timer */    0.0f,
@@ -530,7 +530,7 @@ struct Painting cotmc_painting = {
     /* Texture w, h */ 32, 32,
     /* Ripple DList */ hmc_seg7_painting_dl_070242D0,
     /* Ripple Trigger */ RIPPLE_TRIGGER_CONTINUOUS,
-    /* Alpha */ 0xFF,
+    /* Alpha */ 0xDF,
     /* Mario Below */  0x00, 0x00, 0x00, /* Whether or not Mario is below the painting */
-    /* Size */  723.968018f,
+    /* Size */  300.0f,
 };

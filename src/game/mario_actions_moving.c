@@ -425,24 +425,28 @@ void update_walking_speed(struct MarioState *m) {
         maxTargetSpeed = 32.0f;
     }
 
-    targetSpeed = m->intendedMag < maxTargetSpeed ? m->intendedMag : maxTargetSpeed;
+    if (gCurrLevelNum != LEVEL_WF) {
+        targetSpeed = m->intendedMag < maxTargetSpeed ? m->intendedMag : maxTargetSpeed;
 
-    if (m->quicksandDepth > 10.0f) {
-        targetSpeed *= 6.25f / m->quicksandDepth;
-    }
+        if (m->quicksandDepth > 10.0f) {
+            targetSpeed *= 6.25f / m->quicksandDepth;
+        }
 
-    if (m->forwardVel <= 0.0f) {
-        // Slow down if moving backwards
-        m->forwardVel += 1.1f;
-    } else if (m->forwardVel <= targetSpeed) {
-        // If accelerating
-        m->forwardVel += 1.1f - m->forwardVel / 43.0f;
-    } else if (m->floor->normal.y >= 0.95f) {
-        m->forwardVel -= 1.0f;
-    }
+        if (m->forwardVel <= 0.0f) {
+            // Slow down if moving backwards
+            m->forwardVel += 1.1f;
+        } else if (m->forwardVel <= targetSpeed) {
+            // If accelerating
+            m->forwardVel += 1.1f - m->forwardVel / 43.0f;
+        } else if (m->floor->normal.y >= 0.95f) {
+            m->forwardVel -= 1.0f;
+        }
 
-    if (m->forwardVel > 48.0f) {
-        m->forwardVel = 48.0f;
+        if (m->forwardVel > 48.0f) {
+            m->forwardVel = 48.0f;
+        }
+    } else {
+        apply_slope_decel(m, 0.3f);
     }
 
 #ifdef VELOCITY_BASED_TURN_SPEED
@@ -777,13 +781,14 @@ s32 act_walking(struct MarioState *m) {
     if (m->input & INPUT_IDLE) {
         return begin_braking_action(m);
     }
-
+    if (gCurrLevelNum != LEVEL_WF) {
 #ifdef SIDE_FLIP_AT_LOW_SPEEDS
-    if (analog_stick_held_back(m) && m->forwardVel >= 0.0f) {
+        if (analog_stick_held_back(m) && m->forwardVel >= 0.0f) {
 #else
-    if (analog_stick_held_back(m) && m->forwardVel >= 16.0f) {
+        if (analog_stick_held_back(m) && m->forwardVel >= 16.0f) {
 #endif
-        return set_mario_action(m, ACT_TURNING_AROUND, 0);
+            return set_mario_action(m, ACT_TURNING_AROUND, 0);
+        }
     }
 
     if (m->input & INPUT_Z_PRESSED) {
@@ -1002,8 +1007,10 @@ s32 act_finish_turning_around(struct MarioState *m) {
     }
 
 #ifdef RESET_DIRECTION_WHEN_TURNING_AROUND
-    if (analog_stick_held_back(m)) {
-        return set_mario_action(m, ACT_TURNING_AROUND, 0);
+    if (gCurrLevelNum != LEVEL_WF) {
+        if (analog_stick_held_back(m)) {
+            return set_mario_action(m, ACT_TURNING_AROUND, 0);
+        }
     }
 #endif
 

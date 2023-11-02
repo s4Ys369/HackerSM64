@@ -450,6 +450,12 @@ extern const BehaviorScript bhvSwoop[];
 extern const BehaviorScript bhvFlyGuy[];
 extern const BehaviorScript bhvGoomba[];
 extern const BehaviorScript bhvGoombaTripletSpawner[];
+extern const BehaviorScript bhvUFOTitle[];
+extern const BehaviorScript bhvSubtitle0[];
+extern const BehaviorScript bhvSubtitle1[];
+extern const BehaviorScript bhvUFOWarp[];
+extern const BehaviorScript bhvAsteroidSpawner[];
+extern const BehaviorScript bhvAsteroid[];
 #ifdef FLOOMBAS
 extern const BehaviorScript bhvFloomba[];
 #ifdef INTRO_FLOOMBAS

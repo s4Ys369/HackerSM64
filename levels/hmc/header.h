@@ -74,8 +74,8 @@ extern const Gfx hmc_seg7_dl_07023E10[];
 extern const Gfx hmc_seg7_dl_07024110[];
 extern const Gfx hmc_seg7_dl_07024268[];
 extern const Gfx hmc_seg7_dl_070242A0[];
-extern const Texture *const hmc_seg7_painting_textures_07025518[];
-extern struct Painting cotmc_painting;
+//extern const Texture *const hmc_seg7_painting_textures_07025518[];
+//extern struct Painting cotmc_painting;
 extern const Collision hmc_seg7_collision_level[];
 extern const MacroObject hmc_seg7_macro_objs[];
 extern const RoomData hmc_seg7_rooms[];
@@ -89,5 +89,8 @@ extern const struct MovtexQuadCollection hmc_movtex_toxic_maze_mist[];
 
 // script
 extern const LevelScript level_hmc_entry[];
+
+
+#include "levels/hmc/header.inc.h"
 
 #endif

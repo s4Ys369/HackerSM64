@@ -507,16 +507,16 @@
 #define MODEL_FISH_SHADOW                 0xBA        // fish_shadow_geo - fish with shadow, unused
 #define MODEL_BUTTERFLY                   0xBB        // butterfly_geo
 #define MODEL_BLACK_BOBOMB                0xBC        // black_bobomb_geo
-// find me
+#define MODEL_ASTEROID                    0xBD        // asteroid_geo
 #define MODEL_KOOPA_SHELL                 0xBE        // koopa_shell_geo
 #define MODEL_KOOPA_WITHOUT_SHELL         0xBF        // koopa_without_shell_geo
 #define MODEL_GOOMBA                      0xC0        // goomba_geo
 #define MODEL_SEAWEED                     0xC1        // seaweed_geo
 #define MODEL_AMP                         0xC2        // dAmpGeo
 #define MODEL_BOBOMB_BUDDY                0xC3        // bobomb_buddy_geo
-// find me
-// find me
-// find me
+#define MODEL_UFO                         0xC4        // ufo_geo
+#define MODEL_SUBTITLE0                   0xC5        // subtitle0_geo
+#define MODEL_SUBTITLE1                   0xC6        // subtitle1_geo
 #define MODEL_SSL_TOX_BOX                 0xC7        // ssl_geo_000630
 #define MODEL_BOWSER_KEY_CUTSCENE         0xC8        // bowser_key_cutscene_geo
 #define MODEL_DL_CANNON_LID               0xC9        // cannon_closed_seg8_dl_080048E0

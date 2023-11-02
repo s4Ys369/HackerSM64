@@ -195,4 +195,12 @@ extern const GeoLayout test_platform_geo[];
 extern const Gfx unknown_seg8_dl_08026260[];
 extern const Collision unknown_seg8_collision_080262F8[];
 
+#include "subtitle0/geo_header.h"
+
+#include "subtitle1/geo_header.h"
+
+#include "ufo/geo_header.h"
+
+#include "asteroid/geo_header.h"
+
 #endif

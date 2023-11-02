@@ -79,3 +79,8 @@ UNUSED static const u64 binid_17 = 17;
 
 #include "koopa_shell/model.inc.c"
 UNUSED static const u64 binid_18 = 18;
+
+#include "subtitle0/model.inc.c"
+#include "subtitle1/model.inc.c"
+#include "ufo/model.inc.c"
+#include "asteroid/model.inc.c"

@@ -35,6 +35,7 @@ const GeoLayout intro_geo_splash_screen[] = {
             GEO_CAMERA(CAMERA_MODE_NONE, 0, 0, 3200, 0, 0, 0, 0x00000000),
             GEO_OPEN_NODE(),
                GEO_ASM(0, geo_intro_super_mario_64_logo),
+               GEO_SCENE_LIGHT(LIGHT_TYPE_DIRECTIONAL, 200, 200, 200, 0, -50, 50),
 #if defined(FLOOMBAS) && defined(INTRO_FLOOMBAS)
                GEO_RENDER_OBJ(),
 #endif

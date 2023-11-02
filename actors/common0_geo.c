@@ -27,3 +27,8 @@
 #include "metal_box/geo.inc.c"
 #include "exclamation_box_outline/geo.inc.c"
 #include "koopa_shell/geo.inc.c"
+
+#include "subtitle0/geo.inc.c"
+#include "subtitle1/geo.inc.c"
+#include "ufo/geo.inc.c"
+#include "asteroid/geo.inc.c"
