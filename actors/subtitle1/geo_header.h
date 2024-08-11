@@ -1,0 +1,10 @@
+extern const GeoLayout subtitle1_geo[];
+extern u8 subtitle1_E036C10_ci8[];
+extern u8 subtitle1_E036C10_pal_rgba16[];
+extern Vtx subtitle1_subtitle1_mesh_layer_1_vtx_cull[8];
+extern Vtx subtitle1_subtitle1_mesh_layer_1_vtx_0[478];
+extern Gfx subtitle1_subtitle1_mesh_layer_1_tri_0[];
+extern Gfx mat_subtitle1_purple[];
+extern Gfx mat_revert_subtitle1_purple[];
+extern Gfx subtitle1_subtitle1_mesh_layer_1[];
+extern Gfx subtitle1_material_revert_render_settings[];

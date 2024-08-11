@@ -23,6 +23,7 @@
 #include "levels/bitfs/header.h"
 #include "levels/bits/header.h"
 #include "levels/bob/header.h"
+#include "levels/hmc/header.h"
 #include "levels/ccm/header.h"
 #include "levels/hmc/header.h"
 #include "levels/jrb/header.h"

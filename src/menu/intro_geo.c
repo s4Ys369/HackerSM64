@@ -15,8 +15,8 @@
 
 // frame counts for the zoom in, hold, and zoom out of title model
 #define INTRO_STEPS_ZOOM_IN 20
-#define INTRO_STEPS_HOLD_1 75
-#define INTRO_STEPS_ZOOM_OUT 91
+#define INTRO_STEPS_HOLD_1 100
+#define INTRO_STEPS_ZOOM_OUT 116
 
 // background types
 enum IntroBackgroundTypes {
@@ -72,7 +72,7 @@ Gfx *geo_intro_super_mario_64_logo(s32 callContext, struct GraphNode *node, UNUS
         guScale(scaleMat, scale[0], scale[1], scale[2]);
 
         gSPMatrix(dlIter++, scaleMat, G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
-        gSPDisplayList(dlIter++, &intro_seg7_dl_main_logo);  // draw model
+        gSPDisplayList(dlIter++, &title_title_mesh);  // draw model
         gSPPopMatrix(dlIter++, G_MTX_MODELVIEW);
         gSPEndDisplayList(dlIter);
 
@@ -107,8 +107,8 @@ Gfx *geo_intro_tm_copyright(s32 callContext, struct GraphNode *node, UNUSED void
         gSPEndDisplayList(dlIter);
 
         // Once the "Super Mario 64" logo has just about zoomed fully, fade in the "TM" and copyright text
-        if (sIntroFrameCounter >= 19) {
-            sTmCopyrightAlpha += 26;
+        if (sIntroFrameCounter >= 115) {
+            sTmCopyrightAlpha += 15;
             if (sTmCopyrightAlpha > 255) {
                 sTmCopyrightAlpha = 255;
             }

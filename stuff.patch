@@ -1,0 +1,259 @@
+diff --git a/include/config/config_movement.h b/include/config/config_movement.h
+index 882ae3b9..5135da6d 100644
+--- a/include/config/config_movement.h
++++ b/include/config/config_movement.h
+@@ -142,3 +142,9 @@
+  */
+ #define MARIO_INERTIA_UPWARD
+ // #define MARIO_INERTIA_LATERAL
++
++// Enables Ground Pound actions (Dive, Jump, and Twirl)
++#define EXTRA_GP_MOVES
++
++//Enables Wall Slides
++//#define WALL_SLIDE
+diff --git a/include/sm64.h b/include/sm64.h
+index f9c44cd0..8eccfd7e 100644
+--- a/include/sm64.h
++++ b/include/sm64.h
+@@ -437,7 +437,11 @@ enum MarioActionFlags {
+ #define ACT_UNUSED_0BC                 0x000000BC // (0x0BC)
+ #define ACT_THROWN_FORWARD             0x010208BD // (0x0BD | ACT_FLAG_AIR | ACT_FLAG_INVULNERABLE | ACT_FLAG_ALLOW_VERTICAL_WIND_ACTION)
+ #define ACT_THROWN_BACKWARD            0x010208BE // (0x0BE | ACT_FLAG_AIR | ACT_FLAG_INVULNERABLE | ACT_FLAG_ALLOW_VERTICAL_WIND_ACTION)
++#ifdef WALL_SLIDE
++#define ACT_WALL_SLIDE                 0x000008BF // (0x0BF | ACT_FLAG_AIR)
++#else
+ #define ACT_UNUSED_0BF                 0x000000BF // (0x0BF)
++#endif
+ 
+ // group 0x0C0: submerged actions
+ #define ACT_WATER_IDLE                 0x380022C0 // (0x0C0 | ACT_FLAG_STATIONARY | ACT_FLAG_SWIMMING | ACT_FLAG_PAUSE_EXIT | ACT_FLAG_SWIMMING_OR_FLYING | ACT_FLAG_WATER_OR_TEXT)
+diff --git a/levels/intro/leveldata.c b/levels/intro/leveldata.c
+index 990ee3bb..c031043d 100644
+--- a/levels/intro/leveldata.c
++++ b/levels/intro/leveldata.c
+@@ -3339,14 +3339,14 @@ static const Vtx intro_seg7_vertex_copyright[] = {
+ // 0x0700B460 - 0x0700B4A0
+ static const Vtx intro_seg7_vertex_trademark[] = {
+ #ifdef INTRO_CREDIT
+-    {{{   268,    192,     -1}, 0, {     0,      0}, {0x00, 0xff, 0xf7, 0xff}}}, // 0
+-    {{{   284,    192,     -1}, 0, { 64<<5,      0}, {0x00, 0xff, 0xf7, 0xff}}}, // 1
++    {{{    80,    144,     -1}, 0, {     0,      0}, {0x00, 0xff, 0xf7, 0xff}}}, // 0
++    {{{   240,    144,     -1}, 0, { 256<<5,     0}, {0x00, 0xff, 0xf7, 0xff}}}, // 1
+ 
+-    {{{   268,    184,     -1}, 0, {     0,  32<<5}, {0x00, 0xff, 0xff, 0xff}}}, // 2
+-    {{{   284,    184,     -1}, 0, { 64<<5,  32<<5}, {0x00, 0xff, 0xff, 0xff}}}, // 3
++    {{{    80,    128,     -1}, 0, {     0,  16<<5}, {0x00, 0xff, 0xff, 0xff}}}, // 2
++    {{{   240,    128,     -1}, 0, { 256<<5, 16<<5}, {0x00, 0xff, 0xff, 0xff}}}, // 3
+ 
+-    {{{   268,    176,     -1}, 0, {     0,  64<<5}, {0x00, 0x7f, 0xff, 0xff}}}, // 4
+-    {{{   284,    176,     -1}, 0, { 64<<5,  64<<5}, {0x00, 0x7f, 0xff, 0xff}}}, // 5
++    {{{    80,    112,     -1}, 0, {     0,  32<<5}, {0x00, 0x7f, 0xff, 0xff}}}, // 4
++    {{{   240,    112,     -1}, 0, { 256<<5, 32<<5}, {0x00, 0x7f, 0xff, 0xff}}}, // 5
+ #else
+     {{{   268,    196,     -1}, 0, {     0,      0}, {0xff, 0xff, 0xff, 0xff}}}, // 0
+     {{{   284,    196,     -1}, 0, {   544,      0}, {0xff, 0xff, 0xff, 0xff}}}, // 1
+@@ -3413,7 +3413,7 @@ const Gfx intro_seg7_dl_copyright_trademark[] = {
+     gsSP2Triangles( 0,  3,  1, 0x0,  0,  2,  3, 0x0),
+     gsSP2Triangles( 2,  5,  3, 0x0,  2,  4,  5, 0x0),
+     
+-    gsDPLoadTextureBlock_4b(intro_seg7_texture_trademark, G_IM_FMT_I, 64, 64, (G_TX_NOMIRROR | G_TX_CLAMP), (G_TX_NOMIRROR | G_TX_CLAMP), 0, 6, 6, G_TX_NOLOD, G_TX_NOLOD),
++    gsDPLoadTextureBlock_4b(intro_seg7_texture_trademark, G_IM_FMT_I, 256, 32, (G_TX_NOMIRROR | G_TX_CLAMP), (G_TX_NOMIRROR | G_TX_CLAMP), 0, 8, 5, G_TX_NOLOD, G_TX_NOLOD),
+     gsSPVertex(intro_seg7_vertex_trademark, 6, 0),
+     gsSP2Triangles( 0,  3,  1, 0x0,  0,  2,  3, 0x0),
+     gsSP2Triangles( 2,  5,  3, 0x0,  2,  4,  5, 0x0),
+diff --git a/src/game/mario_actions_airborne.c b/src/game/mario_actions_airborne.c
+index 26051395..da1c7182 100644
+--- a/src/game/mario_actions_airborne.c
++++ b/src/game/mario_actions_airborne.c
+@@ -351,6 +351,82 @@ void update_flying(struct MarioState *m) {
+     m->slideVelZ = m->vel[2];
+ }
+ 
++#ifdef WALL_SLIDE
++static u8 gWallSlide = TRUE;
++
++void reset_wall_slide() {
++    gWallSlide = TRUE;
++}
++
++s32 mario_check_wall_slide(struct MarioState *m) {
++
++    // Wall slide available
++    if (!gWallSlide) {
++        return FALSE;
++    }
++
++    // There must be a wall
++    if (m->wall == NULL) {
++        return FALSE;
++    }
++
++    // Mario must not be holding something
++    if (m->heldObj != NULL) {
++        return FALSE;
++    }
++
++    if ((m->input & INPUT_A_PRESSED) && m->wallKickTimer != 0 && m->prevAction == ACT_AIR_HIT_WALL) {
++        m->faceAngle[1] += 0x8000;
++        gWallSlide = FALSE;
++        return set_mario_action(m, ACT_WALL_KICK_AIR, 0);
++    }
++
++    return TRUE;
++}
++
++s32 mario_start_wall_slide(struct MarioState *m) {
++
++    // Start sliding only when Mario is moving downwards
++    // to not end prematurely his jump
++    return (m->vel[1] < 0.f);
++}
++
++s32 act_wall_slide(struct MarioState *m) {
++    mario_set_forward_vel(m, 0);
++    set_mario_animation(m, MARIO_ANIM_START_WALLKICK);
++    play_sound(SOUND_MOVING_TERRAIN_SLIDE + m->terrainSoundAddend, m->marioObj->header.gfx.cameraToObject);
++    m->vel[1] = -6.f;
++    m->particleFlags |= PARTICLE_DUST;
++
++    // Wall jump
++    if (m->input & INPUT_A_PRESSED) {
++        m->vel[1] = 52.0f;
++        mario_set_forward_vel(m, 24.f);
++        return set_mario_action(m, ACT_WALL_KICK_AIR, 0);
++    }
++
++    // Get out of wall slide
++    if (m->input & INPUT_Z_PRESSED) {
++        gWallSlide = FALSE;
++        play_sound(SOUND_MARIO_UH, m->marioObj->header.gfx.cameraToObject);
++        m->input &= (~(INPUT_Z_PRESSED | INPUT_Z_DOWN));
++        return set_mario_action(m, ACT_FREEFALL, 0);
++    }
++
++    switch (perform_air_step(m, 0)) {
++        case AIR_STEP_LANDED:
++            return set_mario_action(m, ACT_IDLE, 0);
++
++        case AIR_STEP_HIT_WALL:
++            if (!mario_check_wall_slide(m)) {
++                return set_mario_action(m, ACT_FREEFALL, 0);
++            }
++            break;
++    }
++    return FALSE;
++}
++#endif
++
+ u32 common_air_action_step(struct MarioState *m, u32 landAction, s32 animation, u32 stepArg) {
+     u32 stepResult;
+ 
+@@ -371,7 +447,16 @@ u32 common_air_action_step(struct MarioState *m, u32 landAction, s32 animation,
+         case AIR_STEP_HIT_WALL:
+             set_mario_animation(m, animation);
+ 
++#ifdef WALL_SLIDE
++            if (mario_check_wall_slide(m)) {
++                if (mario_start_wall_slide(m)) {
++                    m->faceAngle[1] += 0x8000;
++                    set_mario_action(m, ACT_WALL_SLIDE, 0);
++                }
++            } else if (m->forwardVel > 16.0f) {
++#else
+             if (m->forwardVel > 16.0f) {
++#endif
+ #if ENABLE_RUMBLE
+                 queue_rumble_data(5, 40);
+ #endif
+@@ -912,6 +997,22 @@ s32 act_ground_pound(struct MarioState *m) {
+ 
+     play_sound_if_no_flag(m, SOUND_ACTION_THROW, MARIO_ACTION_SOUND_PLAYED);
+ 
++#ifdef EXTRA_GP_MOVES
++    if (m->input & INPUT_B_PRESSED) {
++        m->faceAngle[1] = m->intendedYaw;
++        mario_set_forward_vel(m, 40.f);
++        m->vel[1] = 40.f;
++        m->particleFlags |= PARTICLE_MIST_CIRCLE;
++        return set_mario_action(m, ACT_DIVE, 0);
++    }
++
++    if (m->input & INPUT_A_PRESSED) {
++        m->vel[1] = 52.0f;
++        m->particleFlags |= PARTICLE_MIST_CIRCLE;
++        return set_mario_action(m, ACT_TWIRLING, 0);
++    }
++#endif
++
+     if (m->actionState == 0) {
+         if (m->actionTimer < 10) {
+             yOffset = 20 - 2 * m->actionTimer;
+@@ -2002,6 +2103,9 @@ s32 check_common_airborne_cancels(struct MarioState *m) {
+ 
+ s32 mario_execute_airborne_action(struct MarioState *m) {
+     u32 cancel = FALSE;
++#ifdef WALL_SLIDE
++    reset_wall_slide();
++#endif
+ 
+     if (check_common_airborne_cancels(m)) {
+         return TRUE;
+@@ -2058,6 +2162,9 @@ s32 mario_execute_airborne_action(struct MarioState *m) {
+         case ACT_RIDING_HOOT:          cancel = act_riding_hoot(m);          break;
+         case ACT_TOP_OF_POLE_JUMP:     cancel = act_top_of_pole_jump(m);     break;
+         case ACT_VERTICAL_WIND:        cancel = act_vertical_wind(m);        break;
++#ifdef WALL_SLIDE
++        case ACT_WALL_SLIDE:           cancel = act_wall_slide(m);           break;
++#endif
+     }
+     /* clang-format on */
+ 
+diff --git a/src/game/mario_actions_airborne.h b/src/game/mario_actions_airborne.h
+index 5fbcd6ed..727fe740 100644
+--- a/src/game/mario_actions_airborne.h
++++ b/src/game/mario_actions_airborne.h
+@@ -4,6 +4,17 @@
+ #include <PR/ultratypes.h>
+ 
+ #include "types.h"
++#include "config.h"
++
++#ifdef WALL_SLIDE
++
++#include "sm64.h"
++void reset_wall_slide();
++s32 mario_check_wall_slide(struct MarioState *m);
++s32 mario_start_wall_slide(struct MarioState *m);
++s32 act_wall_slide(struct MarioState *m);
++
++#endif
+ 
+ enum ActionStatesGroundPound { // act_ground_pound
+     ACT_STATE_GROUND_POUND_SPIN,
+diff --git a/src/game/mario_actions_stationary.c b/src/game/mario_actions_stationary.c
+index b0692e54..e8bc35bf 100644
+--- a/src/game/mario_actions_stationary.c
++++ b/src/game/mario_actions_stationary.c
+@@ -17,6 +17,8 @@
+ #include "surface_terrains.h"
+ #include "rumble_init.h"
+ 
++#include "config.h"
++
+ s32 check_common_idle_cancels(struct MarioState *m) {
+     mario_drop_held_object(m);
+     if (m->floor->normal.y < COS73) {
+@@ -1021,6 +1023,12 @@ s32 act_ground_pound_land(struct MarioState *m) {
+         return set_mario_action(m, ACT_BUTT_SLIDE, 0);
+     }
+ 
++#ifdef EXTRA_GP_MOVES
++    if (m->input & INPUT_A_PRESSED) {
++        return set_mario_action(m, ACT_TRIPLE_JUMP, 1);
++    }
++#endif
++
+     landing_step(m, MARIO_ANIM_GROUND_POUND_LANDING, ACT_BUTT_SLIDE_STOP);
+     return FALSE;
+ }

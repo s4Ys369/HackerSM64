@@ -171,15 +171,33 @@ void bhv_snufit_loop(void) {
 void bhv_snufit_balls_loop(void) {
     // If far from Mario or in a different room, despawn.
     if ((o->activeFlags & ACTIVE_FLAG_IN_DIFFERENT_ROOM)
-        || (o->oTimer != 0 && o->oDistanceToMario > 1500.0f)) {
+        /*|| (o->oTimer != 0 && o->oDistanceToMario > 1500.0f)*/) {
         obj_mark_for_deletion(o);
     }
+    
+    cur_obj_scale(0.7f);
+    if(o->oTimer > 30){
+       obj_mark_for_deletion(o); 
+    }
+    if (o->oPosX < -1200.0f) {
+        o->oPosX = 1200.0f;
+    }
+    if (o->oPosX > 1200.0f) {
+        o->oPosX = -1200.0f;
+    }
+    if (o->oPosZ < -1000.0f) {
+        o->oPosZ = 800.0f;
+    }
+    if (o->oPosZ > 800.0f) {
+        o->oPosZ = -1000.0f;
+    }
+    obj_attack_collided_from_other_object(o);
 
     // Gravity =/= 0 after it has hit Mario while metal.
     if (o->oGravity == 0.0f) {
         cur_obj_update_floor_and_walls();
 
-        obj_compute_vel_from_move_pitch(40.0f);
+        //obj_compute_vel_from_move_pitch(40.0f);
         if (obj_check_attacks(&sSnufitBulletHitbox, 1)) {
             // We hit Mario while he is metal!
             // Bounce off, and fall until the first check is true.

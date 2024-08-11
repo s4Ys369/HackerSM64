@@ -1180,26 +1180,26 @@ u32 interact_flame(struct MarioState *m, UNUSED u32 interactType, struct Object 
 }
 
 u32 interact_snufit_bullet(struct MarioState *m, UNUSED u32 interactType, struct Object *obj) {
-    if (!sInvulnerable && !(m->flags & MARIO_VANISH_CAP)) {
-        if (m->flags & MARIO_METAL_CAP) {
-            obj->oInteractStatus = INT_STATUS_INTERACTED | INT_STATUS_WAS_ATTACKED;
-            play_sound(SOUND_ACTION_SNUFFIT_BULLET_HIT_METAL, m->marioObj->header.gfx.cameraToObject);
-        } else {
-            obj->oInteractStatus = INT_STATUS_INTERACTED | INT_STATUS_ATTACKED_MARIO;
-            m->interactObj = obj;
-            take_damage_from_interact_object(m);
+    //if (!sInvulnerable && !(m->flags & MARIO_VANISH_CAP)) {
+        //if (m->flags & MARIO_METAL_CAP) {
+            //obj->oInteractStatus = INT_STATUS_INTERACTED | INT_STATUS_WAS_ATTACKED;
+            //play_sound(SOUND_ACTION_SNUFFIT_BULLET_HIT_METAL, m->marioObj->header.gfx.cameraToObject);
+        //} else {
+        //    obj->oInteractStatus = INT_STATUS_INTERACTED | INT_STATUS_ATTACKED_MARIO;
+        //    m->interactObj = obj;
+        //    take_damage_from_interact_object(m);
 
-            play_sound(SOUND_MARIO_ATTACKED, m->marioObj->header.gfx.cameraToObject);
-            update_mario_sound_and_camera(m);
+        //    play_sound(SOUND_MARIO_ATTACKED, m->marioObj->header.gfx.cameraToObject);
+        //    update_mario_sound_and_camera(m);
 
-            return drop_and_set_mario_action(m, determine_knockback_action(m, obj->oDamageOrCoinValue),
-                                             obj->oDamageOrCoinValue);
-        }
-    }
+        //    return drop_and_set_mario_action(m, determine_knockback_action(m, obj->oDamageOrCoinValue),
+        //                                     obj->oDamageOrCoinValue);
+        //}
+    //}
 
-    if (!(obj->oInteractionSubtype & INT_SUBTYPE_DELAY_INVINCIBILITY)) {
-        sDelayInvincTimer = TRUE;
-    }
+    //if (!(obj->oInteractionSubtype & INT_SUBTYPE_DELAY_INVINCIBILITY)) {
+    //    sDelayInvincTimer = TRUE;
+    //}
 
     return FALSE;
 }

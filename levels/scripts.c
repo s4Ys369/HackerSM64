@@ -197,6 +197,10 @@ const LevelScript script_func_global_1[] = {
     LOAD_MODEL_FROM_GEO(MODEL_FLYGUY,                  flyguy_geo),
     LOAD_MODEL_FROM_GEO(MODEL_CHUCKYA,                 chuckya_geo),
     LOAD_MODEL_FROM_GEO(MODEL_TRAJECTORY_MARKER_BALL,      bowling_ball_track_geo),
+    LOAD_MODEL_FROM_GEO(MODEL_UFO,                     ufo_geo),
+    LOAD_MODEL_FROM_GEO(MODEL_SUBTITLE0,               subtitle0_geo),
+    LOAD_MODEL_FROM_GEO(MODEL_SUBTITLE1,               subtitle1_geo),
+    LOAD_MODEL_FROM_GEO(MODEL_ASTEROID,               asteroid_geo),
     RETURN(),
 };
 

@@ -954,9 +954,11 @@ const BehaviorScript bhvCoinInsideBoo[] = {
     BEGIN(OBJ_LIST_LEVEL),
     SET_HITBOX(/*Radius*/ 100, /*Height*/ 64),
     SET_INT(oInteractType, INTERACT_COIN),
-    OR_INT(oFlags, (OBJ_FLAG_ACTIVE_FROM_AFAR | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    OR_INT(oFlags, (OBJ_FLAG_ACTIVE_FROM_AFAR | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE | OBJ_FLAG_EMIT_LIGHT)),
     SET_OBJ_PHYSICS(/*Wall hitbox radius*/ 30, /*Gravity*/ -400, /*Bounciness*/ -70, /*Drag strength*/ 1000, /*Friction*/ 1000, /*Buoyancy*/ 200, /*Unused*/ 0, 0),
     BILLBOARD(),
+    SET_LIGHT_COLOR(0, 0, 255),
+    SET_LIGHT_FALLOFF(0, 2, 3),
     CALL_NATIVE(bhv_init_room),
     BEGIN_LOOP(),
         CALL_NATIVE(bhv_coin_inside_boo_loop),
@@ -993,7 +995,9 @@ const BehaviorScript bhvYellowCoin[] = {
     BEGIN(OBJ_LIST_LEVEL),
     // Yellow coin - common:
     BILLBOARD(),
-    OR_INT(oFlags, (OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    OR_INT(oFlags, (OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE | OBJ_FLAG_EMIT_LIGHT)),
+    SET_LIGHT_COLOR(255, 255, 0),
+    SET_LIGHT_FALLOFF(1, 4, 8),
     CALL_NATIVE(bhv_init_room),
     CALL_NATIVE(bhv_yellow_coin_init),
     BEGIN_LOOP(),
@@ -1032,8 +1036,10 @@ const BehaviorScript bhvTenCoinsSpawn[] = {
 
 const BehaviorScript bhvSingleCoinGetsSpawned[] = {
     BEGIN(OBJ_LIST_LEVEL),
-    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
+    OR_INT(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE | OBJ_FLAG_EMIT_LIGHT)),
     BILLBOARD(),
+    SET_LIGHT_COLOR(255, 255, 0),
+    SET_LIGHT_FALLOFF(1, 4, 8),
     CALL_NATIVE(bhv_coin_init),
     SET_OBJ_PHYSICS(/*Wall hitbox radius*/ 30, /*Gravity*/ -400, /*Bounciness*/ -70, /*Drag strength*/ 1000, /*Friction*/ 1000, /*Buoyancy*/ 200, /*Unused*/ 0, 0),
     BEGIN_LOOP(),
@@ -1234,9 +1240,11 @@ const BehaviorScript bhvLllTumblingBridge[] = {
 
 const BehaviorScript bhvFlame[] = {
     BEGIN(OBJ_LIST_LEVEL),
-    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
+    OR_INT(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE | OBJ_FLAG_EMIT_LIGHT)),
     BILLBOARD(),
     SET_HOME(),
+    SET_LIGHT_COLOR(50, 0, 0),
+    SET_LIGHT_FALLOFF(0, 2, 3),
     SCALE(/*Unused*/ 0, /*Field*/ 700),
     SET_INTERACT_TYPE(INTERACT_FLAME),
     SET_HITBOX_WITH_OFFSET(/*Radius*/ 50, /*Height*/ 25, /*Downwards offset*/ 25),
@@ -3624,8 +3632,10 @@ const BehaviorScript bhvActSelector[] = {
 
 const BehaviorScript bhvMovingYellowCoin[] = {
     BEGIN(OBJ_LIST_LEVEL),
-    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
+    OR_INT(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE | OBJ_FLAG_EMIT_LIGHT)),
     BILLBOARD(),
+    SET_LIGHT_COLOR(255, 255, 0),
+    SET_LIGHT_FALLOFF(1, 4, 8),
     SET_HITBOX(/*Radius*/ 100, /*Height*/ 64),
     SET_INT(oInteractType, INTERACT_COIN),
     SET_INT(oIntangibleTimer, 0),
@@ -3639,8 +3649,10 @@ const BehaviorScript bhvMovingYellowCoin[] = {
 
 const BehaviorScript bhvMovingBlueCoin[] = {
     BEGIN(OBJ_LIST_LEVEL),
-    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
+    OR_INT(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE | OBJ_FLAG_EMIT_LIGHT)),
     BILLBOARD(),
+    SET_LIGHT_COLOR(0, 0, 255),
+    SET_LIGHT_FALLOFF(1, 4, 8),
     SET_INT(oIntangibleTimer, 0),
     SET_INT(oAnimState, OBJ_ANIM_STATE_INIT_ANIM),
     CALL_NATIVE(bhv_moving_blue_coin_init),
@@ -3652,8 +3664,10 @@ const BehaviorScript bhvMovingBlueCoin[] = {
 
 const BehaviorScript bhvBlueCoinSliding[] = {
     BEGIN(OBJ_LIST_GENACTOR),
-    OR_INT(oFlags, (OBJ_FLAG_COMPUTE_ANGLE_TO_MARIO | OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    OR_INT(oFlags, (OBJ_FLAG_COMPUTE_ANGLE_TO_MARIO | OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE| OBJ_FLAG_EMIT_LIGHT)),
     BILLBOARD(),
+    SET_LIGHT_COLOR(0, 0, 255),
+    SET_LIGHT_FALLOFF(1, 4, 8),
     SET_INT(oIntangibleTimer, 0),
     SET_INT(oAnimState, OBJ_ANIM_STATE_INIT_ANIM),
     CALL_NATIVE(bhv_blue_coin_sliding_jumping_init),
@@ -3665,7 +3679,10 @@ const BehaviorScript bhvBlueCoinSliding[] = {
 
 const BehaviorScript bhvBlueCoinJumping[] = {
     BEGIN(OBJ_LIST_GENACTOR),
-    OR_INT(oFlags, (OBJ_FLAG_COMPUTE_ANGLE_TO_MARIO | OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    OR_INT(oFlags, (OBJ_FLAG_COMPUTE_ANGLE_TO_MARIO | OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE | OBJ_FLAG_EMIT_LIGHT)),
+    BILLBOARD(),
+    SET_LIGHT_COLOR(0, 0, 255),
+    SET_LIGHT_FALLOFF(1, 4, 8),
     BILLBOARD(),
     SET_INT(oIntangibleTimer, 0),
     SET_INT(oAnimState, OBJ_ANIM_STATE_INIT_ANIM),
@@ -4577,8 +4594,10 @@ const BehaviorScript bhvHiddenRedCoinStar[] = {
 
 const BehaviorScript bhvRedCoin[] = {
     BEGIN(OBJ_LIST_LEVEL),
-    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
+    OR_INT(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE | OBJ_FLAG_EMIT_LIGHT)),
     BILLBOARD(),
+    SET_LIGHT_COLOR(255, 0, 0),
+    SET_LIGHT_FALLOFF(1, 4, 8),
     SET_INT(oIntangibleTimer, 0),
     SET_INT(oAnimState, OBJ_ANIM_STATE_INIT_ANIM),
     CALL_NATIVE(bhv_init_room),
@@ -4804,6 +4823,8 @@ const BehaviorScript bhvBreakableBoxSmall[] = {
 #endif
     DROP_TO_FLOOR(),
     SET_HOME(),
+    SET_FLOAT(oGraphYOffset, 50),
+    BILLBOARD(),
     CALL_NATIVE(bhv_breakable_box_small_init),
     BEGIN_LOOP(),
         SET_INT(oIntangibleTimer, 0),
@@ -5806,10 +5827,10 @@ const BehaviorScript bhvSnufit[] = {
 };
 
 const BehaviorScript bhvSnufitBalls[] = {
-    BEGIN(OBJ_LIST_GENACTOR),
-    OR_INT(oFlags, (OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    BEGIN(OBJ_LIST_DESTRUCTIVE),
+    OR_INT(oFlags, (OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_SET_FACE_YAW_TO_MOVE_YAW | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
     BILLBOARD(),
-    SET_OBJ_PHYSICS(/*Wall hitbox radius*/ 10, /*Gravity*/ 0, /*Bounciness*/ -50, /*Drag strength*/ 1000, /*Friction*/ 1000, /*Buoyancy*/ 200, /*Unused*/ 0, 0),
+    SET_OBJ_PHYSICS(/*Wall hitbox radius*/ 10, /*Gravity*/ 0, /*Bounciness*/ -50, /*Drag strength*/ 0, /*Friction*/ 0, /*Buoyancy*/ 0, /*Unused*/ 0, 0),
     CALL_NATIVE(bhv_init_room),
     SET_FLOAT(oGraphYOffset, 10),
     SCALE(/*Unused*/ 0, /*Field*/ 10),
@@ -6092,4 +6113,62 @@ const BehaviorScript bhvIntroScene[] = {
     END_LOOP(),
 };
 
+const BehaviorScript bhvUFOTitle[] = {
+    BEGIN(OBJ_LIST_GENACTOR),
+    OR_INT(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE | OBJ_FLAG_EMIT_LIGHT)),
+    SET_LIGHT_COLOR(0, 255, 100),
+    SET_LIGHT_FALLOFF(0, 1, 1),
+    CALL_NATIVE(bhv_ufo_title_init),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_ufo_title_update),
+    END_LOOP(),
+};
 
+const BehaviorScript bhvSubtitle0[] = {
+    BEGIN(OBJ_LIST_DEFAULT),
+    OR_INT(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE |  OBJ_FLAG_EMIT_LIGHT)),
+    CALL_NATIVE(bhv_subtitle_init),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_subtitle_update),
+    END_LOOP(),
+};
+
+const BehaviorScript bhvSubtitle1[] = {
+    BEGIN(OBJ_LIST_DEFAULT),
+    OR_INT(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE |  OBJ_FLAG_EMIT_LIGHT)),
+    SET_LIGHT_COLOR(144, 75, 182),
+    SET_LIGHT_FALLOFF(0, 1, 1),
+    CALL_NATIVE(bhv_subtitle_init),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_subtitle_update),
+    END_LOOP(),
+};
+
+const BehaviorScript bhvUFOWarp[] = {
+    BEGIN(OBJ_LIST_GENACTOR),
+    OR_INT(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE | OBJ_FLAG_EMIT_LIGHT)),
+    SET_LIGHT_COLOR(0, 255, 100),
+    SET_LIGHT_FALLOFF(0, 1, 1),
+    CALL_NATIVE(bhv_ufo_warp_init),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_ufo_warp_update),
+    END_LOOP(),
+};
+
+const BehaviorScript bhvAsteroidSpawner[] = {
+    BEGIN(OBJ_LIST_DEFAULT),
+    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_asteroid_spawner_update),
+    END_LOOP(),
+};
+
+const BehaviorScript bhvAsteroid[] = {
+    BEGIN(OBJ_LIST_GENACTOR),
+    OR_INT(oFlags, (OBJ_FLAG_COMPUTE_ANGLE_TO_MARIO | OBJ_FLAG_SET_FACE_YAW_TO_MOVE_YAW | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    SET_FLOAT(oGraphYOffset, 180),
+    CALL_NATIVE(bhv_asteroid_init),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_asteroid_update),
+    END_LOOP(),
+};

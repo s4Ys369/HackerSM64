@@ -532,6 +532,14 @@ void check_instant_warp(void) {
     s16 cameraAngle;
     struct Surface *floor;
 
+    if (gCurrLevelNum == LEVEL_HMC) {
+        if(gCurrAreaIndex == 1) {
+            seq_player_lower_volume(SEQ_PLAYER_LEVEL, 10, 40);
+        } else {
+            seq_player_unlower_volume(SEQ_PLAYER_LEVEL, 10);  
+        }
+    }
+
 #ifdef ENABLE_VANILLA_LEVEL_SPECIFIC_CHECKS
  #ifdef UNLOCK_ALL
     if (gCurrLevelNum == LEVEL_CASTLE) {
@@ -591,7 +599,7 @@ s16 music_unchanged_through_warp(s16 arg) {
 
     s16 destArea = warpNode->node.destArea;
     s16 unchanged = TRUE;
-
+    
 #ifdef ENABLE_VANILLA_LEVEL_SPECIFIC_CHECKS
     s16 currBgMusic;
     if (levelNum == LEVEL_BOB && levelNum == gCurrLevelNum && destArea == gCurrAreaIndex) {
@@ -1293,7 +1301,7 @@ s32 init_level(void) {
                     if (save_file_exists(gCurrSaveFileNum - 1)) {
                         set_mario_action(gMarioState, ACT_IDLE, 0);
                     } else {
-                        set_mario_action(gMarioState, ACT_INTRO_CUTSCENE, 0);
+                        set_mario_action(gMarioState, ACT_HARD_BACKWARD_AIR_KB, 0);
                         fadeFromColor = TRUE;
                     }
                 }
@@ -1383,6 +1391,8 @@ s32 lvl_set_current_level(UNUSED s16 initOrUpdate, s32 levelNum) {
     sWarpCheckpointActive = FALSE;
     gCurrLevelNum = levelNum;
     gCurrCourseNum = gLevelToCourseNumTable[levelNum - 1];
+	if (gCurrLevelNum == LEVEL_WF) return 0;
+	if (gCurrLevelNum == LEVEL_HMC) return 0;
 
     if (gCurrDemoInput != NULL || gCurrCreditsEntry != NULL || gCurrCourseNum == COURSE_NONE) {
         return FALSE;

@@ -866,41 +866,46 @@ u32 set_mario_action_moving(struct MarioState *m, u32 action, UNUSED u32 actionA
     f32 forwardVel = m->forwardVel;
     f32 mag = MIN(m->intendedMag, 8.0f);
 
-    switch (action) {
-        case ACT_WALKING:
-            if (floorClass != SURFACE_CLASS_VERY_SLIPPERY) {
-                if (0.0f <= forwardVel && forwardVel < mag) {
-                    m->forwardVel = mag;
+    if (gCurrLevelNum == LEVEL_WF) {
+        return action;
+    } else {
+
+        switch (action) {
+            case ACT_WALKING:
+                if (floorClass != SURFACE_CLASS_VERY_SLIPPERY) {
+                    if (0.0f <= forwardVel && forwardVel < mag) {
+                        m->forwardVel = mag;
+                    }
                 }
-            }
-
-            m->marioObj->oMarioWalkingPitch = 0;
-            break;
-
-        case ACT_HOLD_WALKING:
-            if (0.0f <= forwardVel && forwardVel < mag / 2.0f) {
-                m->forwardVel = mag / 2.0f;
-            }
-            break;
-
-        case ACT_BEGIN_SLIDING:
-            if (mario_facing_downhill(m, FALSE)) {
-                action = ACT_BUTT_SLIDE;
-            } else {
-                action = ACT_STOMACH_SLIDE;
-            }
-            break;
-
-        case ACT_HOLD_BEGIN_SLIDING:
-            if (mario_facing_downhill(m, FALSE)) {
-                action = ACT_HOLD_BUTT_SLIDE;
-            } else {
-                action = ACT_HOLD_STOMACH_SLIDE;
-            }
-            break;
+    
+                m->marioObj->oMarioWalkingPitch = 0;
+                break;
+    
+            case ACT_HOLD_WALKING:
+                if (0.0f <= forwardVel && forwardVel < mag / 2.0f) {
+                    m->forwardVel = mag / 2.0f;
+                }
+                break;
+    
+            case ACT_BEGIN_SLIDING:
+                if (mario_facing_downhill(m, FALSE)) {
+                    action = ACT_BUTT_SLIDE;
+                } else {
+                    action = ACT_STOMACH_SLIDE;
+                }
+                break;
+    
+            case ACT_HOLD_BEGIN_SLIDING:
+                if (mario_facing_downhill(m, FALSE)) {
+                    action = ACT_HOLD_BUTT_SLIDE;
+                } else {
+                    action = ACT_HOLD_STOMACH_SLIDE;
+                }
+                break;
+        }
+    
+        return action;
     }
-
-    return action;
 }
 
 /**
@@ -1218,22 +1223,77 @@ void debug_print_speed_action_normal(struct MarioState *m) {
  * Update the button inputs for Mario.
  */
 void update_mario_button_inputs(struct MarioState *m) {
-    if (m->controller->buttonPressed & A_BUTTON) m->input |= INPUT_A_PRESSED;
-    if (m->controller->buttonDown    & A_BUTTON) m->input |= INPUT_A_DOWN;
+    if(gCurrLevelNum != LEVEL_WF) {
+        if (m->controller->buttonPressed & A_BUTTON) m->input |= INPUT_A_PRESSED;
+        if (m->controller->buttonDown    & A_BUTTON) m->input |= INPUT_A_DOWN;
 
-    // Don't update for these buttons if squished.
-    if (m->squishTimer == 0) {
-        if (m->controller->buttonDown    & B_BUTTON) m->input |= INPUT_B_DOWN;
-        if (m->controller->buttonPressed & B_BUTTON) m->input |= INPUT_B_PRESSED;
-        if (m->controller->buttonDown    & Z_TRIG  ) m->input |= INPUT_Z_DOWN;
-        if (m->controller->buttonPressed & Z_TRIG  ) m->input |= INPUT_Z_PRESSED;
+        // Don't update for these buttons if squished.
+        if (m->squishTimer == 0) {
+            if (m->controller->buttonDown    & B_BUTTON) m->input |= INPUT_B_DOWN;
+            if (m->controller->buttonPressed & B_BUTTON) m->input |= INPUT_B_PRESSED;
+            if (m->controller->buttonDown    & Z_TRIG  ) m->input |= INPUT_Z_DOWN;
+            if (m->controller->buttonPressed & Z_TRIG  ) m->input |= INPUT_Z_PRESSED;
+        }
+    } else {
+
+        if (m->controller->buttonPressed & A_BUTTON) {
+            if (m->forwardVel < 60.0f) {
+                m->forwardVel += 10.0f;
+            } else {
+                m->forwardVel = 60.0f;
+            } 
+        }
+        if (m->controller->buttonDown & A_BUTTON) {
+            if (m->forwardVel < 60.0f) {
+                m->forwardVel += 1.1f;
+            } else {
+                m->forwardVel = 60.0f;
+            } 
+        }
+        if (m->controller->buttonPressed & B_BUTTON) {
+            if (m->forwardVel > 0.0f) {
+                m->forwardVel -= 10.0f;
+            } else {
+                m->forwardVel = 0.0f;
+            } 
+        }
+        if (m->controller->buttonDown & B_BUTTON) {
+            if (m->forwardVel > 0.0f) {
+                m->forwardVel -= 1.1f;
+            } else {
+                m->forwardVel = 0.0f;
+            } 
+        }
+        if (m->controller->buttonPressed & Z_TRIG) {
+            if (m->framesSinceA > 5) {
+                m->framesSinceA = 0;
+                struct Object *bullet = spawn_object_relative_with_scale(0,0,50,50,3.0f,gMarioObject,MODEL_YELLOW_SPHERE,bhvSnufitBalls);
+                bullet->oFaceAngleYaw = m->faceAngle[1];
+                bullet->oForwardVel = m->forwardVel + 80.0f;
+            }
+        } 
+        if (m->framesSinceA < 0xFF) {
+            m->framesSinceA++;
+        }
+        if (m->framesSinceA == 0xFF) {
+            m->framesSinceA = 0;
+        }
+        if (m->controller->buttonDown & Z_TRIG) {
+            if (m->framesSinceA % 5 == 0) {
+                m->framesSinceA = 0;
+                struct Object *bullet2 = spawn_object_relative_with_scale(0,0,50,50,3.0f,gMarioObject,MODEL_YELLOW_SPHERE,bhvSnufitBalls);
+                bullet2->oFaceAngleYaw = m->faceAngle[1];
+                bullet2->oForwardVel = m->forwardVel + 80.0f;
+            }
+            
+        }
     }
 
-    if (m->input & INPUT_A_PRESSED) {
-        m->framesSinceA = 0;
-    } else if (m->framesSinceA < 0xFF) {
-        m->framesSinceA++;
-    }
+    //if (m->input & INPUT_A_PRESSED) {
+    //    m->framesSinceA = 0;
+    //} else if (m->framesSinceA < 0xFF) {
+    //    m->framesSinceA++;
+    //}
 
     if (m->input & INPUT_B_PRESSED) {
         m->framesSinceB = 0;
@@ -1291,6 +1351,23 @@ void update_mario_geometry_inputs(struct MarioState *m) {
     if (m->floor != NULL) {
         m->floorYaw = atan2s(m->floor->normal.z, m->floor->normal.x);
         m->terrainSoundAddend = mario_get_terrain_sound_addend(m);
+
+        if(gCurrLevelNum == LEVEL_WF) {
+            if (m->pos[0] < -1200.0f) {
+		        m->pos[0] = 1200.0f;
+	        }
+	        if (m->pos[0] > 1200.0f) {
+		        m->pos[0] = -1200.0f;
+            }
+
+	        if (m->pos[2] < -1000.0f) {
+		        m->pos[2] = 800.0f;
+	        }
+	
+	        if (m->pos[2] > 800.0f) {
+		        m->pos[2] = -1000.0f;
+	        }
+        }
 
         if ((m->pos[1] > m->waterLevel - 40) && mario_floor_is_slippery(m)) {
             m->input |= INPUT_ABOVE_SLIDE;

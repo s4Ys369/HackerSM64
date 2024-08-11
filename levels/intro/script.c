@@ -39,26 +39,33 @@ const LevelScript level_intro_splash_screen[] = {
     // Load "Super Mario 64" logo
     ALLOC_LEVEL_POOL(),
     LOAD_MODEL_FROM_GEO(MODEL_GOOMBA, goomba_geo),
+    LOAD_MODEL_FROM_GEO(MODEL_UFO, ufo_geo),
+    LOAD_MODEL_FROM_GEO(MODEL_SUBTITLE0, subtitle0_geo),
+    LOAD_MODEL_FROM_GEO(MODEL_SUBTITLE1, subtitle1_geo),
     AREA(/*index*/ 1, intro_geo_splash_screen),
-        OBJECT(/*model*/ MODEL_GOOMBA, /*pos*/ -570, -480, 1500, /*angle*/ 0,  50, 0, /*behParam*/ BP(0x18, 0x00, 0x10, 0x0B), /*beh*/ bhvFloombaStartup),
-        OBJECT(/*model*/ MODEL_GOOMBA, /*pos*/  570, -480, 1500, /*angle*/ 0, -50, 0, /*behParam*/ BP(0x18, 0x00, 0x90, 0x0B), /*beh*/ bhvFloombaStartup),
+        OBJECT(/*model*/ MODEL_GOOMBA, /*pos*/ -570, -480, 1500, /*angle*/ 0,  50, 0, /*behParam*/ BP(0x18, 0x00, 0x10, 0x5F), /*beh*/ bhvFloombaStartup),
+        OBJECT(/*model*/ MODEL_GOOMBA, /*pos*/  570, -480, 1500, /*angle*/ 0, -50, 0, /*behParam*/ BP(0x18, 0x00, 0x90, 0x5F), /*beh*/ bhvFloombaStartup),
+        OBJECT(/*model*/ MODEL_UFO, /*pos*/ -2200, 0, 400, /*angle*/ 5, 0, 0, /*behParam*/ BP(0x00, 0x00, 0x00, 0x00), /*beh*/ bhvUFOTitle),
+        OBJECT(/*model*/ MODEL_SUBTITLE0, /*pos*/ 0, -440, 1500, /*angle*/ 0, -90, 0, /*behParam*/ BP(0x00, 0x00, 0x00, 0x00), /*beh*/ bhvSubtitle0),
+        OBJECT(/*model*/ MODEL_SUBTITLE1, /*pos*/ 0, -400, 1500, /*angle*/ 0, -90, 0, /*behParam*/ BP(0x00, 0x00, 0x00, 0x00), /*beh*/ bhvSubtitle1),
     END_AREA(),
     FREE_LEVEL_POOL(),
 
     // Start animation
     LOAD_AREA(/*area*/ 1),
 
-    SET_MENU_MUSIC(/*seq*/ SEQ_SOUND_PLAYER),
+    SET_MENU_MUSIC_WITH_REVERB(/*seq*/ SEQ_LEVEL_BOSS_KOOPA_FINAL, 1, 2),
     CALL(/*arg*/ LVL_INTRO_PLAY_ITS_A_ME_MARIO, /*func*/ lvl_intro_update),
     CALL(/*arg*/ 0, /*func*/ load_mario_area),
     
-    JUMP_LINK_PUSH_ARG(75),
+    JUMP_LINK_PUSH_ARG(191),
         UPDATE_OBJECTS(),
         SLEEP(/*frames*/ 1),
     JUMP_N_TIMES(),
     TRANSITION(/*transType*/ WARP_TRANSITION_FADE_INTO_COLOR, /*time*/ 16, /*color*/ 0x00, 0x00, 0x00),
     JUMP_LINK_PUSH_ARG(16),
         UPDATE_OBJECTS(),
+        STOP_MUSIC(/*fadeOutTime*/ 0x00A0),
         SLEEP(/*frames*/ 1),
     JUMP_N_TIMES(),
 #else
@@ -80,7 +87,8 @@ const LevelScript level_intro_splash_screen[] = {
     UNLOAD_AREA(/*area*/ 1),
     CLEAR_LEVEL(),
     SLEEP(/*frames*/ 2),
-    EXIT_AND_EXECUTE_WITH_CODE(/*seg*/ SEGMENT_MENU_INTRO, _introSegmentRomStart, _introSegmentRomEnd, level_intro_mario_head_regular, _introSegmentBssStart, _introSegmentBssEnd),
+    SET_REG(START_LEVEL),
+    EXIT_AND_EXECUTE(/*seg*/ SEGMENT_GLOBAL_LEVEL_SCRIPT, _scriptsSegmentRomStart, _scriptsSegmentRomEnd, level_main_scripts_entry),
 };
 
 const LevelScript level_intro_mario_head_regular[] = {

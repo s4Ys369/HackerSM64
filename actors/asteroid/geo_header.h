@@ -1,0 +1,10 @@
+extern const GeoLayout asteroid_geo[];
+extern u8 asteroid_E011010_ci8[];
+extern u8 asteroid_E011010_pal_rgba16[];
+extern Vtx asteroid_asteroid_mesh_layer_1_vtx_cull[8];
+extern Vtx asteroid_asteroid_mesh_layer_1_vtx_0[57];
+extern Gfx asteroid_asteroid_mesh_layer_1_tri_0[];
+extern Gfx mat_asteroid_asteroid[];
+extern Gfx mat_revert_asteroid_asteroid[];
+extern Gfx asteroid_asteroid_mesh_layer_1[];
+extern Gfx asteroid_material_revert_render_settings[];

@@ -1,5 +1,6 @@
 #include <ultra64.h>
 #include <point_lights.h>
+#include <point_lights.h>
 
 #include "sm64.h"
 #include "behavior_data.h"

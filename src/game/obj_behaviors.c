@@ -19,6 +19,7 @@
 #include "level_table.h"
 #include "level_update.h"
 #include "levels/bob/header.h"
+#include "levels/hmc/header.h"
 #include "levels/ttm/header.h"
 #include "mario.h"
 #include "mario_actions_cutscene.h"

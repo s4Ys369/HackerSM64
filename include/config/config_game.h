@@ -8,7 +8,7 @@
  * Enables some mechanics that change behavior depending on hardcoded level numbers.
  * TODO: separate this into separate defines, behavior params, or make these mechanics otherwise dynamic.
 */
-// #define ENABLE_VANILLA_LEVEL_SPECIFIC_CHECKS
+#define ENABLE_VANILLA_LEVEL_SPECIFIC_CHECKS
 
 /**
  * Enable lives and the lives counter. The number next to the define is the number of lives you start with.
@@ -97,4 +97,4 @@
  * The level that the game starts with immediately after file select.
  * The levelscript needs to have a MARIO_POS command for this to work.
  */
-#define START_LEVEL LEVEL_CASTLE_GROUNDS
+#define START_LEVEL LEVEL_HMC
