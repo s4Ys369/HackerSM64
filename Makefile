@@ -11,7 +11,7 @@ TARGET_STRING := sm64
 DEFINES :=
 
 SRC_DIRS :=
-USE_DEBUG := 1
+USE_DEBUG := 0
 
 #==============================================================================#
 # Build Options                                                                #
@@ -571,9 +571,11 @@ LOADER_DIR = ./$(TOOLS_DIR)
 ifneq (,$(wildcard $(LOADER_DIR_FILE_SPECIFICATION_PATH)))
   LOADER_DIR = $(shell cat $(LOADER_DIR_FILE_SPECIFICATION_PATH))
 endif
-
-LOADER_EXEC = $(LOADER_DIR)/UNFLoader.exe
-
+ifneq (,$(call find-command,wslview))
+  LOADER_EXEC = $(LOADER_DIR)/UNFLoader.exe
+else
+  LOADER_EXEC = $(LOADER_DIR)/UNFLoader
+endif
 
 SHA1SUM = sha1sum
 PRINT = printf
@@ -627,17 +629,17 @@ test-pj64: $(ROM)
 	wine ~/Desktop/new64/Project64.exe $<
 # someone2639
 
-# download and extract the most recent UNFLoader build if needed
-download-unfloader:
+# download and extract most recent unfloader build if needed
+$(LOADER_EXEC):
 ifeq (,$(wildcard $(LOADER_EXEC)))
 	@$(PRINT) "Downloading latest UNFLoader...$(NO_COL)\n"
 	$(PYTHON) $(TOOLS_DIR)/get_latest_unfloader.py $(LOADER_DIR)
 endif
 
-load: $(ROM) download-unfloader
+load: $(ROM) $(LOADER_EXEC)
 	$(LOADER_EXEC) -r $<
 
-unf: $(ROM) download-unfloader
+unf: $(ROM) $(LOADER_EXEC)
 	$(LOADER_EXEC) -d -r $<
 
 libultra: $(BUILD_DIR)/libultra.a
