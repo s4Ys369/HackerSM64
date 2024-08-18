@@ -11,8 +11,6 @@
 
 #define CHNL_ERR(format) (((format).rxsize & CHNL_ERR_MASK) >> 4)
 
-#define CHNL_ERR_MASK		0xC0	/* Bit 6-7: channel errors */
-
 typedef struct
 {
     /* 0x00 */ u32 ramarray[16 - 1];
