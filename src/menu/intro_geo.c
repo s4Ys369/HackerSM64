@@ -433,7 +433,7 @@ Gfx *geo_intro_rumble_pak_graphic(s32 callContext, struct GraphNode *node, UNUSE
             dl = NULL;
         }
     }
+
     return dl;
 }
-
 #endif

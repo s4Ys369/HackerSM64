@@ -31,7 +31,8 @@
 #include "save_file.h"
 #include "spawn_object.h"
 #include "spawn_sound.h"
-#include "rumble_init.h"
+#include "rumble.h"
+#include "puppylights.h"
 
 /**
  * @file obj_behaviors.c
