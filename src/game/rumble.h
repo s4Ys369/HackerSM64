@@ -56,7 +56,7 @@ extern s32 gRumblePakTimer;
 void block_until_rumble_pak_free(void);
 void release_rumble_pak_control(void);
 void queue_rumble_data(struct Controller* controller, s16 timer, s16 level, s16 decay);
-_Bool is_rumble_finished_and_queue_empty(struct Controller* controller);
+u8 is_rumble_finished_and_queue_empty(struct Controller* controller);
 void reset_rumble_timers_slip(struct Controller* controller);
 void reset_rumble_timers_vibrate(struct Controller* controller, s32 level);
 void queue_rumble_submerged(struct Controller* controller);
