@@ -29,6 +29,8 @@
 #include "puppyprint.h"
 #include "profiling.h"
 
+#include "levels/bob/header.h"
+
 #define CBUTTON_MASK (U_CBUTTONS | D_CBUTTONS | L_CBUTTONS | R_CBUTTONS)
 
 /**
@@ -1650,6 +1652,38 @@ void mode_fixed_camera(struct Camera *c) {
     vec3_zero(sCastleEntranceOffset);
 }
 
+u8 bombSpawned = 0;
+f32 splineSpeed = 1.0f;
+f32 half = 0.5f;
+f32 full = 1.0f;
+void mode_cs_camera(struct Camera *c) {
+    if(gCurrLevelArea == LEVEL_AREA_INDEX(LEVEL_BOB, 1)) {
+        bombSpawned = 0;
+        move_point_along_spline(c->pos, segmented_to_virtual(bob_area_1_spline_camSpline0), &sCutsceneSplineSegment, &sCutsceneSplineSegmentProgress);
+        vec3f_copy(c->focus, sMarioCamState->pos);
+    } else if(gCurrLevelArea == LEVEL_AREA_INDEX(LEVEL_BOB, 2)){
+        move_point_along_spline(c->pos, segmented_to_virtual(bob_area_2_spline_camSpline1_pos), &sCutsceneSplineSegment, &sCutsceneSplineSegmentProgress);
+        move_point_along_spline(c->focus, segmented_to_virtual(bob_area_2_spline_camSpline1_focus), &sCutsceneSplineSegment, &sCutsceneSplineSegmentProgress);
+    } else if(gCurrLevelArea == LEVEL_AREA_INDEX(LEVEL_BOB, 3)){
+        struct Object *bomb = NULL;
+        gMarioObject->header.gfx.node.flags &= ~GRAPH_RENDER_ACTIVE;
+        if (bombSpawned == 0) {
+            cutscene_spawn_obj(1,0);
+            if(gCutsceneObjSpawn == 1){
+                bomb = spawn_object_relative(0,500,0,500,gMarioObject,MODEL_BLACK_BOBOMB, bhvBobombCS);
+                gCutsceneFocus = bomb;
+                bombSpawned++;
+            }
+        }
+        vec3f_set(c->focus, gCutsceneFocus->oPosX, gCutsceneFocus->oPosY,
+              gCutsceneFocus->oPosZ);
+        vec3f_set(c->pos, 300.0f + gCutsceneFocus->oPosX, 500.0f + gCutsceneFocus->oPosY,
+              300.0f + gCutsceneFocus->oPosZ);
+    } else {
+        c->pos[2] = 400.0f;
+    }
+}
+
 /**
  * Updates the camera in BEHIND_MARIO mode.
  *
@@ -3023,6 +3057,9 @@ void update_camera(struct Camera *c) {
                 case CAMERA_MODE_SPIRAL_STAIRS:
                     mode_spiral_stairs_camera(c);
                     break;
+                case CAMERA_MODE_CS:
+                    mode_cs_camera(c);
+                    break;
             }
         }
     }
@@ -3519,10 +3556,10 @@ s32 move_point_along_spline(Vec3f p, struct CutsceneSplinePoint spline[], s16 *s
     evaluate_cubic_spline(u, p, controlPoints[0], controlPoints[1], controlPoints[2], controlPoints[3]);
 
     if (spline[*splineSegment + 1].speed != 0) {
-        firstSpeed = 1.0f / spline[*splineSegment + 1].speed;
+        firstSpeed = 1.0f / (f32)spline[*splineSegment + 1].speed * splineSpeed;
     }
     if (spline[*splineSegment + 2].speed != 0) {
-        secondSpeed = 1.0f / spline[*splineSegment + 2].speed;
+        secondSpeed = 1.0f / (f32)spline[*splineSegment + 2].speed * splineSpeed;
     }
     progressChange = (secondSpeed - firstSpeed) * *progress + firstSpeed;
 
@@ -5762,6 +5799,12 @@ void cam_ccm_leave_slide_shortcut(UNUSED struct Camera *c) {
     sStatusFlags &= ~CAM_FLAG_CCM_SLIDE_SHORTCUT;
 }
 
+// Cutscene Suite functions
+void cam_cs_volume0(struct Camera *c){
+    sStatusFlags |= CAM_FLAG_BLOCK_AREA_PROCESSING;
+    move_point_along_spline(c->pos, segmented_to_virtual(bob_area_1_spline_camSpline0), &sCutsceneSplineSegment, &sCutsceneSplineSegmentProgress);
+}
+
 /**
  * Apply any modes that are triggered by special floor surface types
  */
@@ -5913,9 +5956,7 @@ struct CameraTrigger sCamRR[] = {
  * to free_roam when Mario is not walking up the tower.
  */
 struct CameraTrigger sCamBOB[] = {
-    {  1, cam_bob_tower, 2468, 2720, -4608, 3263, 1696, 3072, 0 },
-    { -1, cam_bob_default_free_roam, 0, 0, 0, 0, 0, 0, 0 },
-    NULL_TRIGGER
+	NULL_TRIGGER
 };
 
 /**
@@ -9951,6 +9992,7 @@ void cutscene_door_mode(struct Camera *c) {
     }
 }
 
+
 /******************************************************************************************************
  * Cutscenes
  ******************************************************************************************************/
@@ -10399,26 +10441,26 @@ u8 sDanceCutsceneIndexTable[][4] = {
  * and if the result is non-zero, the camera will zoom out.
  */
 u8 sZoomOutAreaMasks[] = {
-    ZOOMOUT_AREA_MASK(0,0,0,0, 0,0,0,0), // Unused         | Unused
-    ZOOMOUT_AREA_MASK(0,0,0,0, 0,0,0,0), // Unused         | Unused
-    ZOOMOUT_AREA_MASK(0,0,0,0, 1,0,0,0), // BBH            | CCM
-    ZOOMOUT_AREA_MASK(0,0,0,0, 0,0,0,0), // CASTLE_INSIDE  | HMC
-    ZOOMOUT_AREA_MASK(1,0,0,0, 1,0,0,0), // SSL            | BOB
-    ZOOMOUT_AREA_MASK(1,0,0,0, 1,0,0,0), // SL             | WDW
-    ZOOMOUT_AREA_MASK(0,0,0,0, 1,1,0,0), // JRB            | THI
-    ZOOMOUT_AREA_MASK(0,0,0,0, 1,0,0,0), // TTC            | RR
-    ZOOMOUT_AREA_MASK(1,0,0,0, 1,0,0,0), // CASTLE_GROUNDS | BITDW
-    ZOOMOUT_AREA_MASK(0,0,0,0, 1,0,0,0), // VCUTM          | BITFS
-    ZOOMOUT_AREA_MASK(0,0,0,0, 1,0,0,0), // SA             | BITS
-    ZOOMOUT_AREA_MASK(1,0,0,0, 0,0,0,0), // LLL            | DDD
-    ZOOMOUT_AREA_MASK(1,0,0,0, 0,0,0,0), // WF             | ENDING
-    ZOOMOUT_AREA_MASK(0,0,0,0, 0,0,0,0), // COURTYARD      | PSS
-    ZOOMOUT_AREA_MASK(0,0,0,0, 1,0,0,0), // COTMC          | TOTWC
-    ZOOMOUT_AREA_MASK(1,0,0,0, 1,0,0,0), // BOWSER_1       | WMOTR
-    ZOOMOUT_AREA_MASK(0,0,0,0, 1,0,0,0), // Unused         | BOWSER_2
-    ZOOMOUT_AREA_MASK(1,0,0,0, 0,0,0,0), // BOWSER_3       | Unused
-    ZOOMOUT_AREA_MASK(1,0,0,0, 0,0,0,0), // TTM            | Unused
-    ZOOMOUT_AREA_MASK(0,0,0,0, 0,0,0,0), // Unused         | Unused
+	ZOOMOUT_AREA_MASK(0, 0, 0, 0, 0, 0, 0, 0), // Unused         | Unused
+	ZOOMOUT_AREA_MASK(0, 0, 0, 0, 0, 0, 0, 0), // Unused         | Unused
+	ZOOMOUT_AREA_MASK(0, 0, 0, 0, 1, 0, 0, 0), // BBH            | CCM
+	ZOOMOUT_AREA_MASK(0, 0, 0, 0, 0, 0, 0, 0), // CASTLE_INSIDE  | HMC
+	ZOOMOUT_AREA_MASK(1, 0, 0, 0, 0, 0, 0, 0), // SSL            | BOB
+	ZOOMOUT_AREA_MASK(1, 0, 0, 0, 1, 0, 0, 0), // SL             | WDW
+	ZOOMOUT_AREA_MASK(0, 0, 0, 0, 1, 1, 0, 0), // JRB            | THI
+	ZOOMOUT_AREA_MASK(0, 0, 0, 0, 1, 0, 0, 0), // TTC            | RR
+	ZOOMOUT_AREA_MASK(1, 0, 0, 0, 1, 0, 0, 0), // CASTLE_GROUNDS | BITDW
+	ZOOMOUT_AREA_MASK(0, 0, 0, 0, 1, 0, 0, 0), // VCUTM          | BITFS
+	ZOOMOUT_AREA_MASK(0, 0, 0, 0, 1, 0, 0, 0), // SA             | BITS
+	ZOOMOUT_AREA_MASK(1, 0, 0, 0, 0, 0, 0, 0), // LLL            | DDD
+	ZOOMOUT_AREA_MASK(1, 0, 0, 0, 0, 0, 0, 0), // WF             | ENDING
+	ZOOMOUT_AREA_MASK(0, 0, 0, 0, 0, 0, 0, 0), // COURTYARD      | PSS
+	ZOOMOUT_AREA_MASK(0, 0, 0, 0, 1, 0, 0, 0), // COTMC          | TOTWC
+	ZOOMOUT_AREA_MASK(1, 0, 0, 0, 1, 0, 0, 0), // BOWSER_1       | WMOTR
+	ZOOMOUT_AREA_MASK(0, 0, 0, 0, 1, 0, 0, 0), // Unused         | BOWSER_2
+	ZOOMOUT_AREA_MASK(1, 0, 0, 0, 0, 0, 0, 0), // BOWSER_3       | Unused
+	ZOOMOUT_AREA_MASK(1, 0, 0, 0, 0, 0, 0, 0), // TTM            | Unused
+	ZOOMOUT_AREA_MASK(0, 0, 0, 0, 0, 0, 0, 0), // Unused         | Unused
 };
 
 STATIC_ASSERT(ARRAY_COUNT(sZoomOutAreaMasks) - 1 == LEVEL_MAX / 2, "Make sure you edit sZoomOutAreaMasks when adding / removing courses.");

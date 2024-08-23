@@ -577,13 +577,13 @@ void render_hud(void) {
         }
 #endif
 
-        if (hudDisplayFlags & HUD_DISPLAY_FLAG_COIN_COUNT) {
-            render_hud_coins();
-        }
-
-        if (hudDisplayFlags & HUD_DISPLAY_FLAG_STAR_COUNT) {
-            render_hud_stars();
-        }
+        //if (hudDisplayFlags & HUD_DISPLAY_FLAG_COIN_COUNT) {
+        //    render_hud_coins();
+        //}
+//
+        //if (hudDisplayFlags & HUD_DISPLAY_FLAG_STAR_COUNT) {
+        //    render_hud_stars();
+        //}
 
         if (hudDisplayFlags & HUD_DISPLAY_FLAG_KEYS) {
             render_hud_keys();

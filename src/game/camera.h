@@ -108,7 +108,7 @@ enum CameraModes {
     /* 2*/ CAMERA_MODE_OUTWARD_RADIAL,
     /* 3*/ CAMERA_MODE_BEHIND_MARIO,
     /* 4*/ CAMERA_MODE_CLOSE, // Inside Castle / Big Boo's Haunt
-    /* 5*/ CAMERA_MODE_5,
+    /* 5*/ CAMERA_MODE_CS,
     /* 6*/ CAMERA_MODE_C_UP,
     /* 7*/ CAMERA_MODE_7,
     /* 8*/ CAMERA_MODE_WATER_SURFACE,
@@ -804,5 +804,10 @@ void set_fov_shake_from_point_preset(u8 preset, f32 posX, f32 posY, f32 posZ);
 void obj_rotate_towards_point(struct Object *obj, Vec3f point, s16 pitchOff, s16 yawOff, s16 pitchDiv, s16 yawDiv);
 
 Gfx *geo_camera_fov(s32 callContext, struct GraphNode *g, UNUSED void *context);
+
+extern f32 splineSpeed;
+extern f32 half;
+extern f32 full;
+void cam_cs_volume0(struct Camera *c);
 
 #endif // CAMERA_H

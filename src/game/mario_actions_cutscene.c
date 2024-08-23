@@ -2641,6 +2641,26 @@ static s32 check_for_instant_quicksand(struct MarioState *m) {
     }
     return FALSE;
 }
+u32 counter = 0;
+s32 act_cs_cutscene(struct MarioState *m){
+    counter++;
+    if(counter >= 1 && counter < 60){
+        set_mario_animation(m, MARIO_ANIM_SHIVERING);
+        stop_and_set_height_to_floor(m);
+    }
+    if(counter >= 60 && counter < 90){
+        set_mario_animation(m, MARIO_ANIM_SLEEP_IDLE);
+        stop_and_set_height_to_floor(m);
+    }
+    if(counter >= 90 && counter < 120){
+        set_mario_animation(m, MARIO_ANIM_COUGHING);
+        stop_and_set_height_to_floor(m);
+    } else if(counter > 120){
+        counter = 0;
+    }
+    return FALSE;
+
+}
 
 s32 mario_execute_cutscene_action(struct MarioState *m) {
     s32 cancel;
@@ -2702,6 +2722,7 @@ s32 mario_execute_cutscene_action(struct MarioState *m) {
         case ACT_BUTT_STUCK_IN_GROUND:       cancel = act_butt_stuck_in_ground(m);       break;
         case ACT_FEET_STUCK_IN_GROUND:       cancel = act_feet_stuck_in_ground(m);       break;
         case ACT_PUTTING_ON_CAP:             cancel = act_putting_on_cap(m);             break;
+        case ACT_CS:                         cancel = act_cs_cutscene(m);                break;
     }
     /* clang-format on */
 

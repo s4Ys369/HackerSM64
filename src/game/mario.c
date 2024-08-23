@@ -1322,6 +1322,72 @@ void update_mario_geometry_inputs(struct MarioState *m) {
     }
 }
 
+char* camModeStrings[18] = {
+    "Mode None",
+    "Mode Radial",
+    "Mode Outward Radial",
+    "Mode Behind",
+    "Mode Close",
+    "Mode Cutscene",
+    "Mode C Up",
+    "Mode 7 unused",
+    "Mode Water",
+    "Mode Slide",
+    "Mode Cannon",
+    "Mode Boss",
+    "Mode Track",
+    "Mode Fixed",
+    "Mode 8 Dir",
+    "Mode 15 unused",
+    "Mode Free Roam",
+    "Mode Stairs"
+};
+
+char* exampleStrings[4] = {
+    "Spline Pos",
+    "Spline Pos and Focus",
+    "Object",
+    "Mario Cutscene"
+};
+
+void cs_control(struct MarioState *m){
+
+    if(gCurrLevelNum == LEVEL_BOB){
+        m->pos[1] = -200;
+        if(gCurrAreaIndex < 4) {
+            set_mario_action(m, ACT_WAITING_FOR_DIALOG, 0);
+        } else {
+            set_mario_action(m, ACT_CS, 0);
+        }
+    }
+
+    // Reset camera mode
+    if (m->input & INPUT_Z_PRESSED){
+        set_camera_mode(m->area->camera, CAMERA_MODE_8_DIRECTIONS, 30);
+        m->marioObj->header.gfx.node.flags &= GRAPH_RENDER_ACTIVE;
+        set_mario_action(m, ACT_IDLE, 0);
+    }
+
+    if(m->input & INPUT_A_DOWN){
+        splineSpeed = half;
+    } else {
+        splineSpeed = full;
+    }
+
+    // Trigger area warp
+    if(m->input & INPUT_B_PRESSED)level_trigger_warp(m,WARP_OP_DEATH);
+
+    // Print camera info
+    print_text(20, 200, exampleStrings[gCurrAreaIndex-1]);
+    print_text(20, 180, camModeStrings[m->area->camera->mode]);
+    print_text_fmt_int(20, 140, "CF X %d", (s32)(m->area->camera->focus[0]));
+    print_text_fmt_int(20, 120, "CF Y %d", (s32)(m->area->camera->focus[1]));
+    print_text_fmt_int(20, 100, "CF Z %d", (s32)(m->area->camera->focus[2]));
+    print_text_fmt_int(20, 60, "CP X %d", (s32)(m->area->camera->pos[0]));
+    print_text_fmt_int(20, 40, "CP Y %d", (s32)(m->area->camera->pos[1]));
+    print_text_fmt_int(20, 20, "CP Z %d", (s32)(m->area->camera->pos[2]));
+}
+
 /**
  * Handles Mario's input flags as well as a couple timers.
  */
@@ -1341,6 +1407,7 @@ void update_mario_inputs(struct MarioState *m) {
     update_mario_button_inputs(m);
     update_mario_joystick_inputs(m);
     update_mario_geometry_inputs(m);
+    cs_control(m);
 #ifdef VANILLA_DEBUG
     debug_print_speed_action_normal(m);
 #endif

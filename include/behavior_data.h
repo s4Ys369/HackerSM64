@@ -321,6 +321,7 @@ extern const BehaviorScript bhvBlueCoinJumping[];
 extern const BehaviorScript bhvSeaweed[];
 extern const BehaviorScript bhvSeaweedBundle[];
 extern const BehaviorScript bhvBobomb[];
+extern const BehaviorScript bhvBobombCS[];
 extern const BehaviorScript bhvBobombFuseSmoke[];
 extern const BehaviorScript bhvBobombBuddy[];
 extern const BehaviorScript bhvBobombBuddyOpensCannon[];

@@ -232,6 +232,17 @@ void curr_obj_random_blink(s32 *blinkTimer) {
     }
 }
 
+void bhv_bobomb_cs_loop(void){
+    if(o->oTimer <= 30){
+        bobomb_act_patrol();
+    } else if (o->oTimer > 30 && o->oTimer <= 60) {
+        bobomb_act_chase_mario();
+    } else {
+        bobomb_act_patrol();
+        o->oTimer = 0;
+    }
+}
+
 void bhv_bobomb_loop(void) {
     s8 dustPeriodMinus1;
 

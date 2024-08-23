@@ -270,6 +270,7 @@ void bhv_blue_coin_jumping_loop(void);
 void bhv_seaweed_init(void);
 void bhv_seaweed_bundle_init(void);
 void bhv_bobomb_init(void);
+void bhv_bobomb_cs_loop(void);
 void bhv_bobomb_loop(void);
 void bhv_bobomb_fuse_smoke_init(void);
 void bhv_bobomb_buddy_init(void);
