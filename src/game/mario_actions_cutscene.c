@@ -2641,23 +2641,34 @@ static s32 check_for_instant_quicksand(struct MarioState *m) {
     }
     return FALSE;
 }
-u32 counter = 0;
+
+// CS_SUITE
+u32 counter = 0; // frame counter instead of dealing with Mario's action timer
+
+// Cutscene action to set Mario's animation based on a frame counter
 s32 act_cs_cutscene(struct MarioState *m){
+    // Increment fram counter
     counter++;
+
+    // If frames 1 - 59
     if(counter >= 1 && counter < 60){
         set_mario_animation(m, MARIO_ANIM_SHIVERING);
         stop_and_set_height_to_floor(m);
     }
-    if(counter >= 60 && counter < 90){
+    // If frames 60 - 89
+    else if(counter >= 60 && counter < 90){
         set_mario_animation(m, MARIO_ANIM_SLEEP_IDLE);
         stop_and_set_height_to_floor(m);
     }
-    if(counter >= 90 && counter < 120){
+    // If frames 90 - 119
+    else if(counter >= 90 && counter < 120){
         set_mario_animation(m, MARIO_ANIM_COUGHING);
         stop_and_set_height_to_floor(m);
+    // Reset frame counter at 121 frames
     } else if(counter > 120){
         counter = 0;
     }
+
     return FALSE;
 
 }

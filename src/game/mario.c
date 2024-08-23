@@ -1322,6 +1322,9 @@ void update_mario_geometry_inputs(struct MarioState *m) {
     }
 }
 
+// CS_SUITE
+
+// Strings for the camera mode
 char* camModeStrings[18] = {
     "Mode None",
     "Mode Radial",
@@ -1343,6 +1346,7 @@ char* camModeStrings[18] = {
     "Mode Stairs"
 };
 
+// Strings for the example title
 char* exampleStrings[4] = {
     "Spline Pos",
     "Spline Pos and Focus",
@@ -1350,24 +1354,35 @@ char* exampleStrings[4] = {
     "Mario Cutscene"
 };
 
+
+// Cutscene main control function
 void cs_control(struct MarioState *m){
 
+    // If in BOB
     if(gCurrLevelNum == LEVEL_BOB){
-        m->pos[1] = -200;
+
+        // Drop Mario to the floor
+        m->pos[1] = -200.0f;
+        // If not in Area 4
         if(gCurrAreaIndex < 4) {
-            set_mario_action(m, ACT_WAITING_FOR_DIALOG, 0);
+            // If camera mode is custom camera mode, set Mario's action to a fixed one
+            if(m->area->camera->mode == CAMERA_MODE_CS)set_mario_action(m, ACT_WAITING_FOR_DIALOG, 0);
         } else {
-            set_mario_action(m, ACT_CS, 0);
+
+            // Else for area 4, set Mario's action to a cutscene
+            if(m->area->camera->mode == CAMERA_MODE_CS)set_mario_action(m, ACT_CS, 0);
         }
     }
 
     // Reset camera mode
     if (m->input & INPUT_Z_PRESSED){
         set_camera_mode(m->area->camera, CAMERA_MODE_8_DIRECTIONS, 30);
-        m->marioObj->header.gfx.node.flags &= GRAPH_RENDER_ACTIVE;
+        // Reset Mario's visiblity
+        m->marioObj->header.gfx.node.flags |= GRAPH_RENDER_ACTIVE;
         set_mario_action(m, ACT_IDLE, 0);
     }
 
+    // Halfs the speed of the moving along the spline
     if(m->input & INPUT_A_DOWN){
         splineSpeed = half;
     } else {

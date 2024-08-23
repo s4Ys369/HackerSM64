@@ -232,6 +232,9 @@ void curr_obj_random_blink(s32 *blinkTimer) {
     }
 }
 
+// CS_SUITE
+
+// Alternate bobomb's actions based on its object timer
 void bhv_bobomb_cs_loop(void){
     if(o->oTimer <= 30){
         bobomb_act_patrol();

@@ -1,3 +1,12 @@
+**Quick and Dirty Cutscene Examples**
+- A to slow spline progression for example 1 and 2
+- B to switch examples/area
+- Z to exit cutscene
+- Red spline is camera's position
+- Blue spline is camera's focus
+- search `CS_SUITE` for specifics
+
+
 # ![](https://i.imgur.com/CeOukzk.gif) HackerSM64 ![](https://i.imgur.com/s0LUbTo.gif)
 
 **AFTER CLONING THE REPO, CHECK OUT THE `include/config` FOLDER BEFORE ANYTHING ELSE! THERE'S A LOT OF STUFF IN THIS REPO THAT CAN BE TOGGLED THERE.**

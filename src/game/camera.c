@@ -29,6 +29,8 @@
 #include "puppyprint.h"
 #include "profiling.h"
 
+// CS_SUITE
+// If your splines are located in the level folder, you'll need to include the level's header
 #include "levels/bob/header.h"
 
 #define CBUTTON_MASK (U_CBUTTONS | D_CBUTTONS | L_CBUTTONS | R_CBUTTONS)
@@ -1652,35 +1654,68 @@ void mode_fixed_camera(struct Camera *c) {
     vec3_zero(sCastleEntranceOffset);
 }
 
+
+// CS_SUITE
+
+// Control variables
 u8 bombSpawned = 0;
 f32 splineSpeed = 1.0f;
 f32 half = 0.5f;
 f32 full = 1.0f;
+
+// Function to handle Cutscene camera mode
 void mode_cs_camera(struct Camera *c) {
+
+    // If in area 1 of BOB, the spline position example
     if(gCurrLevelArea == LEVEL_AREA_INDEX(LEVEL_BOB, 1)) {
+
+        // Reset bomb check
         bombSpawned = 0;
+        // Move the camera's position along the spline from levels/bob/area_1/spline.inc.c
         move_point_along_spline(c->pos, segmented_to_virtual(bob_area_1_spline_camSpline0), &sCutsceneSplineSegment, &sCutsceneSplineSegmentProgress);
+        // Set camera's focus to Mario's position
         vec3f_copy(c->focus, sMarioCamState->pos);
+
+    // Else if in area 2 of BOB, the spline position and focus example
     } else if(gCurrLevelArea == LEVEL_AREA_INDEX(LEVEL_BOB, 2)){
+        // Move the camera's position and focus along the splines from levels/bob/area_2/spline.inc.c
         move_point_along_spline(c->pos, segmented_to_virtual(bob_area_2_spline_camSpline1_pos), &sCutsceneSplineSegment, &sCutsceneSplineSegmentProgress);
         move_point_along_spline(c->focus, segmented_to_virtual(bob_area_2_spline_camSpline1_focus), &sCutsceneSplineSegment, &sCutsceneSplineSegmentProgress);
+
+    // Else if in area 3 of BOB, the object cutscene example
     } else if(gCurrLevelArea == LEVEL_AREA_INDEX(LEVEL_BOB, 3)){
+
+        // Pointer to bomb
         struct Object *bomb = NULL;
+        // Make Mario invisible
         gMarioObject->header.gfx.node.flags &= ~GRAPH_RENDER_ACTIVE;
+        // If a bomb hasn't been spawned
         if (bombSpawned == 0) {
+            // Spawn Cutscene Object 1 at 0 frames
             cutscene_spawn_obj(1,0);
             if(gCutsceneObjSpawn == 1){
                 bomb = spawn_object_relative(0,500,0,500,gMarioObject,MODEL_BLACK_BOBOMB, bhvBobombCS);
+                // Set camera focus to the bomb Object
                 gCutsceneFocus = bomb;
+                // Increment bomb check
                 bombSpawned++;
             }
         }
+        // Set camera's focus the Object's position
         vec3f_set(c->focus, gCutsceneFocus->oPosX, gCutsceneFocus->oPosY,
               gCutsceneFocus->oPosZ);
+        // Set camera's position according to the Object's position with offsets
         vec3f_set(c->pos, 300.0f + gCutsceneFocus->oPosX, 500.0f + gCutsceneFocus->oPosY,
               300.0f + gCutsceneFocus->oPosZ);
+
+    // Else if in area 4 of BOB, the Mario cutscene example
     } else {
-        c->pos[2] = 400.0f;
+        vec3f_copy(c->focus, sMarioCamState->pos);
+        c->pos[1] = sMarioCamState->pos[1] + 300.0f; // set the camera's Y position to Mario's with an offset
+        c->pos[2] = 700.0f; // set the camera's Z position in front of Mario
+        /*  Here, the camera's desired Z position is hardcoded, but it can be
+            calculated using sMarioCamState->pos and sMarioCamState->faceAngle
+        */
     }
 }
 
@@ -5797,12 +5832,6 @@ void cam_ccm_enter_slide_shortcut(UNUSED struct Camera *c) {
 
 void cam_ccm_leave_slide_shortcut(UNUSED struct Camera *c) {
     sStatusFlags &= ~CAM_FLAG_CCM_SLIDE_SHORTCUT;
-}
-
-// Cutscene Suite functions
-void cam_cs_volume0(struct Camera *c){
-    sStatusFlags |= CAM_FLAG_BLOCK_AREA_PROCESSING;
-    move_point_along_spline(c->pos, segmented_to_virtual(bob_area_1_spline_camSpline0), &sCutsceneSplineSegment, &sCutsceneSplineSegmentProgress);
 }
 
 /**
