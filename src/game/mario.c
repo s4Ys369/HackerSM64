@@ -1469,14 +1469,9 @@ void update_mario_health(struct MarioState *m) {
         if (((m->action & ACT_GROUP_MASK) == ACT_GROUP_SUBMERGED) && (m->health < 0x300)) {
             play_sound(SOUND_MOVING_ALMOST_DROWNING, gGlobalSoundSource);
  #ifdef ENABLE_RUMBLE
-            if (gRumblePakTimer == 0) {
-                gRumblePakTimer = 36;
-                if (is_rumble_finished_and_queue_empty(m->controller)) {
-                    queue_rumble_data(m->controller, 3, 30, 0);
-                }
+            if (is_rumble_finished_and_queue_empty(m->controller)) {
+                pak_rumble(m->controller->port, 0.1f, 1, 5);
             }
-        } else {
-            gRumblePakTimer = 0;
  #endif // ENABLE_RUMBLE
         }
 #endif // !BREATH_METER
@@ -1492,14 +1487,9 @@ void update_mario_breath(struct MarioState *m) {
                 // Play a noise to alert the player when Mario is close to drowning.
                 play_sound(SOUND_MOVING_ALMOST_DROWNING, gGlobalSoundSource);
 #ifdef ENABLE_RUMBLE
-                if (gRumblePakTimer == 0) {
-                    gRumblePakTimer = 36;
-                    if (is_rumble_finished_and_queue_empty(m->controller)) {
-                        queue_rumble_data(m->controller, 3, 30, 0);
-                    }
+                if (is_rumble_finished_and_queue_empty(m->controller)) {
+                    pak_rumble(m->controller->port, 0.1f, 1, 5);
                 }
-            } else {
-                gRumblePakTimer = 0;
 #endif // ENABLE_RUMBLE
             }
         } else if (!(m->input & INPUT_IN_POISON_GAS)) {
@@ -1687,11 +1677,11 @@ UNUSED static void debug_update_mario_cap(u16 button, s32 flags, u16 capTimer, u
 #ifdef ENABLE_RUMBLE
 void queue_rumble_particles(struct MarioState *m) {
     if (m->particleFlags & PARTICLE_HORIZONTAL_STAR) {
-        queue_rumble_data(m->controller, 5, 80, 0);
+        pak_rumble(m->controller->port, 0.2f, 5, 2);
     } else if (m->particleFlags & PARTICLE_VERTICAL_STAR) {
-        queue_rumble_data(m->controller, 5, 80, 0);
+        pak_rumble(m->controller->port, 0.2f, 5, 2);
     } else if (m->particleFlags & PARTICLE_TRIANGLE) {
-        queue_rumble_data(m->controller, 5, 80, 0);
+        pak_rumble(m->controller->port, 0.2f, 5, 2);
     }
     if (m->heldObj && m->heldObj->behavior == segmented_to_virtual(bhvBobomb)) {
         reset_rumble_timers_slip(m->controller);

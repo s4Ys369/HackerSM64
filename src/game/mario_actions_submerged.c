@@ -554,7 +554,7 @@ static s32 act_breaststroke(struct MarioState *m) {
     }
 
     if (m->actionTimer < 6) {
-        queue_rumble_submerged(m->controller);
+        pak_rumble(m->controller->port, 0.2f, 2, 4);
     }
 
     set_mario_animation(m, MARIO_ANIM_SWIM_PART1);
@@ -799,7 +799,7 @@ static s32 act_water_throw(struct MarioState *m) {
 
     if (m->actionTimer++ == 5) {
         mario_throw_held_object(m);
-        queue_rumble_data(m->controller, 3, 50, 0);
+        pak_rumble(m->controller->port, 0.1f, 3, 3);
     }
 
     if (is_anim_at_end(m)) {
@@ -975,7 +975,7 @@ static s32 act_water_plunge(struct MarioState *m) {
         m->actionState = ACT_STATE_WATER_PLUNGE_SINK;
 
         if (m->prevAction & ACT_FLAG_AIR) {
-            queue_rumble_data(m->controller, 5, 80, 0);
+            pak_rumble(m->controller->port, 0.2f, 5, 2);
         }
     }
 

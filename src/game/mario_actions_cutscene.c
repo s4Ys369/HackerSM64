@@ -1180,7 +1180,7 @@ s32 act_death_exit(struct MarioState *m) {
     if (15 < m->actionTimer++
         && launch_mario_until_land(m, ACT_DEATH_EXIT_LAND, MARIO_ANIM_GENERAL_FALL, -32.0f)) {
         play_sound(SOUND_MARIO_OOOF2, m->marioObj->header.gfx.cameraToObject);
-        queue_rumble_data(m->controller, 5, 80, 0);
+        pak_rumble(m->controller->port, 0.2f, 5, 2);
 #ifdef ENABLE_LIVES
         m->numLives--;
 #endif
@@ -1215,7 +1215,7 @@ s32 act_unused_death_exit(struct MarioState *m) {
 s32 act_falling_death_exit(struct MarioState *m) {
     if (launch_mario_until_land(m, ACT_DEATH_EXIT_LAND, MARIO_ANIM_GENERAL_FALL, 0.0f)) {
         play_sound(SOUND_MARIO_OOOF2, m->marioObj->header.gfx.cameraToObject);
-        queue_rumble_data(m->controller, 5, 80, 0);
+        pak_rumble(m->controller->port, 0.2f, 5, 2);
 #ifdef ENABLE_LIVES
         m->numLives--;
 #endif
@@ -1268,7 +1268,7 @@ s32 act_special_death_exit(struct MarioState *m) {
     }
 
     if (launch_mario_until_land(m, ACT_HARD_BACKWARD_GROUND_KB, MARIO_ANIM_BACKWARD_AIR_KB, -24.0f)) {
-        queue_rumble_data(m->controller, 5, 80, 0);
+        pak_rumble(m->controller->port, 0.2f, 5, 2);
 #ifdef ENABLE_LIVES
         m->numLives--;
 #endif
@@ -1354,7 +1354,7 @@ s32 act_bbh_enter_spin(struct MarioState *m) {
             m->flags &= ~MARIO_JUMPING;
             if (perform_air_step(m, 0) == AIR_STEP_LANDED) {
                 level_trigger_warp(m, WARP_OP_SPIN_SHRINK);
-                queue_rumble_data(m->controller, 15, 80, 0);
+                pak_rumble(m->controller->port, 0.3f, 6, 0);
                 m->actionState = ACT_STATE_BBH_ENTER_SPIN_END;
             }
             if (m->actionState == ACT_STATE_BBH_ENTER_SPIN_WAIT_FOR_ANIM) {
@@ -1417,7 +1417,7 @@ s32 act_teleport_fade_out(struct MarioState *m) {
                                                           : MARIO_ANIM_FIRST_PERSON);
 
     if (m->actionTimer == 0) {
-        queue_rumble_data(m->controller, 30, 70, 2);
+        pak_rumble(m->controller->port, 0.5f, 5, 1);
     }
 
     m->flags |= MARIO_TELEPORTING;
@@ -1440,7 +1440,7 @@ s32 act_teleport_fade_in(struct MarioState *m) {
     set_mario_animation(m, MARIO_ANIM_FIRST_PERSON);
 
     if (m->actionTimer == 0) {
-        queue_rumble_data(m->controller, 30, 70, 2);
+        pak_rumble(m->controller->port, 0.5f, 5, 1);
     }
 
     if (m->actionTimer < 32) {
@@ -1528,7 +1528,7 @@ s32 act_squished(struct MarioState *m) {
 
                 vec3f_set(m->marioObj->header.gfx.scale, 1.8f, 0.05f, 1.8f);
 
-                queue_rumble_data(m->controller, 10, 80, 0);
+                pak_rumble(m->controller->port, 0.2f, 6, 0);
 
                 m->actionState = ACT_STATE_SQUISHED_CHECK_HEIGHT;
             }
@@ -1631,7 +1631,7 @@ void stuck_in_ground_handler(struct MarioState *m, s32 animation, s32 unstuckFra
     if (animFrame == -1) {
         play_sound_and_spawn_particles(m, SOUND_ACTION_TERRAIN_STUCK_IN_GROUND, 1);
     } else if (animFrame == unstuckFrame) {
-        queue_rumble_data(m->controller, 5, 80, 0);
+        pak_rumble(m->controller->port, 0.2f, 5, 2);
         play_sound_and_spawn_particles(m, SOUND_ACTION_UNSTUCK_FROM_GROUND, 1);
     } else if (animFrame == target2 || animFrame == target3) {
         play_mario_landing_sound(m, SOUND_ACTION_TERRAIN_LANDING);

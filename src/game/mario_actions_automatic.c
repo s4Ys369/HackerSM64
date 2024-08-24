@@ -357,7 +357,7 @@ void update_hang_stationary(struct MarioState *m) {
 
 s32 act_start_hanging(struct MarioState *m) {
     if (m->actionTimer++ == 0) {
-        queue_rumble_data(m->controller, 5, 80, 0);
+        pak_rumble(m->controller->port, 0.2f, 5, 2);
     }
 #ifdef BETTER_HANGING
     // immediately go into hanging if controller stick is pointed far enough in
@@ -477,7 +477,7 @@ s32 act_hang_moving(struct MarioState *m) {
 
     if (m->marioObj->header.gfx.animInfo.animFrame == 12) {
         play_sound(SOUND_ACTION_HANGING_STEP, m->marioObj->header.gfx.cameraToObject);
-        queue_rumble_data(m->controller, 1, 30, 0);
+        pak_rumble(m->controller->port, 0.1f, 1, 5);
     }
 
 #ifdef BETTER_HANGING
@@ -670,7 +670,7 @@ s32 act_grabbed(struct MarioState *m) {
         m->faceAngle[1] = m->usedObj->oMoveAngleYaw;
         vec3f_copy(m->pos, m->marioObj->header.gfx.pos);
 
-        queue_rumble_data(m->controller, 5, 60, 0);
+        pak_rumble(m->controller->port, 0.2f, 4, 2);
 
         return set_mario_action(m, (m->forwardVel >= 0.0f) ? ACT_THROWN_FORWARD : ACT_THROWN_BACKWARD, thrown);
     }
@@ -740,7 +740,7 @@ s32 act_in_cannon(struct MarioState *m) {
 
                 set_mario_action(m, ACT_SHOT_FROM_CANNON, 0);
 
-                queue_rumble_data(m->controller, 60, 70, 0);
+                pak_rumble(m->controller->port, 1.0f, 5, 1);
 
                 m->usedObj->oAction = OPENED_CANNON_ACT_SHOOT;
 

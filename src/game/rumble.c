@@ -5,6 +5,7 @@
 #include "buffers/buffers.h"
 #include "main.h"
 #include "rumble.h"
+#include "rumble_pd.h"
 
 #ifdef ENABLE_RUMBLE
 
@@ -64,7 +65,7 @@ static void detect_rumble_pak(void) {
  *
  * @param[in] motorState MOTOR_STOP = stop motor, MOTOR_START = start motor, MOTOR_STOP_HARD (GCN only) = motor brake.
  */
-static void set_motor(s32 motorState) {
+void set_motor(s32 motorState) {
     // Check the rumble pak's status and make sure it's initialized.
     if (!sRumblePakActive) {
         return;
@@ -298,7 +299,7 @@ static void thread6_rumble_loop(UNUSED void* arg) {
         osRecvMesg(&gRumbleThreadVIMesgQueue, &msg, OS_MESG_BLOCK);
 
         update_rumble_data_queue();
-        update_rumble_pak();
+        update_pd_rumble();
         detect_rumble_pak();
     }
 }

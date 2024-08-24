@@ -708,7 +708,7 @@ void initiate_painting_warp(void) {
                 play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
                 fadeout_music(398);
 
-                queue_rumble_data(gMarioState->controller, 80, 70, 1);
+                pak_rumble(gMarioState->controller->port, 1.2f, 4, 2);
             }
         }
     }

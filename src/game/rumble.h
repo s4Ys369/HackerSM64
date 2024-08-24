@@ -3,6 +3,7 @@
 #include <PR/ultratypes.h>
 
 #include "config.h"
+#include "rumble_pd.h"
 
 #ifdef ENABLE_RUMBLE
 
@@ -51,8 +52,11 @@ extern OSMesgQueue gRumbleThreadVIMesgQueue;
 extern struct RumbleData gRumbleDataQueue[RUMBLE_QUEUE_SIZE];
 extern struct RumbleSettings gCurrRumbleSettings;
 
+extern u8 sRumblePakThreadActive;
+
 extern s32 gRumblePakTimer;
 
+void set_motor(s32 motorState);
 void block_until_rumble_pak_free(void);
 void release_rumble_pak_control(void);
 void queue_rumble_data(struct Controller* controller, s16 timer, s16 level, s16 decay);

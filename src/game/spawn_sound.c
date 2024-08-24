@@ -67,9 +67,9 @@ void cur_obj_play_sound_2(s32 soundMagic) {
         play_sound(soundMagic, gCurrentObject->header.gfx.cameraToObject);
 
         switch (soundMagic) {
-            case SOUND_OBJ_BOWSER_WALK:   queue_rumble_data(gMarioState->controller, 3, 60, 0); break;
-            case SOUND_OBJ_POUNDING_LOUD: queue_rumble_data(gMarioState->controller, 3, 60, 0); break;
-            case SOUND_OBJ_WHOMP:         queue_rumble_data(gMarioState->controller, 5, 80, 0); break;
+            case SOUND_OBJ_BOWSER_WALK:   pak_rumble(gMarioState->controller->port, 0.1f, 3, 3); break;
+            case SOUND_OBJ_POUNDING_LOUD: pak_rumble(gMarioState->controller->port, 0.1f, 3, 3); break;
+            case SOUND_OBJ_WHOMP:         pak_rumble(gMarioState->controller->port, 0.2f, 5, 1); break;
         }
     }
 }
