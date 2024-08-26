@@ -256,7 +256,7 @@ void set_background_music(u16 a, u16 seqArgs, s16 fadeTimer) {
  * Called from threads: thread3_main, thread5_game_loop
  */
 void fadeout_music(s16 fadeOutTime) {
-    func_803210D4(fadeOutTime);
+    fade_all_players(fadeOutTime);
     sCurrentMusic = MUSIC_NONE;
     sCurrentShellMusic = MUSIC_NONE;
     sCurrentCapMusic = MUSIC_NONE;

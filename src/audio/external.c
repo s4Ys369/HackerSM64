@@ -264,11 +264,11 @@ u8 sSoundBankDisabled[16] = { 0 };
 u8 sHasStartedFadeOut = FALSE;
 u16 sSoundBanksThatLowerBackgroundMusic = 0;
 u8 sBackgroundMusicMaxTargetVolume = TARGET_VOLUME_UNSET;
-u8 D_80332120 = 0;
-u8 D_80332124 = 0;
+u8 sEnvironmentSeqID = 0;
+u8 sEnvironmentVolume = 0;
 
 #if defined(VERSION_EU) || defined(VERSION_SH)
-u8 D_EU_80300558 = 0;
+u8 sFrameDelayEU = 0;
 #endif
 
 u8 sBackgroundMusicQueueSize = 0;
@@ -282,7 +282,7 @@ struct UnkStruct80343D00 D_SH_80343D00;
 #endif
 
 struct Sound sSoundRequests[0x100];
-struct ChannelVolumeScaleFade D_80360928[SEQUENCE_PLAYERS][CHANNELS_MAX];
+struct ChannelVolumeScaleFade sChannelFader[SEQUENCE_PLAYERS][CHANNELS_MAX];
 u8 sUsedChannelsForSoundBank[SOUND_BANK_COUNT];
 u8 sCurrentSound[SOUND_BANK_COUNT][MAX_CHANNELS_PER_SOUND_BANK]; // index into sSoundBanks
 
@@ -325,7 +325,11 @@ extern OSMesgQueue *D_SH_80350FA8;
 
 typedef s32 FadeT;
 
-// some sort of main thread -> sound thread dispatchers
+/*
+    These seem like Nintendo had to brute force solutions for additional releases,
+    possibly from issues with PAL refresh rate. The changes then seem to have been
+    carried over to Shindou, as they were probably being developed simultaneously.
+*/
 extern void func_802ad728(u32 bits, f32 arg);
 extern void func_802ad74c(u32 bits, u32 arg);
 extern void func_802ad770(u32 bits, s8 arg);
@@ -335,7 +339,7 @@ static void update_game_sound(void);
 static void fade_channel_volume_scale(u8 player, u8 channelId, u8 targetScale, u16 fadeTimer);
 void process_level_music_dynamics(void);
 static u8 begin_background_music_fade(u16 fadeDuration);
-void func_80320ED8(void);
+void update_environment_music(void);
 
 /**
  * Fade out a sequence player
@@ -1491,7 +1495,7 @@ static void seq_player_play_sequence(u8 player, u8 seqId, u16 arg2) {
     }
 
     for (i = 0; i < CHANNELS_MAX; i++) {
-        D_80360928[player][i].remainingFrames = 0;
+        sChannelFader[player][i].remainingFrames = 0;
     }
 
 #if defined(VERSION_EU) || defined(VERSION_SH)
@@ -1560,7 +1564,7 @@ static void fade_channel_volume_scale(u8 player, u8 channelIndex, u8 targetScale
     struct ChannelVolumeScaleFade *temp;
 
     if (gSequencePlayers[player].channels[channelIndex] != &gSequenceChannelNone) {
-        temp = &D_80360928[player][channelIndex];
+        temp = &sChannelFader[player][channelIndex];
         temp->remainingFrames = fadeDuration;
         temp->velocity = ((f32)(targetScale / 127.0f)
                           - gSequencePlayers[player].channels[channelIndex]->volumeScale)
@@ -1571,30 +1575,31 @@ static void fade_channel_volume_scale(u8 player, u8 channelIndex, u8 targetScale
 }
 
 /**
- * Called from threads: thread4_sound, thread5_game_loop (EU only)
+ * Called from threads: thread4_sound, thread5_game_loop (EU only).
+ * Similar to fade_volume_scale and fade_channel_volume_scale.
  */
-static void func_8031F96C(u8 player) {
+static void seq_player_fade_channels(u8 player) {
     u8 i;
 
     // Loop over channels
     for (i = 0; i < CHANNELS_MAX; i++) {
         if (gSequencePlayers[player].channels[i] != &gSequenceChannelNone
-            && D_80360928[player][i].remainingFrames != 0) {
-            D_80360928[player][i].current += D_80360928[player][i].velocity;
+            && sChannelFader[player][i].remainingFrames != 0) {
+            sChannelFader[player][i].current += sChannelFader[player][i].velocity;
 #if defined(VERSION_EU) || defined(VERSION_SH)
             func_802ad728(0x01000000 | (player & 0xff) << 16 | (i & 0xff) << 8,
-                          D_80360928[player][i].current);
+                          sChannelFader[player][i].current);
 #else
-            gSequencePlayers[player].channels[i]->volumeScale = D_80360928[player][i].current;
+            gSequencePlayers[player].channels[i]->volumeScale = sChannelFader[player][i].current;
 #endif
-            D_80360928[player][i].remainingFrames--;
-            if (D_80360928[player][i].remainingFrames == 0) {
+            sChannelFader[player][i].remainingFrames--;
+            if (sChannelFader[player][i].remainingFrames == 0) {
 #if defined(VERSION_EU) || defined(VERSION_SH)
                 func_802ad728((0x01000000 | ((player & 0xFF) << 16) | ((i & 0xFF) << 8)),
-                              (FLOAT_CAST(D_80360928[player][i].target) / 127.0f));
+                              (FLOAT_CAST(sChannelFader[player][i].target) / 127.0f));
 #else
                 gSequencePlayers[player].channels[i]->volumeScale =
-                    D_80360928[player][i].target / 127.0f;
+                    sChannelFader[player][i].target / 127.0f;
 #endif
             }
         }
@@ -1613,9 +1618,9 @@ void process_level_music_dynamics(void) {
     s16 dur1, dur2;
     u16 bit;
 
-    func_8031F96C(0);
-    func_8031F96C(2);
-    func_80320ED8();
+    seq_player_fade_channels(SEQ_PLAYER_LEVEL);
+    seq_player_fade_channels(SEQ_PLAYER_SFX);
+    update_environment_music();
     if (sMusicDynamicDelay != 0) {
         sMusicDynamicDelay--;
     } else {
@@ -1906,7 +1911,7 @@ void sound_init(void) {
 
     for (j = 0; j < SEQUENCE_PLAYERS; j++) {
         for (i = 0; i < CHANNELS_MAX; i++) {
-            D_80360928[j][i].remainingFrames = 0;
+            sChannelFader[j][i].remainingFrames = 0;
         }
     }
 
@@ -1922,8 +1927,8 @@ void sound_init(void) {
     sCurrentBackgroundMusicSeqId = 0xff;
     sBackgroundMusicQueueSize = 0;
     sBackgroundMusicMaxTargetVolume = TARGET_VOLUME_UNSET;
-    D_80332120 = 0;
-    D_80332124 = 0;
+    sEnvironmentSeqID = 0;
+    sEnvironmentVolume = 0;
     sNumProcessedSoundRequests = 0;
     sSoundRequestCount = 0;
 }
@@ -2231,16 +2236,18 @@ u32 get_current_background_music(void) {
 }
 
 /**
- * Called from threads: thread4_sound, thread5_game_loop (EU only)
+ * Called from threads: thread4_sound, thread5_game_loop (EU only).
+ * This seems to be some edgecase/special handling for the
+ * BBH Merry Go Round and Piranha Plant Lullabye sequences.
  */
-void func_80320ED8(void) {
+void update_environment_music(void) {
 #if defined(VERSION_EU) || defined(VERSION_SH)
-    if (D_EU_80300558 != 0) {
-        D_EU_80300558--;
+    if (sFrameDelayEU != 0) {
+        sFrameDelayEU--;
     }
 
     if (gSequencePlayers[SEQ_PLAYER_ENV].enabled
-        || sBackgroundMusicMaxTargetVolume == TARGET_VOLUME_UNSET || D_EU_80300558 != 0) {
+        || sBackgroundMusicMaxTargetVolume == TARGET_VOLUME_UNSET || sFrameDelayEU != 0) {
 #else
     if (gSequencePlayers[SEQ_PLAYER_ENV].enabled
         || sBackgroundMusicMaxTargetVolume == TARGET_VOLUME_UNSET) {
@@ -2252,10 +2259,10 @@ void func_80320ED8(void) {
     begin_background_music_fade(50);
 
     if (sBackgroundMusicTargetVolume != TARGET_VOLUME_UNSET
-        && (D_80332120 == SEQ_EVENT_MERRY_GO_ROUND || D_80332120 == SEQ_EVENT_PIRANHA_PLANT)) {
-        seq_player_play_sequence(SEQ_PLAYER_ENV, D_80332120, 1);
-        if (D_80332124 != 0xff) {
-            seq_player_fade_to_target_volume(SEQ_PLAYER_ENV, 1, D_80332124);
+        && (sEnvironmentSeqID == SEQ_EVENT_MERRY_GO_ROUND || sEnvironmentSeqID == SEQ_EVENT_PIRANHA_PLANT)) {
+        seq_player_play_sequence(SEQ_PLAYER_ENV, sEnvironmentSeqID, 1);
+        if (sEnvironmentVolume != 0xff) {
+            seq_player_fade_to_target_volume(SEQ_PLAYER_ENV, 1, sEnvironmentVolume);
         }
     }
 }
@@ -2276,13 +2283,13 @@ void play_secondary_music(u8 seqId, u8 bgMusicVolume, u8 volume, u16 fadeTimer) 
         if (volume < 0x80) {
             seq_player_fade_to_target_volume(SEQ_PLAYER_ENV, fadeTimer, volume);
         }
-        D_80332124 = volume;
-        D_80332120 = seqId;
+        sEnvironmentVolume = volume;
+        sEnvironmentSeqID = seqId;
     } else if (volume != 0xff) {
         sBackgroundMusicTargetVolume = bgMusicVolume + TARGET_VOLUME_IS_PRESENT_FLAG;
         begin_background_music_fade(fadeTimer);
         seq_player_fade_to_target_volume(SEQ_PLAYER_ENV, fadeTimer, volume);
-        D_80332124 = volume;
+        sEnvironmentVolume = volume;
     }
 }
 
@@ -2293,17 +2300,18 @@ void play_secondary_music(u8 seqId, u8 bgMusicVolume, u8 volume, u16 fadeTimer) 
 void stop_secondary_music(u16 fadeTimer) {
     if (sBackgroundMusicTargetVolume != TARGET_VOLUME_UNSET) {
         sBackgroundMusicTargetVolume = TARGET_VOLUME_UNSET;
-        D_80332120 = 0;
-        D_80332124 = 0;
+        sEnvironmentSeqID = 0;
+        sEnvironmentVolume = 0;
         begin_background_music_fade(fadeTimer);
         seq_player_fade_out(SEQ_PLAYER_ENV, fadeTimer);
     }
 }
 
 /**
- * Called from threads: thread3_main, thread5_game_loop
+ * Called from threads: thread3_main, thread5_game_loop.
+ * Fades all sequence players' volumes to 0.
  */
-void func_803210D4(u16 fadeDuration) {
+void fade_all_players(u16 fadeDuration) {
     u8 i;
 
     if (sHasStartedFadeOut) {
@@ -2346,7 +2354,7 @@ void play_course_clear(s32 isKey) {
     }
     sBackgroundMusicMaxTargetVolume = TARGET_VOLUME_IS_PRESENT_FLAG | 0;
 #if defined(VERSION_EU) || defined(VERSION_SH)
-    D_EU_80300558 = 2;
+    sFrameDelayEU = 2;
 #endif
     begin_background_music_fade(50);
 }
@@ -2358,7 +2366,7 @@ void play_peachs_jingle(void) {
     seq_player_play_sequence(SEQ_PLAYER_ENV, SEQ_EVENT_PEACH_MESSAGE, 0);
     sBackgroundMusicMaxTargetVolume = TARGET_VOLUME_IS_PRESENT_FLAG | 0;
 #if defined(VERSION_EU) || defined(VERSION_SH)
-    D_EU_80300558 = 2;
+    sFrameDelayEU = 2;
 #endif
     begin_background_music_fade(50);
 }
@@ -2374,7 +2382,7 @@ void play_puzzle_jingle(void) {
     seq_player_play_sequence(SEQ_PLAYER_ENV, SEQ_EVENT_SOLVE_PUZZLE, 0);
     sBackgroundMusicMaxTargetVolume = TARGET_VOLUME_IS_PRESENT_FLAG | 20;
 #if defined(VERSION_EU) || defined(VERSION_SH)
-    D_EU_80300558 = 2;
+    sFrameDelayEU = 2;
 #endif
     begin_background_music_fade(50);
 }
@@ -2386,7 +2394,7 @@ void play_star_fanfare(void) {
     seq_player_play_sequence(SEQ_PLAYER_ENV, SEQ_EVENT_HIGH_SCORE, 0);
     sBackgroundMusicMaxTargetVolume = TARGET_VOLUME_IS_PRESENT_FLAG | 20;
 #if defined(VERSION_EU) || defined(VERSION_SH)
-    D_EU_80300558 = 2;
+    sFrameDelayEU = 2;
 #endif
     begin_background_music_fade(50);
 }
@@ -2398,7 +2406,7 @@ void play_power_star_jingle(void) {
     seq_player_play_sequence(SEQ_PLAYER_ENV, SEQ_EVENT_CUTSCENE_STAR_SPAWN, 0);
     sBackgroundMusicMaxTargetVolume = TARGET_VOLUME_IS_PRESENT_FLAG | 20;
 #if defined(VERSION_EU) || defined(VERSION_SH)
-    D_EU_80300558 = 2;
+    sFrameDelayEU = 2;
 #endif
     begin_background_music_fade(50);
 }
@@ -2410,7 +2418,7 @@ void play_race_fanfare(void) {
     seq_player_play_sequence(SEQ_PLAYER_ENV, SEQ_EVENT_RACE, 0);
     sBackgroundMusicMaxTargetVolume = TARGET_VOLUME_IS_PRESENT_FLAG | 20;
 #if defined(VERSION_EU) || defined(VERSION_SH)
-    D_EU_80300558 = 2;
+    sFrameDelayEU = 2;
 #endif
     begin_background_music_fade(50);
 }
@@ -2422,7 +2430,7 @@ void play_toads_jingle(void) {
     seq_player_play_sequence(SEQ_PLAYER_ENV, SEQ_EVENT_TOAD_MESSAGE, 0);
     sBackgroundMusicMaxTargetVolume = TARGET_VOLUME_IS_PRESENT_FLAG | 20;
 #if defined(VERSION_EU) || defined(VERSION_SH)
-    D_EU_80300558 = 2;
+    sFrameDelayEU = 2;
 #endif
     begin_background_music_fade(50);
 }
