@@ -18,6 +18,8 @@
 #include "puppycam2.h"
 #include "puppyprint.h"
 
+#include "mario.h"
+
 #include "config.h"
 
 /* @file hud.c
@@ -588,6 +590,8 @@ void render_hud(void) {
         if (hudDisplayFlags & HUD_DISPLAY_FLAG_KEYS) {
             render_hud_keys();
         }
+
+        print_cam_info(gMarioState);
 
 #ifdef BREATH_METER
         if (hudDisplayFlags & HUD_DISPLAY_FLAG_BREATH_METER) render_hud_breath_meter();

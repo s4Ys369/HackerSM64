@@ -1326,24 +1326,24 @@ void update_mario_geometry_inputs(struct MarioState *m) {
 
 // Strings for the camera mode
 char* camModeStrings[18] = {
-    "Mode None",
-    "Mode Radial",
-    "Mode Outward Radial",
-    "Mode Behind",
-    "Mode Close",
-    "Mode Cutscene",
-    "Mode C Up",
-    "Mode 7 unused",
-    "Mode Water",
-    "Mode Slide",
-    "Mode Cannon",
-    "Mode Boss",
-    "Mode Track",
-    "Mode Fixed",
-    "Mode 8 Dir",
-    "Mode 15 unused",
-    "Mode Free Roam",
-    "Mode Stairs"
+    "None",
+    "Radial",
+    "Outward Radial",
+    "Behind",
+    "Close",
+    "Cutscene",
+    "C Up",
+    "7 unused",
+    "Water",
+    "Slide",
+    "Cannon",
+    "Boss",
+    "Track",
+    "Fixed",
+    "8 Dir",
+    "15 unused",
+    "Free Roam",
+    "Stairs"
 };
 
 // Strings for the example title
@@ -1353,6 +1353,47 @@ char* exampleStrings[4] = {
     "Object",
     "Mario Cutscene"
 };
+
+void print_cam_info(struct MarioState *m){
+    // Print camera info
+    char text[255];
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
+    print_set_envcolour(0xFF, 0xFF, 0xFF, 0xFF);
+    sprintf(text, "Example: %s", exampleStrings[gCurrAreaIndex-1]);
+    print_small_text(32, 20, text, PRINT_TEXT_ALIGN_LEFT, PRINT_ALL, FONT_OUTLINE);
+
+    sprintf(text, "Camera Mode: %s", camModeStrings[m->area->camera->mode]);
+    print_small_text(32, 30, text, PRINT_TEXT_ALIGN_LEFT, PRINT_ALL, FONT_OUTLINE);
+
+    sprintf(text, "camFocus X: %d", (s32)(m->area->camera->focus[0]));
+    print_small_text(32, 50, text, PRINT_TEXT_ALIGN_LEFT, PRINT_ALL, FONT_OUTLINE);
+    sprintf(text, "camFocus Y: %d", (s32)(m->area->camera->focus[1]));
+    print_small_text(32, 60, text, PRINT_TEXT_ALIGN_LEFT, PRINT_ALL, FONT_OUTLINE);
+    sprintf(text, "camFocus Z: %d", (s32)(m->area->camera->focus[2]));
+    print_small_text(32, 70, text, PRINT_TEXT_ALIGN_LEFT, PRINT_ALL, FONT_OUTLINE);
+
+    sprintf(text, "camPos X: %d", (s32)(m->area->camera->pos[0]));
+    print_small_text(32, 90, text, PRINT_TEXT_ALIGN_LEFT, PRINT_ALL, FONT_OUTLINE);
+    sprintf(text, "camPos Y: %d", (s32)(m->area->camera->pos[1]));
+    print_small_text(32, 100, text, PRINT_TEXT_ALIGN_LEFT, PRINT_ALL, FONT_OUTLINE);
+    sprintf(text, "camPos Z: %d", (s32)(m->area->camera->pos[2]));
+    print_small_text(32, 110, text, PRINT_TEXT_ALIGN_LEFT, PRINT_ALL, FONT_OUTLINE);
+
+    if(gCurrAreaIndex < 3) {
+        print_small_text(32, 130, "A: Slow Spline Progression", PRINT_TEXT_ALIGN_LEFT, PRINT_ALL, FONT_OUTLINE);
+        print_small_text(32, 140, "Red is Position", PRINT_TEXT_ALIGN_LEFT, PRINT_ALL, FONT_OUTLINE);
+        if(gCurrAreaIndex == 2){
+            print_small_text(32, 150, "Blue is Focus", PRINT_TEXT_ALIGN_LEFT, PRINT_ALL, FONT_OUTLINE);
+        }
+    }
+    
+
+    print_small_text(32, 160, "B: Switch Examples", PRINT_TEXT_ALIGN_LEFT, PRINT_ALL, FONT_OUTLINE);
+    print_small_text(32, 170, "Z: Exit Cutscene Mode", PRINT_TEXT_ALIGN_LEFT, PRINT_ALL, FONT_OUTLINE);
+
+
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
+}
 
 
 // Cutscene main control function
@@ -1392,15 +1433,6 @@ void cs_control(struct MarioState *m){
     // Trigger area warp
     if(m->input & INPUT_B_PRESSED)level_trigger_warp(m,WARP_OP_DEATH);
 
-    // Print camera info
-    print_text(20, 200, exampleStrings[gCurrAreaIndex-1]);
-    print_text(20, 180, camModeStrings[m->area->camera->mode]);
-    print_text_fmt_int(20, 140, "CF X %d", (s32)(m->area->camera->focus[0]));
-    print_text_fmt_int(20, 120, "CF Y %d", (s32)(m->area->camera->focus[1]));
-    print_text_fmt_int(20, 100, "CF Z %d", (s32)(m->area->camera->focus[2]));
-    print_text_fmt_int(20, 60, "CP X %d", (s32)(m->area->camera->pos[0]));
-    print_text_fmt_int(20, 40, "CP Y %d", (s32)(m->area->camera->pos[1]));
-    print_text_fmt_int(20, 20, "CP Z %d", (s32)(m->area->camera->pos[2]));
 }
 
 /**
