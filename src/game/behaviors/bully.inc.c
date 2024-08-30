@@ -282,6 +282,7 @@ void big_bully_spawn_minions(void) {
     f32 dist;
     struct Object *objMarker;
     u8 firstBparam;
+    u8 minionSpawned = 0;
 
     // Initialize the search for the first marker
     objMarker = cur_obj_find_nearest_object_with_behavior(bhvObjectMarker, &dist); // TODO: Should this be a specific behavior for bully?
@@ -292,6 +293,7 @@ void big_bully_spawn_minions(void) {
 
         // If the bparam is not zero, spawn a minion
         if (firstBparam != 0) {
+            minionSpawned = 1;
             struct Object *bully =
                 spawn_object_abs_with_rot(o, 0, MODEL_BULLY, bhvSmallBully, 
                     objMarker->oPosX, objMarker->oPosY, objMarker->oPosZ, 0, 0, 0);
@@ -311,10 +313,12 @@ void big_bully_spawn_minions(void) {
 
     if (objMarker == NULL) {
         // TODO: Find a good default arrangement, currently simple triangle
-        big_bully_spawn_minion(o->oHomeX,o->oHomeY,o->oHomeZ+300.0f,0);
-        big_bully_spawn_minion(o->oHomeX-300.0f,o->oHomeY,o->oHomeZ-300.0f,0);
-        big_bully_spawn_minion(o->oHomeX+300.0f,o->oHomeY,o->oHomeZ-300.0f,0);
-    }
+        if(!minionSpawned){
+            big_bully_spawn_minion(o->oHomeX,o->oHomeY,o->oHomeZ+300.0f,0);
+            big_bully_spawn_minion(o->oHomeX-300.0f,o->oHomeY,o->oHomeZ-300.0f,0);
+            big_bully_spawn_minion(o->oHomeX+300.0f,o->oHomeY,o->oHomeZ-300.0f,0);
+        }
+    } 
 }
 
 void bhv_big_bully_with_minions_init(void) {
