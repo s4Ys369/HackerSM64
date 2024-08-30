@@ -136,6 +136,10 @@ static const LevelScript script_ssl_area_2_macro_objects[] = {
 
 static const LevelScript script_ssl_area_1_objects_1[] = {
     OBJECT(/*model*/ MODEL_SSL_PYRAMID_TOP, /*pos*/ -2047, 1536, -1023, /*angle*/ 0, 0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvPyramidTop),
+    OBJECT(/*model*/ MODEL_NONE, /*pos*/  1789, 1024,   764, /*angle*/ 0, 0, 0, /*behParam*/ 0x01000000, /*beh*/ bhvObjectMarker),
+    OBJECT(/*model*/ MODEL_NONE, /*pos*/  1789,  896, -2579, /*angle*/ 0, 0, 0, /*behParam*/ 0x02000000, /*beh*/ bhvObjectMarker),
+    OBJECT(/*model*/ MODEL_NONE, /*pos*/ -5883, 1024, -2579, /*angle*/ 0, 0, 0, /*behParam*/ 0x03000000, /*beh*/ bhvObjectMarker),
+    OBJECT(/*model*/ MODEL_NONE, /*pos*/ -5883, 1024,   764, /*angle*/ 0, 0, 0, /*behParam*/ 0x04000000, /*beh*/ bhvObjectMarker),
     RETURN(),
 };
 

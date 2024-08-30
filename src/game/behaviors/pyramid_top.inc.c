@@ -15,10 +15,42 @@
  * Spawn the four pillars' touch detectors.
  */
 void bhv_pyramid_top_init(void) {
-    spawn_object_abs_with_rot(o, 0, MODEL_NONE, bhvPyramidPillarTouchDetector,  1789, 1024,   764, 0, 0, 0);
-    spawn_object_abs_with_rot(o, 0, MODEL_NONE, bhvPyramidPillarTouchDetector,  1789,  896, -2579, 0, 0, 0);
-    spawn_object_abs_with_rot(o, 0, MODEL_NONE, bhvPyramidPillarTouchDetector, -5883, 1024, -2579, 0, 0, 0);
-    spawn_object_abs_with_rot(o, 0, MODEL_NONE, bhvPyramidPillarTouchDetector, -5883, 1024,   764, 0, 0, 0);
+    f32 dist;
+    struct Object *objMarker;
+    u8 firstBparam;
+    u8 pillarTouchDetectorSpawned = 0;
+
+    // Initialize the search for the first marker
+    objMarker = cur_obj_find_nearest_object_with_behavior(bhvObjectMarker, &dist); // TODO: Should this be a specific behavior for bully?
+
+    while (objMarker != NULL) {
+        // Get the first behavior parameter for the current marker
+        firstBparam = GET_BPARAM1(objMarker->oBehParams);
+
+        // If the bparam is not zero, spawn a touch detector
+        if (firstBparam != 0) {
+            pillarTouchDetectorSpawned = 1;
+            spawn_object_abs_with_rot(o, 0, MODEL_NONE, bhvPyramidPillarTouchDetector, 
+                    objMarker->oPosX, objMarker->oPosY, objMarker->oPosZ, 0, 0, 0);
+        }
+
+        // Clear the pointer for the next iteration
+        obj_mark_for_deletion(objMarker);
+        objMarker = NULL;
+
+        // Find the next nearest marker (repeat the search for next closest object)
+        objMarker = cur_obj_find_nearest_object_with_behavior(bhvObjectMarker, &dist);
+    } 
+
+    if (objMarker == NULL) {
+        // TODO: Find a good default arrangement, currently simple square
+        if(!pillarTouchDetectorSpawned){
+            spawn_object_abs_with_rot(o, 0, MODEL_NONE, bhvPyramidPillarTouchDetector,  o->oPosX - 300.0f, o->oPosY, o->oPosZ + 300.0f, 0, 0, 0);
+            spawn_object_abs_with_rot(o, 0, MODEL_NONE, bhvPyramidPillarTouchDetector,  o->oPosX - 300.0f, o->oPosY, o->oPosZ - 300.0f, 0, 0, 0);
+            spawn_object_abs_with_rot(o, 0, MODEL_NONE, bhvPyramidPillarTouchDetector,  o->oPosX + 300.0f, o->oPosY, o->oPosZ - 300.0f, 0, 0, 0);
+            spawn_object_abs_with_rot(o, 0, MODEL_NONE, bhvPyramidPillarTouchDetector,  o->oPosX + 300.0f, o->oPosY, o->oPosZ + 300.0f, 0, 0, 0);
+        }
+    }
 }
 
 /**
