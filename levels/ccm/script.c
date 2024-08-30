@@ -144,7 +144,7 @@ static const LevelScript script_ccm_area_1_objects_2[] = {
 };
 
 static const LevelScript script_ccm_area_1_objects_3[] = {
-    OBJECT_WITH_ACTS(/*model*/ MODEL_NONE,             /*pos*/  2665, -4607,  4525, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvCcmTouchedStarSpawn, /*acts*/ ALL_ACTS),
+    OBJECT_WITH_ACTS(/*model*/ MODEL_NONE,             /*pos*/  2665, -4607,  4525, /*angle*/ 0,   0, 0, /*behParam*/ 0x0073648D, /*beh*/ bhvTouchedStarSpawn, /*acts*/ ALL_ACTS),
     OBJECT_WITH_ACTS(/*model*/ MODEL_NONE,             /*pos*/  2500, -4350,  5750, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvDefaultStarMarker,   /*acts*/ ALL_ACTS),
     OBJECT_WITH_ACTS(/*model*/ MODEL_PENGUIN,          /*pos*/  3450, -4700,  4550, /*angle*/ 0,   0, 0, /*behParam*/ 0x01000000, /*beh*/ bhvTuxiesMother,        /*acts*/ ALL_ACTS),
     OBJECT_WITH_ACTS(/*model*/ MODEL_NONE,             /*pos*/  3167, -4300,  5108, /*angle*/ 0,   0, 0, /*behParam*/ 0x01000000, /*beh*/ bhvDefaultStarMarker,   /*acts*/ ALL_ACTS),

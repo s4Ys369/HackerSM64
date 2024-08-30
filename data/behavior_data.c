@@ -1838,14 +1838,14 @@ const BehaviorScript bhvHeaveHoThrowMario[] = {
     END_LOOP(),
 };
 
-const BehaviorScript bhvCcmTouchedStarSpawn[] = {
+const BehaviorScript bhvTouchedStarSpawn[] = {
     BEGIN(OBJ_LIST_LEVEL),
     OR_INT(oFlags, (OBJ_FLAG_PERSISTENT_RESPAWN | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
     SET_HITBOX(/*Radius*/ 500, /*Height*/ 500),
     SET_INT(oIntangibleTimer, 0),
     SET_HOME(),
     BEGIN_LOOP(),
-        CALL_NATIVE(bhv_ccm_touched_star_spawn_loop),
+        CALL_NATIVE(bhv_touched_star_spawn_loop),
     END_LOOP(),
 };
 

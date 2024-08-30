@@ -146,7 +146,7 @@ s16 gMarioCurrentRoom;
 s16 gTHIWaterDrained;
 s16 gTTCSpeedSetting;
 s16 gMarioShotFromCannon;
-s16 gCCMEnteredSlide;
+s16 gEnteredArea2;
 s16 gNumRoomedObjectsInMarioRoom;
 s16 gNumRoomedObjectsNotInMarioRoom;
 s16 gWDWWaterLevelChanging;
@@ -438,7 +438,7 @@ void spawn_objects_from_info(UNUSED s32 unused, struct SpawnInfo *spawnInfo) {
     clear_mario_platform();
 
     if (gCurrAreaIndex == 2) {
-        gCCMEnteredSlide |= 1;
+        gEnteredArea2 |= 1;
     }
 
     while (spawnInfo != NULL) {

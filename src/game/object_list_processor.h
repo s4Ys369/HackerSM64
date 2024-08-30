@@ -128,7 +128,7 @@ extern s16 gMarioCurrentRoom;
 extern s16 gTHIWaterDrained;
 extern s16 gTTCSpeedSetting;
 extern s16 gMarioShotFromCannon;
-extern s16 gCCMEnteredSlide;
+extern s16 gEnteredArea2;
 extern s16 gNumRoomedObjectsInMarioRoom;
 extern s16 gNumRoomedObjectsNotInMarioRoom;
 extern s16 gWDWWaterLevelChanging;

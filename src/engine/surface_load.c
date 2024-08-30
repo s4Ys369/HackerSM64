@@ -408,7 +408,7 @@ void alloc_surface_pools(void) {
     gDynamicSurfacePool = main_pool_alloc(DYNAMIC_SURFACE_POOL_SIZE, MEMORY_POOL_LEFT);
     gDynamicSurfacePoolEnd = gDynamicSurfacePool;
 
-    gCCMEnteredSlide = FALSE;
+    gEnteredArea2 = FALSE;
     reset_red_coins_collected();
 }
 

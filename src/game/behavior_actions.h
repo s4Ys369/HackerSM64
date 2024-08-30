@@ -131,7 +131,7 @@ void bhv_yellow_coin_loop(void);
 void bhv_squarish_path_moving_loop(void);
 void bhv_heave_ho_loop(void);
 void bhv_heave_ho_throw_mario_loop(void);
-void bhv_ccm_touched_star_spawn_loop(void);
+void bhv_touched_star_spawn_loop(void);
 void bhv_unused_poundable_platform(void);
 void bhv_beta_trampoline_top_loop(void);
 void bhv_beta_trampoline_spring_loop(void);
