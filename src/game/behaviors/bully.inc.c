@@ -189,16 +189,15 @@ void bully_spawn_coin(void) {
 }
 
 void bully_spawn_bridge(void) {
-    u32 bparams = 0x00 << BPARAM_NSHIFT(1, 1); // can be simplified to 0, just here for reference
     f32 dist;
 
-    struct Object *objMarker = cur_obj_find_nearest_object_with_behavior_and_bparams(bhvObjectMarker,
-            &dist, bparams, BPARAM_MASK(1) << BPARAM_NSHIFT(1, 1));
+    struct Object *objMarker = cur_obj_find_nearest_object_with_behavior_and_bparams(bhvBigBullyBridge,
+            &dist, o->oBehParams, BPARAM_MASK(1) << BPARAM_NSHIFT(1, 1));
 
     if (objMarker != NULL) {
         spawn_object_abs_with_rot(o, 0, MODEL_NONE, bhvLllTumblingBridge,
                                           objMarker->oPosX, objMarker->oPosY, objMarker->oPosZ, 
-                                          0, 0, 0);
+                                          0, objMarker->oFaceAngleYaw, 0);
     }
 }
 
@@ -285,7 +284,7 @@ void big_bully_spawn_minions(void) {
     u8 minionSpawned = 0;
 
     // Initialize the search for the first marker
-    objMarker = cur_obj_find_nearest_object_with_behavior(bhvObjectMarker, &dist); // TODO: Should this be a specific behavior for bully?
+    objMarker = cur_obj_find_nearest_object_with_behavior(bhvBigBullyMinion, &dist); // TODO: Should this be a specific behavior for bully?
 
     while (objMarker != NULL) {
         // Get the first behavior parameter for the current marker
@@ -296,7 +295,7 @@ void big_bully_spawn_minions(void) {
             minionSpawned = 1;
             struct Object *bully =
                 spawn_object_abs_with_rot(o, 0, MODEL_BULLY, bhvSmallBully, 
-                    objMarker->oPosX, objMarker->oPosY, objMarker->oPosZ, 0, 0, 0);
+                    objMarker->oPosX, objMarker->oPosY, objMarker->oPosZ, objMarker->oFaceAngleYaw, 0, 0);
 
             // Set the bully's properties
             bully->oBullySubtype = BULLY_STYPE_MINION;
@@ -308,7 +307,7 @@ void big_bully_spawn_minions(void) {
         objMarker = NULL;
 
         // Find the next nearest marker (repeat the search for next closest object)
-        objMarker = cur_obj_find_nearest_object_with_behavior(bhvObjectMarker, &dist);
+        objMarker = cur_obj_find_nearest_object_with_behavior(bhvBigBullyMinion, &dist);
     } 
 
     if (objMarker == NULL) {

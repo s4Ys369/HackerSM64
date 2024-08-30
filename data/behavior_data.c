@@ -4007,6 +4007,12 @@ const BehaviorScript bhvBigBully[] = {
     END_LOOP(),
 };
 
+const BehaviorScript bhvBigBullyBridge[] = {
+    BEGIN(OBJ_LIST_DEFAULT),
+    OR_INT(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    BREAK(),
+};
+
 const BehaviorScript bhvBigBullyWithMinions[] = {
     BEGIN(OBJ_LIST_GENACTOR),
     OR_INT(oFlags, (OBJ_FLAG_SET_FACE_YAW_TO_MOVE_YAW | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
@@ -4017,6 +4023,12 @@ const BehaviorScript bhvBigBullyWithMinions[] = {
     BEGIN_LOOP(),
         CALL_NATIVE(bhv_big_bully_with_minions_loop),
     END_LOOP(),
+};
+
+const BehaviorScript bhvBigBullyMinion[] = {
+    BEGIN(OBJ_LIST_DEFAULT),
+    OR_INT(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    BREAK(),
 };
 
 const BehaviorScript bhvSmallChillBully[] = {
@@ -4382,6 +4394,12 @@ const BehaviorScript bhvPyramidPillarTouchDetector[] = {
     BEGIN_LOOP(),
         CALL_NATIVE(bhv_pyramid_pillar_touch_detector_loop),
     END_LOOP(),
+};
+
+const BehaviorScript bhvPyramidPillarTop[] = {
+    BEGIN(OBJ_LIST_LEVEL),
+    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
+    BREAK(),
 };
 
 const BehaviorScript bhvWaterfallSoundLoop[] = {

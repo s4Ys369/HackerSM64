@@ -577,6 +577,19 @@ enum oSubActionBowserActQuickJump { // BOWSER_ACT_QUICK_JUMP
     BOWSER_SUB_ACT_QUICK_JUMP_STOP
 };
 
+enum oBigBullyMinions{
+    BIG_BULLY_MINION_1  = 0x01,
+    BIG_BULLY_MINION_2  = 0x02,
+    BIG_BULLY_MINION_3  = 0x03
+};
+
+enum oPyramidPillars{
+    PYRAMID_PILLAR_1  = 0x01,
+    PYRAMID_PILLAR_2  = 0x02,
+    PYRAMID_PILLAR_3  = 0x03,
+    PYRAMID_PILLAR_4  = 0x04
+};
+
 /* Bowser BITS Platform */
     /* oAction */
     #define BOWSER_BITS_PLAT_ACT_START                      0x0
