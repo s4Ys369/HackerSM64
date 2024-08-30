@@ -188,6 +188,20 @@ void bully_spawn_coin(void) {
     coin->oMoveAngleYaw = (f32)(o->oBullyMarioCollisionAngle + 0x8000) + random_float() * 1024.0f;
 }
 
+void bully_spawn_bridge(void) {
+    u32 bparams = 0x00 << BPARAM_NSHIFT(1, 1); // can be simplified to 0, just here for reference
+    f32 dist;
+
+    struct Object *objMarker = cur_obj_find_nearest_object_with_behavior_and_bparams(bhvObjectMarker,
+            &dist, bparams, BPARAM_MASK(1) << BPARAM_NSHIFT(1, 1));
+
+    if (objMarker != NULL) {
+        spawn_object_abs_with_rot(o, 0, MODEL_NONE, bhvLllTumblingBridge,
+                                          objMarker->oPosX, objMarker->oPosY, objMarker->oPosZ, 
+                                          0, 0, 0);
+    }
+}
+
 void bully_act_level_death(void) {
     if (obj_lava_death() == TRUE) {
         if (o->oBehParams2ndByte == BULLY_BP_SIZE_SMALL) {
@@ -202,8 +216,7 @@ void bully_act_level_death(void) {
                 spawn_default_star();
             } else {
                 spawn_default_star();
-                spawn_object_abs_with_rot(o, 0, MODEL_NONE, bhvLllTumblingBridge,
-                                          0, 154, -5631, 0, 0, 0);
+                bully_spawn_bridge();
             }
         }
     }
@@ -264,10 +277,48 @@ void big_bully_spawn_minion(s32 x, s32 y, s32 z, s16 yaw) {
     bully->oBehParams2ndByte = BULLY_BP_SIZE_SMALL;
 }
 
+// This function allows for N number of minions, but would require edits to BULLY_ACT_INACTIVE
+void big_bully_spawn_minions(void) {
+    f32 dist;
+    struct Object *objMarker;
+    u8 firstBparam;
+
+    // Initialize the search for the first marker
+    objMarker = cur_obj_find_nearest_object_with_behavior(bhvObjectMarker, &dist); // TODO: Should this be a specific behavior for bully?
+
+    while (objMarker != NULL) {
+        // Get the first behavior parameter for the current marker
+        firstBparam = GET_BPARAM1(objMarker->oBehParams);
+
+        // If the bparam is not zero, spawn a minion
+        if (firstBparam != 0) {
+            struct Object *bully =
+                spawn_object_abs_with_rot(o, 0, MODEL_BULLY, bhvSmallBully, 
+                    objMarker->oPosX, objMarker->oPosY, objMarker->oPosZ, 0, 0, 0);
+
+            // Set the bully's properties
+            bully->oBullySubtype = BULLY_STYPE_MINION;
+            bully->oBehParams2ndByte = BULLY_BP_SIZE_SMALL;
+        }
+
+        // Clear the pointer for the next iteration
+        obj_mark_for_deletion(objMarker);
+        objMarker = NULL;
+
+        // Find the next nearest marker (repeat the search for next closest object)
+        objMarker = cur_obj_find_nearest_object_with_behavior(bhvObjectMarker, &dist);
+    } 
+
+    if (objMarker == NULL) {
+        // TODO: Find a good default arrangement, currently simple triangle
+        big_bully_spawn_minion(o->oHomeX,o->oHomeY,o->oHomeZ+300.0f,0);
+        big_bully_spawn_minion(o->oHomeX-300.0f,o->oHomeY,o->oHomeZ-300.0f,0);
+        big_bully_spawn_minion(o->oHomeX+300.0f,o->oHomeY,o->oHomeZ-300.0f,0);
+    }
+}
+
 void bhv_big_bully_with_minions_init(void) {
-    big_bully_spawn_minion(4454, 307, -5426, 0);
-    big_bully_spawn_minion(3840, 307, -6041, 0);
-    big_bully_spawn_minion(3226, 307, -5426, 0);
+    big_bully_spawn_minions();
 
     o->header.gfx.node.flags |= GRAPH_RENDER_INVISIBLE;
 
