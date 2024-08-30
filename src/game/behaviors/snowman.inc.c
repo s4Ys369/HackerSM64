@@ -167,9 +167,9 @@ void bhv_snowmans_head_init(void) {
     o->oBuoyancy = 2.0f;
 
     if ((starFlags & (1 << behParams)) && gCurrActNum != behParams + 1) {
-        spawn_object_abs_with_rot(o, 0, MODEL_CCM_SNOWMAN_BASE, bhvBigSnowmanWhole, o->parentObj->oPosX, o->parentObj->oPosY-sSnowmanHeadOffsetY, o->parentObj->oPosZ, 0, 0, 0);
+        spawn_object_abs_with_rot(o, 0, MODEL_CCM_SNOWMAN_BASE, bhvBigSnowmanWhole, o->parentObj->oPosX, o->parentObj->oPosY, o->parentObj->oPosZ, 0, 0, 0);
         o->oPosX = o->parentObj->oPosX;
-        o->oPosY = o->parentObj->oPosY;
+        o->oPosY = o->parentObj->oPosY + (sSnowmanHeadOffsetY*2.0f);
         o->oPosZ = o->parentObj->oPosZ;
 
         o->oAction = SNOWMANS_HEAD_ACT_NONE;
