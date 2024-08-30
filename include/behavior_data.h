@@ -392,6 +392,7 @@ extern const BehaviorScript bhvBirdsSoundLoop[];
 extern const BehaviorScript bhvAmbientSounds[];
 extern const BehaviorScript bhvSandSoundLoop[];
 extern const BehaviorScript bhvHiddenAt120Stars[];
+extern const BehaviorScript bhvSnowmanMidpoint[];
 extern const BehaviorScript bhvSnowmansBottom[];
 extern const BehaviorScript bhvSnowmansHead[];
 extern const BehaviorScript bhvSnowmansBodyCheckpoint[];

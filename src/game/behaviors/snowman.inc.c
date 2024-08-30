@@ -12,7 +12,7 @@ static struct ObjectHitbox sRollingSphereHitbox = {
     /* hurtboxHeight:     */ 0,
 };
 
-static const Vec3f sSnowmanHeadPos = { -4230.0f, -1344.0f, 1813.0f };
+static const f32 sSnowmanHeadOffsetY = 175.0f;
 
 void bhv_snowmans_bottom_init(void) {
     vec3f_copy(&o->oHomeVec, &o->oPosVec);
@@ -29,7 +29,9 @@ void bhv_snowmans_bottom_init(void) {
     if (snowmansHead != NULL) {
         o->parentObj = snowmansHead;
     }
-    spawn_object_abs_with_rot(o, 0, MODEL_NONE, bhvSnowmansBodyCheckpoint, -402, 461, -2898, 0x0, 0x0, 0x0);
+
+    struct Object *midpoint = cur_obj_nearest_object_with_behavior(bhvSnowmanMidpoint);
+    spawn_object_abs_with_rot(o, 0, MODEL_NONE, bhvSnowmansBodyCheckpoint, midpoint->oPosX, midpoint->oPosY, midpoint->oPosZ, 0, 0, 0);
 }
 
 void set_rolling_sphere_hitbox(void) {
@@ -79,9 +81,10 @@ void snowmans_bottom_act_final_stretch(void) { // act 2
     }
 
     o->oMoveAngleYaw = approach_s16_symmetric(o->oMoveAngleYaw, o->oSnowmansBottomTargetYaw, 0x400);
-    if (is_point_close_to_object(o, sSnowmanHeadPos[0], sSnowmanHeadPos[1], sSnowmanHeadPos[2], 300)) {
+    if (is_point_close_to_object(o, 
+        o->parentObj->oPosX, o->parentObj->oPosY-sSnowmanHeadOffsetY, o->parentObj->oPosZ, 300)) {
         spawn_mist_particles_variable(0, 0, 70.0f);
-        o->oMoveAngleYaw = atan2s((sSnowmanHeadPos[2] - o->oPosZ), (sSnowmanHeadPos[0] - o->oPosX));
+        o->oMoveAngleYaw = atan2s((o->parentObj->oPosZ - o->oPosZ), (o->parentObj->oPosX - o->oPosX));
         o->oVelY = 80.0f;
         o->oForwardVel = 15.0f;
         o->oAction = SNOWMANS_BOTTOM_ACT_REACH_END;
@@ -107,8 +110,8 @@ void snowmans_bottom_act_reach_end(void) { // act 3
 
     if (collisionFlags & OBJ_COL_FLAG_GROUNDED) {
         spawn_mist_particles_variable(0, 0, 70.0f);
-        o->oPosX = sSnowmanHeadPos[0];
-        o->oPosZ = sSnowmanHeadPos[2];
+        o->oPosX = o->parentObj->oPosX;
+        o->oPosZ = o->parentObj->oPosZ;
         o->oForwardVel = 0.0f;
     }
 }
@@ -164,8 +167,11 @@ void bhv_snowmans_head_init(void) {
     o->oBuoyancy = 2.0f;
 
     if ((starFlags & (1 << behParams)) && gCurrActNum != behParams + 1) {
-        spawn_object_abs_with_rot(o, 0, MODEL_CCM_SNOWMAN_BASE, bhvBigSnowmanWhole, sSnowmanHeadPos[0], sSnowmanHeadPos[1], sSnowmanHeadPos[2], 0, 0, 0);
-        vec3f_copy(&o->oPosVec, sSnowmanHeadPos);
+        spawn_object_abs_with_rot(o, 0, MODEL_CCM_SNOWMAN_BASE, bhvBigSnowmanWhole, o->parentObj->oPosX, o->parentObj->oPosY-sSnowmanHeadOffsetY, o->parentObj->oPosZ, 0, 0, 0);
+        o->oPosX = o->parentObj->oPosX;
+        o->oPosY = o->parentObj->oPosY;
+        o->oPosZ = o->parentObj->oPosZ;
+
         o->oAction = SNOWMANS_HEAD_ACT_NONE;
     }
 }
