@@ -422,7 +422,7 @@ void bhv_decorative_pendulum_loop(void);
 void bhv_treasure_chest_ship_init(void);
 void bhv_treasure_chest_ship_loop(void);
 void bhv_treasure_chest_jrb_init(void);
-void bhv_treasure_chest_jrb_loop(void);
+void bhv_treasure_chest_ddd_init(void);
 void bhv_treasure_chest_init(void);
 void bhv_treasure_chest_loop(void);
 void bhv_treasure_chest_bottom_init(void);

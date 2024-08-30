@@ -4978,11 +4978,22 @@ const BehaviorScript bhvTreasureChestsJrb[] = {
     DROP_TO_FLOOR(),
     CALL_NATIVE(bhv_treasure_chest_jrb_init),
     BEGIN_LOOP(),
-        CALL_NATIVE(bhv_treasure_chest_jrb_loop),
+        CALL_NATIVE(bhv_treasure_chest_loop),
     END_LOOP(),
 };
 
-const BehaviorScript bhvTreasureChests[] = {
+const BehaviorScript bhvTreasureChestsDdd[] = {
+    BEGIN(OBJ_LIST_DEFAULT),
+    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
+    SET_HOME(),
+    DROP_TO_FLOOR(),
+    CALL_NATIVE(bhv_treasure_chest_ddd_init),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_treasure_chest_loop),
+    END_LOOP(),
+};
+
+const BehaviorScript bhvTreasureChestsStarMarker[] = {
     BEGIN(OBJ_LIST_DEFAULT),
     OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
     SET_HOME(),
@@ -4991,6 +5002,10 @@ const BehaviorScript bhvTreasureChests[] = {
     BEGIN_LOOP(),
         CALL_NATIVE(bhv_treasure_chest_loop),
     END_LOOP(),
+};
+
+const BehaviorScript bhvTreasureChest[] = {
+    GOTO(bhvTreasureChestBottom),
 };
 
 const BehaviorScript bhvTreasureChestBottom[] = {

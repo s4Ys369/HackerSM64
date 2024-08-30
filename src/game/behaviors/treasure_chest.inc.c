@@ -154,36 +154,36 @@ void bhv_treasure_chest_jrb_init(void) {
     o->oTreasureChestAboveWater = TRUE;
 }
 
-void bhv_treasure_chest_jrb_loop(void) {
-    switch (o->oAction) {
-        case TREASURE_CHEST_ACT_SUCCESS_SOUND:
-            if (o->oTreasureChestNumOpenedChests == 5) {
-                play_puzzle_jingle();
-                o->oAction = TREASURE_CHEST_ACT_REWARD;
-            }
-            break;
-
-        case TREASURE_CHEST_ACT_REWARD:
-            if (o->oTimer == 60) {
-                spawn_mist_particles();
-                spawn_default_star();
-                o->oAction = TREASURE_CHEST_ACT_END;
-            }
-            break;
-
-        case TREASURE_CHEST_ACT_END:
-            break;
-    }
-}
-
-void bhv_treasure_chest_init(void) {
-    spawn_treasure_chest(1, -4500, -5119, 1300, -0x6001);
-    spawn_treasure_chest(2, -1800, -5119, 1050, 0x1FFF);
-    spawn_treasure_chest(3, -4500, -5119, -1100, 0x238E);
-    spawn_treasure_chest(4, -2400, -4607, 125, 0x3E93);
+void bhv_treasure_chest_ddd_init(void) {
+    spawn_treasure_chest(TREASURE_CHEST_BP_1, -4500, -5119, 1300, -0x6001);
+    spawn_treasure_chest(TREASURE_CHEST_BP_2, -1800, -5119, 1050, 0x1FFF);
+    spawn_treasure_chest(TREASURE_CHEST_BP_3, -4500, -5119, -1100, 0x238E);
+    spawn_treasure_chest(TREASURE_CHEST_BP_4, -2400, -4607, 125, 0x3E93);
 
     o->oTreasureChestNumOpenedChests = 1;
     o->oTreasureChestAboveWater = FALSE;
+}
+
+void bhv_treasure_chest_init(void) {
+    f32 dist;
+    s32 waterLevel;
+
+    struct Object *treasureChest = cur_obj_find_nearest_object_with_behavior(bhvTreasureChest, &dist);
+
+    if (treasureChest != NULL) {
+        if(treasureChest->oBehParams2ndByte != 0){
+            treasureChest->parentObj = o;
+        }
+    }
+
+    o->oTreasureChestNumOpenedChests = 1;
+    waterLevel = find_water_level(o->oPosX, o->oPosZ);
+    if(o->oPosY < waterLevel){
+        o->oTreasureChestAboveWater = FALSE;
+    } else {
+        o->oTreasureChestAboveWater = TRUE;
+    }
+    
 }
 
 void bhv_treasure_chest_loop(void) {
