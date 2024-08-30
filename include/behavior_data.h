@@ -265,6 +265,7 @@ extern const BehaviorScript bhvStaticObject[];
 // Static object stubs for backwards compatibility
 #define bhvLllHexagonalMesh bhvStaticObject
 #define bhvInsideCannon bhvStaticObject
+extern const BehaviorScript bhvObjectMarker[];
 extern const BehaviorScript bhvCastleFloorTrap[];
 extern const BehaviorScript bhvFloorTrapInCastle[];
 extern const BehaviorScript bhvTree[];

@@ -3138,6 +3138,12 @@ const BehaviorScript bhvStaticObject[] = {
     BREAK(),
 };
 
+const BehaviorScript bhvObjectMarker[] = {
+    BEGIN(OBJ_LIST_LEVEL),
+    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
+    BREAK(),
+};
+
 const BehaviorScript bhvCastleFloorTrap[] = {
     BEGIN(OBJ_LIST_DEFAULT),
     DISABLE_RENDERING(),
