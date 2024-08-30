@@ -4008,9 +4008,7 @@ const BehaviorScript bhvBigBully[] = {
 };
 
 const BehaviorScript bhvBigBullyBridge[] = {
-    BEGIN(OBJ_LIST_DEFAULT),
-    OR_INT(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
-    BREAK(),
+    GOTO(bhvObjectMarker),
 };
 
 const BehaviorScript bhvBigBullyWithMinions[] = {
@@ -4026,9 +4024,7 @@ const BehaviorScript bhvBigBullyWithMinions[] = {
 };
 
 const BehaviorScript bhvBigBullyMinion[] = {
-    BEGIN(OBJ_LIST_DEFAULT),
-    OR_INT(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
-    BREAK(),
+    GOTO(bhvObjectMarker),
 };
 
 const BehaviorScript bhvSmallChillBully[] = {
@@ -4397,9 +4393,7 @@ const BehaviorScript bhvPyramidPillarTouchDetector[] = {
 };
 
 const BehaviorScript bhvPyramidPillarTop[] = {
-    BEGIN(OBJ_LIST_LEVEL),
-    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
-    BREAK(),
+    GOTO(bhvObjectMarker),
 };
 
 const BehaviorScript bhvWaterfallSoundLoop[] = {
