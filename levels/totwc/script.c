@@ -74,7 +74,7 @@ static const LevelScript script_totwc_macro_objects[] = {
 };
 
 static const LevelScript script_totwc_objects_1[] = {
-    OBJECT(/*model*/ MODEL_CAP_SWITCH, /*pos*/   0, -2047, 10, /*angle*/ 0, 0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvCapSwitch),
+    OBJECT(/*model*/ MODEL_CAP_SWITCH, /*pos*/   0, -2047, 10, /*angle*/ 0, 0, 0, /*behParam*/ 0x00000001, /*beh*/ bhvCapSwitch),
     RETURN(),
 };
 

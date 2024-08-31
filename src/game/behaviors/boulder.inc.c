@@ -48,17 +48,16 @@ void bhv_big_boulder_loop(void) {
 
 void bhv_big_boulder_generator_loop(void) {
     struct Object *boulderObj;
+    u8 sIsVanilla = GET_BPARAM4(o->oBehParams);
+    u8 roomCheck = FALSE;
+    if(sIsVanilla)roomCheck = current_mario_room_check(4);
 
     if (o->oTimer >= 256) {
         o->oTimer = 0;
     }
 
-#ifdef ENABLE_VANILLA_LEVEL_SPECIFIC_CHECKS
-    if (!current_mario_room_check(4)
+    if (roomCheck == FALSE
         || is_point_within_radius_of_mario(o->oPosX, o->oPosY, o->oPosZ, 1500)) {
-#else 
-    if (is_point_within_radius_of_mario(o->oPosX, o->oPosY, o->oPosZ, 1500)) {
-#endif
         return;
     }
 

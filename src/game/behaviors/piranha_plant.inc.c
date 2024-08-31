@@ -310,12 +310,16 @@ ObjActionFunc TablePiranhaPlantActions[] = {
  */
 void bhv_piranha_plant_loop(void) {
     cur_obj_call_action_function(TablePiranhaPlantActions);
-#ifdef ENABLE_VANILLA_LEVEL_SPECIFIC_CHECKS
+    u8 sIsVanilla = GET_BPARAM4(o->oBehParams);
+    u8 levelCheck = FALSE;
+    if(sIsVanilla){
+        if (gCurrLevelNum == LEVEL_WF)levelCheck = TRUE;
+    }
+
     // In WF, hide all Piranha Plants once high enough up.
-    if (gCurrLevelNum == LEVEL_WF) {
+    if (levelCheck == TRUE) {
         COND_BIT((gMarioObject->oPosY > 3400.0f), o->header.gfx.node.flags, GRAPH_RENDER_INVISIBLE);
     }
 
-#endif
     o->oInteractStatus = INT_STATUS_NONE;
 }

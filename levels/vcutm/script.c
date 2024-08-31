@@ -64,7 +64,7 @@ static const LevelScript script_vcutm_objects_1[] = {
 };
 
 static const LevelScript script_vcutm_objects_2[] = {
-    OBJECT(/*model*/ MODEL_CAP_SWITCH, /*pos*/ 4506,  26, -6246, /*angle*/ 0, 0, 0, /*behParam*/ 0x00020000, /*beh*/ bhvCapSwitch),
+    OBJECT(/*model*/ MODEL_CAP_SWITCH, /*pos*/ 4506,  26, -6246, /*angle*/ 0, 0, 0, /*behParam*/ 0x00020001, /*beh*/ bhvCapSwitch),
     RETURN(),
 };
 

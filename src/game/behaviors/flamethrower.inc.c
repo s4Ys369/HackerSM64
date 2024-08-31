@@ -49,9 +49,12 @@ void bhv_flamethrower_flame_loop(void) {
 
 void bhv_flamethrower_loop(void) {
     if (o->oAction == FLAMETHROWER_ACT_IDLE) {
-#ifdef ENABLE_VANILLA_LEVEL_SPECIFIC_CHECKS
-        if (gCurrLevelNum != LEVEL_BBH || gMarioOnMerryGoRound)
-#endif
+        u8 sIsVanilla = GET_BPARAM4(o->oBehParams);
+        u8 levelCheck = FALSE;
+        if(sIsVanilla){
+            if (gCurrLevelNum != LEVEL_BBH || gMarioOnMerryGoRound)levelCheck = TRUE;
+        }
+        if (levelCheck == TRUE)
         {
             if (o->oDistanceToMario < 2000.0f) {
                 o->oAction = FLAMETHROWER_ACT_BLOW_FIRE;

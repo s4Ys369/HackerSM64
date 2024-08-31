@@ -99,7 +99,7 @@ static const LevelScript script_hmc_macro_objects[] = {
     OBJECT(/*model*/ MODEL_BREAKABLE_BOX,             /*pos*/  4080,  1024,  5760, /*angle*/ 0,   0, 0, /*behParam*/ (BREAKABLE_BOX_BP_NO_COINS << 16), /*beh*/ bhvBreakableBox),
     OBJECT(/*model*/ MODEL_BREAKABLE_BOX,             /*pos*/  6260,  1024,  4960, /*angle*/ 0,   0, 0, /*behParam*/ (BREAKABLE_BOX_BP_NO_COINS << 16), /*beh*/ bhvBreakableBox),
     OBJECT(/*model*/ MODEL_WOODEN_SIGNPOST,           /*pos*/ -4370,  2860, -2243, /*angle*/ 0, 135, 0, /*behParam*/ (DIALOG_043 << 16), /*beh*/ bhvMessagePanel),
-    OBJECT(/*model*/ MODEL_NONE,                      /*pos*/ -2900,  1620,  4640, /*angle*/ 0,   0, 0, /*behParam*/ (FLAMETHROWER_BP_UPWARDS << 16), /*beh*/ bhvFlamethrower),
+    OBJECT(/*model*/ MODEL_NONE,                      /*pos*/ -2900,  1620,  4640, /*angle*/ 0,   0, 0, /*behParam*/ (FLAMETHROWER_BP_UPWARDS << 16)|(0x01), /*beh*/ bhvFlamethrower),
     OBJECT(/*model*/ MODEL_BOWLING_BALL,              /*pos*/  1420,  -380, -7040, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvFireSpitter),
     OBJECT(/*model*/ MODEL_BOWLING_BALL,              /*pos*/  2500,  -380, -7740, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvFireSpitter),
     OBJECT(/*model*/ MODEL_EXCLAMATION_BOX,           /*pos*/ -2700,  2100, -6400, /*angle*/ 0,   0, 0, /*behParam*/ (EXCLAMATION_BOX_BP_1UP_RUNNING_AWAY << 16), /*beh*/ bhvExclamationBox),
@@ -156,9 +156,9 @@ static const LevelScript script_hmc_objects_2[] = {
 
 static const LevelScript script_hmc_objects_3[] = {
     OBJECT(/*model*/ MODEL_DORRIE, /*pos*/ -3533, -4969,  3558, /*angle*/ 0, 0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvDorrie),
-    OBJECT(/*model*/ MODEL_NONE,   /*pos*/ -6093,  3075, -7807, /*angle*/ 0, 0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvBigBoulderGenerator),
-    OBJECT(/*model*/ MODEL_NONE,   /*pos*/  -500,  1600,  3500, /*angle*/ 0, 0, 0, /*behParam*/ 0x00040000, /*beh*/ bhvFlamethrower),
-    OBJECT(/*model*/ MODEL_NONE,   /*pos*/  -500,  1600,  3800, /*angle*/ 0, 0, 0, /*behParam*/ 0x00040000, /*beh*/ bhvFlamethrower),
+    OBJECT(/*model*/ MODEL_NONE,   /*pos*/ -6093,  3075, -7807, /*angle*/ 0, 0, 0, /*behParam*/ 0x00000001, /*beh*/ bhvBigBoulderGenerator),
+    OBJECT(/*model*/ MODEL_NONE,   /*pos*/  -500,  1600,  3500, /*angle*/ 0, 0, 0, /*behParam*/ 0x00040001, /*beh*/ bhvFlamethrower),
+    OBJECT(/*model*/ MODEL_NONE,   /*pos*/  -500,  1600,  3800, /*angle*/ 0, 0, 0, /*behParam*/ 0x00040001, /*beh*/ bhvFlamethrower),
     RETURN(),
 };
 

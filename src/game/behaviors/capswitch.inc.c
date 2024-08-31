@@ -8,12 +8,17 @@ static s32 sCapSaveFlags[] = {
 
 void cap_switch_act_init(void) {
     o->oAnimState = o->oBehParams2ndByte;
+    u8 sIsVanilla = GET_BPARAM4(o->oBehParams);
+    u8 levelCheck = FALSE;
+    if(sIsVanilla){
+        if(gCurrLevelNum == LEVEL_UNKNOWN_32)levelCheck = TRUE;
+    }
     cur_obj_scale(0.5f);
     o->oPosY += 71.0f;
 
     spawn_object_relative_with_scale(0, 0, -71, 0, 0.5f, o, MODEL_CAP_SWITCH_BASE, bhvCapSwitchBase);
-#ifdef ENABLE_VANILLA_LEVEL_SPECIFIC_CHECKS
-    if (gCurrLevelNum != LEVEL_UNKNOWN_32) {
+
+    if (levelCheck == FALSE) {
         if (save_file_get_flags() & sCapSaveFlags[o->oBehParams2ndByte]) {
             o->oAction = CAP_SWITCH_ACT_IDLE_PRESSED;
             o->header.gfx.scale[1] = 0.1f;
@@ -23,14 +28,6 @@ void cap_switch_act_init(void) {
     } else {
         o->oAction = CAP_SWITCH_ACT_IDLE_UNPRESSED;
     }
-#else
-    if (save_file_get_flags() & sCapSaveFlags[o->oBehParams2ndByte]) {
-        o->oAction = CAP_SWITCH_ACT_IDLE_PRESSED;
-        o->header.gfx.scale[1] = 0.1f;
-    } else {
-        o->oAction = CAP_SWITCH_ACT_IDLE_UNPRESSED;
-    }
-#endif
 }
 
 void cap_switch_act_idle_unpressed(void) {
