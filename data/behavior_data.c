@@ -4961,51 +4961,25 @@ const BehaviorScript bhvDecorativePendulum[] = {
     END_LOOP(),
 };
 
-const BehaviorScript bhvTreasureChestsShip[] = {
-    BEGIN(OBJ_LIST_DEFAULT),
-    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
-    DROP_TO_FLOOR(),
-    CALL_NATIVE(bhv_treasure_chest_ship_init),
-    BEGIN_LOOP(),
-        CALL_NATIVE(bhv_treasure_chest_ship_loop),
-    END_LOOP(),
-};
-
-const BehaviorScript bhvTreasureChestsJrb[] = {
-    BEGIN(OBJ_LIST_DEFAULT),
-    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
-    SET_HOME(),
-    DROP_TO_FLOOR(),
-    CALL_NATIVE(bhv_treasure_chest_jrb_init),
-    BEGIN_LOOP(),
-        CALL_NATIVE(bhv_treasure_chest_loop),
-    END_LOOP(),
-};
-
-const BehaviorScript bhvTreasureChestsDdd[] = {
-    BEGIN(OBJ_LIST_DEFAULT),
-    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
-    SET_HOME(),
-    DROP_TO_FLOOR(),
-    CALL_NATIVE(bhv_treasure_chest_ddd_init),
-    BEGIN_LOOP(),
-        CALL_NATIVE(bhv_treasure_chest_loop),
-    END_LOOP(),
-};
-
 const BehaviorScript bhvTreasureChestsStarMarker[] = {
     BEGIN(OBJ_LIST_DEFAULT),
     OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
     SET_HOME(),
-    DROP_TO_FLOOR(),
-    CALL_NATIVE(bhv_treasure_chest_init),
+    CALL_NATIVE(bhv_treasure_chest_star_marker_init),
     BEGIN_LOOP(),
         CALL_NATIVE(bhv_treasure_chest_loop),
     END_LOOP(),
 };
 
 const BehaviorScript bhvTreasureChest[] = {
-    GOTO(bhvTreasureChestBottom),
+    BEGIN(OBJ_LIST_GENACTOR),
+    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
+    DROP_TO_FLOOR(),
+    SET_INT(oIntangibleTimer, -1),
+    CALL_NATIVE(bhv_treasure_chest_init),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_treasure_chest_bottom_loop),
+    END_LOOP(),
 };
 
 const BehaviorScript bhvTreasureChestBottom[] = {

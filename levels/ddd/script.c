@@ -103,10 +103,13 @@ static const LevelScript script_ddd_area_1_objects_1[] = {
 };
 
 static const LevelScript script_ddd_area_1_objects_2[] = {
-    OBJECT_WITH_ACTS(/*model*/ MODEL_NONE,      /*pos*/ -2400, -4607,   125, /*angle*/ 0, 0, 0, /*behParam*/ 0x01000000, /*beh*/ bhvTreasureChests,    /*acts*/ ALL_ACTS),
-    OBJECT_WITH_ACTS(/*model*/ MODEL_NONE,      /*pos*/ -1900, -4000, -1400, /*angle*/ 0, 0, 0, /*behParam*/ 0x01000000, /*beh*/ bhvDefaultStarMarker, /*acts*/ ALL_ACTS),
-    OBJECT_WITH_ACTS(/*model*/ MODEL_MANTA_RAY, /*pos*/ -4640, -1380,    40, /*angle*/ 0, 0, 0, /*behParam*/ 0x04000000, /*beh*/ bhvMantaRay,          /*acts*/ ACT_2 | ACT_3 | ACT_4 | ACT_5 | ACT_6),
-    OBJECT_WITH_ACTS(/*model*/ MODEL_NONE,      /*pos*/ -3180, -3600,   120, /*angle*/ 0, 0, 0, /*behParam*/ 0x04000000, /*beh*/ bhvDefaultStarMarker, /*acts*/ ACT_2 | ACT_3 | ACT_4 | ACT_5 | ACT_6),
+    OBJECT(          /*model*/ MODEL_NONE,                     /*pos*/ -1900, -4000, -1400, /*angle*/ 0,    0, 0, /*behParam*/ 0x01000000, /*beh*/ bhvTreasureChestsStarMarker),
+    OBJECT(          /*model*/ MODEL_TREASURE_CHEST_BASE,      /*pos*/ -4500, -5119,  1300, /*angle*/ 0, -135, 0, /*behParam*/ (TREASURE_CHEST_BP_1 << 16), /*beh*/ bhvTreasureChest),
+    OBJECT(          /*model*/ MODEL_TREASURE_CHEST_BASE,      /*pos*/ -1800, -5119,  1050, /*angle*/ 0,   45, 0, /*behParam*/ (TREASURE_CHEST_BP_2 << 16), /*beh*/ bhvTreasureChest),
+    OBJECT(          /*model*/ MODEL_TREASURE_CHEST_BASE,      /*pos*/ -4500, -5119, -1100, /*angle*/ 0,   46, 0, /*behParam*/ (TREASURE_CHEST_BP_3 << 16), /*beh*/ bhvTreasureChest),
+    OBJECT(          /*model*/ MODEL_TREASURE_CHEST_BASE,      /*pos*/ -2400, -4607,   125, /*angle*/ 0,   88, 0, /*behParam*/ (TREASURE_CHEST_BP_4 << 16), /*beh*/ bhvTreasureChest),
+    OBJECT_WITH_ACTS(/*model*/ MODEL_MANTA_RAY,                /*pos*/ -4640, -1380,    40, /*angle*/ 0,    0, 0, /*behParam*/ 0x04000000, /*beh*/ bhvMantaRay,          /*acts*/ ACT_2 | ACT_3 | ACT_4 | ACT_5 | ACT_6),
+    OBJECT_WITH_ACTS(/*model*/ MODEL_NONE,                     /*pos*/ -3180, -3600,   120, /*angle*/ 0,    0, 0, /*behParam*/ 0x04000000, /*beh*/ bhvDefaultStarMarker, /*acts*/ ACT_2 | ACT_3 | ACT_4 | ACT_5 | ACT_6),
     RETURN(),
 };
 

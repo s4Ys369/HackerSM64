@@ -108,8 +108,11 @@ static const LevelScript script_jrb_area_1_objects_1[] = {
     OBJECT_WITH_ACTS(/*model*/ MODEL_NONE,                     /*pos*/  6833, -3654,  2230, /*angle*/ 0,   0, 0, /*behParam*/ 0x01000000, /*beh*/ bhvDefaultStarMarker,      /*acts*/ ACT_2),
     OBJECT_WITH_ACTS(/*model*/ MODEL_UNAGI,                    /*pos*/  6048, -5381,  1154, /*angle*/ 0, 340, 0, /*behParam*/ 0x02020000, /*beh*/ bhvUnagi,                  /*acts*/ ACT_3 | ACT_4 | ACT_5 | ACT_6),
     OBJECT_WITH_ACTS(/*model*/ MODEL_NONE,                     /*pos*/  4988, -5221,  2473, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvJetStream,              /*acts*/ ACT_2 | ACT_3 | ACT_4 | ACT_5 | ACT_6),
-    OBJECT(          /*model*/ MODEL_NONE,                     /*pos*/ -1800, -2812, -2100, /*angle*/ 0,   0, 0, /*behParam*/ 0x02000000, /*beh*/ bhvTreasureChestsJrb),
-    OBJECT(          /*model*/ MODEL_NONE,                     /*pos*/ -1800, -2500, -1700, /*angle*/ 0,   0, 0, /*behParam*/ 0x02000000, /*beh*/ bhvDefaultStarMarker),
+    OBJECT(          /*model*/ MODEL_NONE,                     /*pos*/ -1800, -2500, -1700, /*angle*/ 0,   0, 0, /*behParam*/ 0x02000000, /*beh*/ bhvTreasureChestsStarMarker),
+    OBJECT(          /*model*/ MODEL_TREASURE_CHEST_BASE,      /*pos*/ -1700, -2812, -1150, /*angle*/ 0, 180, 0, /*behParam*/ (TREASURE_CHEST_BP_1 << 16), /*beh*/ bhvTreasureChest),
+    OBJECT(          /*model*/ MODEL_TREASURE_CHEST_BASE,      /*pos*/ -1150, -2812, -1550, /*angle*/ 0, 180, 0, /*behParam*/ (TREASURE_CHEST_BP_2 << 16), /*beh*/ bhvTreasureChest),
+    OBJECT(          /*model*/ MODEL_TREASURE_CHEST_BASE,      /*pos*/ -2400, -2812, -1800, /*angle*/ 0, 180, 0, /*behParam*/ (TREASURE_CHEST_BP_3 << 16), /*beh*/ bhvTreasureChest),
+    OBJECT(          /*model*/ MODEL_TREASURE_CHEST_BASE,      /*pos*/ -1800, -2812, -2100, /*angle*/ 0, 180, 0, /*behParam*/ (TREASURE_CHEST_BP_4 << 16), /*beh*/ bhvTreasureChest),
     OBJECT_WITH_ACTS(/*model*/ MODEL_BOBOMB_BUDDY,             /*pos*/ -1956,  1331,  6500, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvBobombBuddyOpensCannon, /*acts*/ ACT_2 | ACT_3 | ACT_4 | ACT_5 | ACT_6),
     RETURN(),
 };
@@ -180,7 +183,11 @@ static const LevelScript script_jrb_area_1_objects_3[] = {
 };
 
 static const LevelScript script_jrb_area_2_objects_1[] = {
-    OBJECT(/*model*/ MODEL_NONE,            /*pos*/  400,  -350, -2700, /*angle*/ 0, 0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvTreasureChestsShip),
+    OBJECT(          /*model*/ MODEL_NONE,                     /*pos*/   400,  -350, -2700, /*angle*/ 0,    0, 0, /*behParam*/ 0x0001FEB1, /*beh*/ bhvTreasureChestsStarMarker),
+    OBJECT(          /*model*/ MODEL_TREASURE_CHEST_BASE,      /*pos*/   400,  -350, -2700, /*angle*/ 0,    0, 0, /*behParam*/ (TREASURE_CHEST_BP_1 << 16), /*beh*/ bhvTreasureChest),
+    OBJECT(          /*model*/ MODEL_TREASURE_CHEST_BASE,      /*pos*/   650,  -350,  -940, /*angle*/ 0, -135, 0, /*behParam*/ (TREASURE_CHEST_BP_2 << 16), /*beh*/ bhvTreasureChest),
+    OBJECT(          /*model*/ MODEL_TREASURE_CHEST_BASE,      /*pos*/  -550,  -350,  -770, /*angle*/ 0,  135, 0, /*behParam*/ (TREASURE_CHEST_BP_3 << 16), /*beh*/ bhvTreasureChest),
+    OBJECT(          /*model*/ MODEL_TREASURE_CHEST_BASE,      /*pos*/   100,  -350, -1700, /*angle*/ 0,    0, 0, /*behParam*/ (TREASURE_CHEST_BP_4 << 16), /*beh*/ bhvTreasureChest),
     RETURN(),
 };
 

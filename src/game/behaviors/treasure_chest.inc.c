@@ -103,103 +103,110 @@ void bhv_treasure_chest_bottom_loop(void) {
     o->oInteractStatus = INT_STATUS_NONE;
 }
 
-void spawn_treasure_chest(s8 param, s32 x, s32 y, s32 z, s16 yaw) {
-    struct Object *chestBaseObj = spawn_object_abs_with_rot(o, 0, MODEL_TREASURE_CHEST_BASE,
-                                                            bhvTreasureChestBottom, x, y, z, 0, yaw, 0);
-    chestBaseObj->oBehParams2ndByte = param;
-}
+void bhv_treasure_chest_star_marker_init(void) {
+    u8 starID = GET_BPARAM1(o->oBehParams);
+    u8 lowerWater = GET_BPARAM2(o->oBehParams);
 
-void bhv_treasure_chest_ship_init(void) {
-    spawn_treasure_chest(1, 400, -350, -2700, 0);
-    spawn_treasure_chest(2, 650, -350, -940, -0x6001);
-    spawn_treasure_chest(3, -550, -350, -770, 0x5FFF);
-    spawn_treasure_chest(4, 100, -350, -1700, 0);
-    o->oTreasureChestNumOpenedChests = 1;
-    o->oTreasureChestAboveWater = FALSE;
-}
-
-void bhv_treasure_chest_ship_loop(void) {
-    switch (o->oAction) {
-        case TREASURE_CHEST_ACT_SUCCESS_SOUND:
-            if (o->oTreasureChestNumOpenedChests == 5) {
-                play_puzzle_jingle();
-                fade_volume_scale(0, 127, 1000);
-                o->oAction = TREASURE_CHEST_ACT_REWARD;
-            }
-            break;
-
-        case TREASURE_CHEST_ACT_REWARD:
-            if (gEnvironmentRegions != NULL) {
-                gEnvironmentRegions[6] -= 5;
-                play_sound(SOUND_ENV_WATER_DRAIN, gGlobalSoundSource);
-                set_environmental_camera_shake(SHAKE_ENV_JRB_SHIP_DRAIN);
-                if (gEnvironmentRegions[6] < -335) {
-                    gEnvironmentRegions[6] = -335;
-                    o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
-                }
-#if ENABLE_RUMBLE
-                reset_rumble_timers_vibrate(2);
-#endif
-            }
-            break;
+    if(lowerWater == FALSE){
+        struct Object *starMarker = spawn_object_abs_with_rot(o, 0, MODEL_NONE, bhvDefaultStarMarker, o->oPosX, o->oPosY, o->oPosZ, 0, 0, 0);
+        SET_BPARAM1(starMarker->oBehParams, starID);
     }
-}
-
-void bhv_treasure_chest_jrb_init(void) {
-    spawn_treasure_chest(TREASURE_CHEST_BP_1, -1700, -2812, -1150, 0x7FFF);
-    spawn_treasure_chest(TREASURE_CHEST_BP_2, -1150, -2812, -1550, 0x7FFF);
-    spawn_treasure_chest(TREASURE_CHEST_BP_3, -2400, -2812, -1800, 0x7FFF);
-    spawn_treasure_chest(TREASURE_CHEST_BP_4, -1800, -2812, -2100, 0x7FFF);
     o->oTreasureChestNumOpenedChests = 1;
-    o->oTreasureChestAboveWater = TRUE;
-}
-
-void bhv_treasure_chest_ddd_init(void) {
-    spawn_treasure_chest(TREASURE_CHEST_BP_1, -4500, -5119, 1300, -0x6001);
-    spawn_treasure_chest(TREASURE_CHEST_BP_2, -1800, -5119, 1050, 0x1FFF);
-    spawn_treasure_chest(TREASURE_CHEST_BP_3, -4500, -5119, -1100, 0x238E);
-    spawn_treasure_chest(TREASURE_CHEST_BP_4, -2400, -4607, 125, 0x3E93);
-
-    o->oTreasureChestNumOpenedChests = 1;
-    o->oTreasureChestAboveWater = FALSE;
 }
 
 void bhv_treasure_chest_init(void) {
-    f32 dist;
-    s32 waterLevel;
 
-    struct Object *treasureChest = cur_obj_find_nearest_object_with_behavior(bhvTreasureChest, &dist);
+    bhv_treasure_chest_bottom_init();
+    cur_obj_become_intangible();
 
-    if (treasureChest != NULL) {
-        if(treasureChest->oBehParams2ndByte != 0){
-            treasureChest->parentObj = o;
+    // Copy of red coin function //
+
+    // Find marker
+    struct Object *treasureStar = cur_obj_nearest_object_with_behavior(bhvTreasureChestsStarMarker);
+
+    // If there is a marker ...
+    if (treasureStar != NULL) {
+
+        // check BPARAM2 is 1 through 4
+        if(o->oBehParams2ndByte > 0 && o->oBehParams2ndByte < 5){
+            o->parentObj = treasureStar;
+        } else {
+            // Until N number of chests are allowed, just delete anything past 4
+            mark_obj_for_deletion(o);
         }
     }
 
-    o->oTreasureChestNumOpenedChests = 1;
-    waterLevel = find_water_level(o->oPosX, o->oPosZ);
-    if(o->oPosY < waterLevel){
-        o->oTreasureChestAboveWater = FALSE;
-    } else {
-        o->oTreasureChestAboveWater = TRUE;
+    // find_water_level re-implementation //
+    s32 waterLevel, val, loX, hiX, loZ, hiZ;
+    TerrainData *p = gEnvironmentRegions;
+
+    waterLevel = 0;
+
+    if (p != NULL) {
+        s32 numRegions = *p++;
+
+        // Calculate the AABB
+        for (s32 i = 0; i < numRegions; i++) {
+            val = *p++;
+            loX = *p++;
+            loZ = *p++;
+            hiX = *p++;
+            hiZ = *p++;
+
+            // If the location is within a water box and it is a water box.
+            // Water is less than 50 val only, while above is gas and such.
+            if (loX < o->oPosX && o->oPosX < hiX && loZ < o->oPosZ && o->oPosZ < hiZ && val < 50) {
+                // Set the water height. Since this breaks, only return the first height.
+                waterLevel = *p;
+                break;
+            }
+            p++;
+        }
+
+        if(o->oPosY < waterLevel){
+            o->parentObj->oTreasureChestAboveWater = FALSE;
+        } else {
+            o->parentObj->oTreasureChestAboveWater = TRUE;
+        }
+
     }
     
 }
 
 void bhv_treasure_chest_loop(void) {
+    u8 lowerWater = GET_BPARAM2(o->oBehParams);
+
     switch (o->oAction) {
         case TREASURE_CHEST_ACT_SUCCESS_SOUND:
             if (o->oTreasureChestNumOpenedChests == 5) {
                 play_puzzle_jingle();
+                if(lowerWater)fade_volume_scale(0, 127, 1000);
                 o->oAction = TREASURE_CHEST_ACT_REWARD;
             }
             break;
 
         case TREASURE_CHEST_ACT_REWARD:
-            if (o->oTimer == 60) {
-                spawn_mist_particles();
-                spawn_default_star();
-                o->oAction = TREASURE_CHEST_ACT_END;
+            if(lowerWater){
+                s16 targetWaterLevel = GET_BPARAM34(o->oBehParams);
+                if (gEnvironmentRegions != NULL) {
+                    gEnvironmentRegions[6] -= 5;
+                    play_sound(SOUND_ENV_WATER_DRAIN, gGlobalSoundSource);
+                    set_environmental_camera_shake(SHAKE_ENV_JRB_SHIP_DRAIN);
+                    if (gEnvironmentRegions[6] < targetWaterLevel) {
+                        gEnvironmentRegions[6] = targetWaterLevel;
+                        o->oTreasureChestDoCloseChests = FALSE;
+                        o->oAction = TREASURE_CHEST_ACT_END;
+                    }
+#if ENABLE_RUMBLE
+                    reset_rumble_timers_vibrate(2);
+#endif
+                }
+            } else {
+                if (o->oTimer == 60) {
+                    spawn_mist_particles();
+                    spawn_default_star();
+                    o->oAction = TREASURE_CHEST_ACT_END;
+                }
             }
             break;
 
