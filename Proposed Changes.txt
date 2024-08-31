@@ -1,0 +1,49 @@
+Proposed Changes:
+
+- bhvObjectMarker and aliases
+-- bhvBigBullyBridge
+-- bhvBigBullyMinion
+-- bhvPyramidPillarTop
+-- bhvSnowmanMidpoint
+-- bhvDefaultStarMarker
+
+- bhvBigBullyWithMinions
+-- iterate through bhvBigBullyMinion object markers to spawn child objects, and if no markers found, spawn default arrangement
+
+- bhvBigBullyMinion
+-- behavior parameter 1 = minion number 1-3
+
+- bhvPyramidTop
+-- iterate through bhvPyramidPillarTop object markers to spawn touch detector objects (bhvPyramidPillarTouchDetector), and if no markers found, spawn default arrangement
+
+- bhvPyramidPillarTop
+-- behavior parameter 1 = pillar number 1-4
+
+- bhvSnowmanMidpoint
+-- generic marker to place bhvSnowmansBodyCheckpoint
+
+- bhvTouchedStarSpawn
+-- behavior parameter 1 = starID;
+-- behavior parameter 2 = s16 X offset
+-- behavior parameter 2 = s16 Y offset
+-- behavior parameter 2 = s16 Z offset
+--- Checks if Mario has entered area 2 and if 
+Mario has collided with hitbox, if so offset marker's position and spawn star
+
+- bhvTreasureChestsStarMarker
+-- behavior parameter 1 = starID
+- bhvTreasureChest
+-- behavior parameter 2 = chest number 1-4
+--- Remove Vanilla behaviors in favor of making treasure chests behave similarly to red coins
+
+TODO:
+
+- find and replace any further hard-coded functionality
+
+- add oIsVanilla object field
+
+- move all object trajectories to centralized location for easier editing
+
+- finish remaining TODOs in behaviors
+
+- remove all ENABLE_VANILLA_LEVEL_SPECIFIC_CHECKS instances from behaviors
