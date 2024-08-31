@@ -4580,9 +4580,7 @@ const BehaviorScript bhvStarSpawnCoordinates[] = {
 };
 
 const BehaviorScript bhvDefaultStarMarker[] = {
-    BEGIN(OBJ_LIST_LEVEL),
-    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
-    BREAK(),
+    GOTO(bhvObjectMarker),
 };
 
 const BehaviorScript bhvHiddenRedCoinStar[] = {
