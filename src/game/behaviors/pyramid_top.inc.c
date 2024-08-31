@@ -17,7 +17,7 @@
 void bhv_pyramid_top_init(void) {
     f32 dist;
     struct Object *objMarker;
-    u8 firstBparam;
+    u8 firstBparam = 0;
     u8 pillarTouchDetectorSpawned = 0;
 
     // Initialize the search for the first marker
@@ -28,7 +28,7 @@ void bhv_pyramid_top_init(void) {
         firstBparam = GET_BPARAM1(objMarker->oBehParams);
 
         // If the bparam is not zero, spawn a touch detector
-        if (firstBparam >= 0x01) {
+        if (firstBparam != 0) {
             pillarTouchDetectorSpawned = 1;
             spawn_object_abs_with_rot(o, 0, MODEL_NONE, bhvPyramidPillarTouchDetector, 
                     objMarker->oPosX, objMarker->oPosY, objMarker->oPosZ, 0, 0, 0);
@@ -44,7 +44,7 @@ void bhv_pyramid_top_init(void) {
 
     if (objMarker == NULL) {
         // TODO: Find a good default arrangement, currently simple square
-        if(!pillarTouchDetectorSpawned){
+        if(pillarTouchDetectorSpawned == 0){
             spawn_object_abs_with_rot(o, 0, MODEL_NONE, bhvPyramidPillarTouchDetector,  o->oPosX - 300.0f, o->oPosY, o->oPosZ + 300.0f, 0, 0, 0);
             spawn_object_abs_with_rot(o, 0, MODEL_NONE, bhvPyramidPillarTouchDetector,  o->oPosX - 300.0f, o->oPosY, o->oPosZ - 300.0f, 0, 0, 0);
             spawn_object_abs_with_rot(o, 0, MODEL_NONE, bhvPyramidPillarTouchDetector,  o->oPosX + 300.0f, o->oPosY, o->oPosZ - 300.0f, 0, 0, 0);
