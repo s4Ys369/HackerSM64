@@ -249,7 +249,7 @@ const LevelScript level_jrb_entry[] = {
     END_AREA(),
 
     FREE_LEVEL_POOL(),
-    MARIO_POS(/*area*/ 1, /*yaw*/ 90, /*pos*/ -6750, 1126, 1482),
+    MARIO_POS(/*area*/ 2, /*yaw*/ 180, /*pos*/ 928, 1050, -1248),
     CALL(/*arg*/ 0, /*func*/ lvl_init_or_update),
     CALL_LOOP(/*arg*/ 1, /*func*/ lvl_init_or_update),
     CLEAR_LEVEL(),

@@ -38,6 +38,10 @@ Mario has collided with hitbox, if so offset marker's position and spawn star
 -- behavior parameter 2 = chest number 1-4
 --- Remove Vanilla behaviors in favor of making treasure chests behave similarly to red coins
 
+In Progress:
+
+- make water box (gEnvironmentRegions[n]) dynamic for treasure chests
+
 TODO:
 
 - find and replace any further hard-coded functionality

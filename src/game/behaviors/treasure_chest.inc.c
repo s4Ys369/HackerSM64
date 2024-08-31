@@ -175,6 +175,9 @@ void bhv_treasure_chest_init(void) {
 
 void bhv_treasure_chest_loop(void) {
     u8 lowerWater = GET_BPARAM2(o->oBehParams);
+    s32 val = 0;
+    TerrainData *p = gEnvironmentRegions;
+    s32 *waterRegion = NULL;
 
     switch (o->oAction) {
         case TREASURE_CHEST_ACT_SUCCESS_SOUND:
@@ -188,14 +191,34 @@ void bhv_treasure_chest_loop(void) {
         case TREASURE_CHEST_ACT_REWARD:
             if(lowerWater){
                 s16 targetWaterLevel = GET_BPARAM34(o->oBehParams);
-                if (gEnvironmentRegions != NULL) {
-                    gEnvironmentRegions[6] -= 5;
-                    play_sound(SOUND_ENV_WATER_DRAIN, gGlobalSoundSource);
-                    set_environmental_camera_shake(SHAKE_ENV_JRB_SHIP_DRAIN);
-                    if (gEnvironmentRegions[6] < targetWaterLevel) {
-                        gEnvironmentRegions[6] = targetWaterLevel;
-                        o->oTreasureChestDoCloseChests = FALSE;
-                        o->oAction = TREASURE_CHEST_ACT_END;
+                if (p != NULL) {
+                    s32 numRegions = *p++;
+
+                    // Find the water region with val < 50
+                    for (s32 i = 0; i < numRegions; i++) {
+                        val = *p++; // Get the value of the region (height identifier)
+                        p += 4;     // Skip loX, loZ, hiX, hiZ
+
+                        // If this is a water region (val < 50), store the pointer
+                        if (val < 50) {
+                            waterRegion = (s32 *)p; // Point to the water height (next element)
+                            break;                  // Exit the loop after finding the first water region
+                        }
+                        p++; // Skip water level (height value)
+                    }
+
+                    // If we found a water region, decrement its height
+                    if (waterRegion != NULL) {
+                        *waterRegion -= 5;
+                        play_sound(SOUND_ENV_WATER_DRAIN, gGlobalSoundSource);
+                        set_environmental_camera_shake(SHAKE_ENV_JRB_SHIP_DRAIN);
+
+                        // Clamp the water level to the target level
+                        if (*waterRegion < targetWaterLevel) {
+                            *waterRegion = targetWaterLevel;
+                            o->oTreasureChestDoCloseChests = FALSE;
+                            o->oAction = TREASURE_CHEST_ACT_END;
+                        }
                     }
 #if ENABLE_RUMBLE
                     reset_rumble_timers_vibrate(2);
