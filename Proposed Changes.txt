@@ -32,6 +32,8 @@ Mario has collided with hitbox, if so offset marker's position and spawn star
 
 - bhvTreasureChestsStarMarker
 -- behavior parameter 1 = starID
+-- behavior parameter 2 = u8 boolean check whether to lower water level
+-- behavior parameter 3 & 4 = s16 targetWaterLevel
 - bhvTreasureChest
 -- behavior parameter 2 = chest number 1-4
 --- Remove Vanilla behaviors in favor of making treasure chests behave similarly to red coins
