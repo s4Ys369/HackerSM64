@@ -18,6 +18,7 @@ static Collision const *sPlatformOnTrackCollisionModels[] = {
 /**
  * Paths for the different instances of these platforms.
  */
+// TODO: Move object trajectories to generalized location
 static Trajectory const *sPlatformOnTrackPaths[] = {
     rr_seg7_trajectory_0702EC3C,
     rr_seg7_trajectory_0702ECC0,

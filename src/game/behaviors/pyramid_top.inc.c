@@ -58,7 +58,7 @@ void bhv_pyramid_top_init(void) {
  * fragments in the process.
  */
 void bhv_pyramid_top_spinning(void) {
-    // (TODO: What is this doing)
+    // Oscillate along the X-axis
     o->oPosX = o->oHomeX + sins(o->oTimer * 0x4000) * 40.0f;
 
     // At first, move upward smoothly without rotating.

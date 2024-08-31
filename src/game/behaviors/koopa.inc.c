@@ -59,6 +59,7 @@ struct KoopaTheQuickProperties {
 /**
  * Properties for the BoB race and the THI race.
  */
+// TODO: Move object trajectories to generalized location
 static struct KoopaTheQuickProperties sKoopaTheQuickProperties[] = {
     { DIALOG_005, DIALOG_007, bob_seg7_trajectory_koopa },
     { DIALOG_009, DIALOG_031, thi_seg7_trajectory_koopa },

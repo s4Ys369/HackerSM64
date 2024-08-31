@@ -6,6 +6,7 @@
  * These rings contain a significant bug that is documented in water_ring.inc.c
  */
 
+// TODO: Move object trajectories to generalized location
 static Trajectory sMantaRayTraj[] = { 
     TRAJECTORY_POS(0, /*pos*/ -4500, -1380,   -40), 
     TRAJECTORY_POS(1, /*pos*/ -4120, -2240,   740), 

@@ -39,7 +39,6 @@ extern const Gfx ccm_seg7_dl_070136D0[];
 extern const Gfx ccm_seg7_dl_07013870[];
 extern const Collision ccm_seg7_area_1_collision[];
 extern const Collision ccm_seg7_collision_ropeway_lift[];
-extern const Trajectory ccm_seg7_trajectory_snowman[];
 extern const Trajectory ccm_seg7_trajectory_ropeway_lift[];
 extern const struct MovtexQuadCollection ccm_movtex_penguin_puddle_water[];
 extern const Gfx ccm_seg7_dl_0701CE30[];

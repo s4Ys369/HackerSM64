@@ -14,6 +14,7 @@ struct ObjectHitbox sUnagiHitbox = {
 
 void bhv_unagi_init(void) {
     if (o->oBehParams2ndByte != UNAGI_BP_IN_CAVE) {
+        // TODO: Move object trajectories to generalized location
         o->oPathedStartWaypoint = segmented_to_virtual(jrb_seg7_trajectory_unagi_1);
         if (o->oBehParams2ndByte == UNAGI_BP_IN_SHIP) {
             o->oFaceAnglePitch = -0x1DB0;
@@ -21,6 +22,7 @@ void bhv_unagi_init(void) {
             o->oAction = UNAGI_ACT_SHIP_PATH;
         }
     } else {
+        // TODO: Move object trajectories to generalized location
         o->oPathedStartWaypoint = segmented_to_virtual(jrb_seg7_trajectory_unagi_2);
         o->oAction = UNAGI_ACT_IN_CAVE;
 #ifdef ENABLE_VANILLA_LEVEL_SPECIFIC_CHECKS 
