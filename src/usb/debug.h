@@ -1,26 +1,38 @@
 #ifndef UNFL_DEBUG_H
 #define UNFL_DEBUG_H
-
+    
     /*********************************
              Settings macros
     *********************************/
-
+    
+    // Enable/Disable debug
+    #ifndef DEBUG_MODE
+        #define DEBUG_MODE    1   // Enable/Disable debug mode
+    #endif
+    
     // Settings
-    #define DEBUG_MODE        1   // Enable/Disable debug mode
     #define DEBUG_INIT_MSG    1   // Print a message when debug mode has initialized
+    #define AUTOPOLL_ENABLED  1   // Automatically poll the USB on a timer
+    #define AUTOPOLL_TIME     200 // Time (in milliseconds) between auto polls
     #define USE_FAULTTHREAD   1   // Create a fault detection thread (libultra only)
-    // #define OVERWRITE_OSPRINT 1   // Replaces osSyncPrintf calls with debug_printf (defined in makefile - libultra_rom does not have osSyncPrintf)
+    #define USE_RDBTHREAD     1   // Create a remote debugger thread
+    #define OVERWRITE_OSPRINT 1   // Replaces osSyncPrintf calls with debug_printf (libultra only)
     #define MAX_COMMANDS      25  // The max amount of user defined commands possible
+    
+    // USB thread definitions (libultra only)
+    #define USB_THREAD_ID    14
+    #define USB_THREAD_PRI   126
+    #define USB_THREAD_STACK 0x2000
     
     // Fault thread definitions (libultra only)
     #define FAULT_THREAD_ID    13
     #define FAULT_THREAD_PRI   125
     #define FAULT_THREAD_STACK 0x2000
     
-    // USB thread definitions (libultra only)
-    #define USB_THREAD_ID    14
-    #define USB_THREAD_PRI   126
-    #define USB_THREAD_STACK 0x2000
+    // Remote debugger thread definitions (libultra only)
+    #define RDB_THREAD_ID    15
+    #define RDB_THREAD_PRI   124
+    #define RDB_THREAD_STACK 0x2000
     
     
     /*********************************
@@ -32,6 +44,7 @@
         /*==============================
             debug_initialize
             Initializes the debug and USB library.
+            Should be called last during game initialization.
         ==============================*/
         
         extern void debug_initialize();
@@ -46,9 +59,7 @@
         ==============================*/
         
         extern void debug_printf(const char* message, ...);
-        #if OVERWRITE_OSPRINT == 0
-            #define osSyncPrintf debug_printf
-        #endif
+        
         
         /*==============================
             debug_dumpbinary
@@ -87,8 +98,8 @@
         ==============================*/
         
         extern void debug_64drivebutton(void(*execute)(), char onpress);
-
-
+        
+        
         /*==============================
             debug_pollcommands
             Check the USB for incoming commands.
@@ -106,7 +117,7 @@
         ==============================*/
         
         extern void debug_addcommand(char* command, char* description, char*(*execute)());
-
+        
         
         /*==============================
             debug_parsecommand
@@ -134,7 +145,7 @@
         ==============================*/
         
         extern void debug_printcommands();
-
+        
         
         // Ignore this, use the macro instead
         extern void _debug_assert(const char* expression, const char* file, int line);
@@ -146,7 +157,7 @@
         
         // Overwrite library functions with useless macros if debug mode is disabled
         #define debug_initialize() 
-        #define debug_printf
+        #define debug_printf (void)
         #define debug_screenshot(a, b, c)
         #define debug_assert(a)
         #define debug_pollcommands()
