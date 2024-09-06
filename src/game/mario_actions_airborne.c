@@ -1,6 +1,7 @@
 #include <PR/ultratypes.h>
 
 #include "sm64.h"
+#include "behavior_data.h"
 #include "mario_actions_airborne.h"
 #include "area.h"
 #include "audio/external.h"
@@ -351,10 +352,41 @@ void update_flying(struct MarioState *m) {
     m->slideVelZ = m->vel[2];
 }
 
+u8 wearing_fludd(struct MarioState *m) {
+    ModelID32 modelID = 0;
+    if(m->heldObj != NULL)modelID = obj_get_model_id(m->heldObj);
+
+    if(modelID == MODEL_FLUDD){
+        return TRUE;
+    } else {
+        return FALSE;
+    }
+}
+
+void fludd_hover(struct MarioState *m){
+    struct Object *hoverJet = NULL;
+    if (m->controller->buttonPressed & L_TRIG){
+        set_mario_action(m, ACT_HOLD_FREEFALL, 0);
+        spawn_mist_particles();
+        play_sound(SOUND_ACTION_WATER_JUMP, m->pos);
+        if(hoverJet == NULL)hoverJet = spawn_object_relative(0,0,0,0,m->marioObj, MODEL_HOVER_JET, bhvHoverJet);
+    }
+    if (m->controller->buttonDown & L_TRIG){
+        if(m->vel[1] < 2.0f)m->vel[1] += 3.9f; 
+    }
+}
+
 u32 common_air_action_step(struct MarioState *m, u32 landAction, s32 animation, u32 stepArg) {
     u32 stepResult;
+    u8 wearingFludd = wearing_fludd(m);
 
-    update_air_without_turn(m);
+    if(wearingFludd){
+        fludd_hover(m);
+        update_air_with_turn(m);
+    } else {
+        update_air_without_turn(m);
+    }
+    
 
     stepResult = perform_air_step(m, stepArg);
     switch (stepResult) {
@@ -505,6 +537,10 @@ s32 act_backflip(struct MarioState *m) {
 
 s32 act_freefall(struct MarioState *m) {
     s32 animation = MARIO_ANIM_GENERAL_FALL;
+
+    if (m->input & INPUT_A_PRESSED) {
+        return set_mario_action(m, ACT_DIVE, 0);
+    }
 
     if (m->input & INPUT_B_PRESSED) {
         return set_mario_action(m, ACT_DIVE, 0);

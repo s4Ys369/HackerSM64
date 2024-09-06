@@ -517,6 +517,7 @@ void bhv_moving_flame_particle_loop(void);
 void bhv_fire_spitter_update(void);
 void bhv_snufit_loop(void);
 void bhv_snufit_balls_loop(void);
+void bhv_hover_jet_loop(void);
 void bhv_horizontal_grindel_init(void);
 void bhv_horizontal_grindel_update(void);
 void bhv_eyerok_boss_loop(void);

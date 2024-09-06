@@ -32,3 +32,4 @@
 #endif
 
 #include "FLUDD/model.inc.c"
+#include "hover_jet/model.inc.c"

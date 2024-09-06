@@ -389,6 +389,16 @@ enum BehaviorCommands {
     BC_BPTR(BHV_CMD_SPAWN_WATER_DROPLET, dropletParams)
 
 
+/* fast64 object exports get inserted here */
+const BehaviorScript bhvHoverJet[] = {
+	BEGIN(OBJ_LIST_GENACTOR),
+	OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
+	BEGIN_LOOP(),
+		CALL_NATIVE(bhv_hover_jet_loop),
+	END_LOOP(),
+};
+
+
 const BehaviorScript bhvStarDoor[] = {
     BEGIN(OBJ_LIST_SURFACE),
     SET_INT(oInteractType, INTERACT_DOOR),
