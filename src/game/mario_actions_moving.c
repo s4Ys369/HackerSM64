@@ -872,7 +872,7 @@ s32 act_hold_walking(struct MarioState *m) {
     }
 
     if (m->input & INPUT_B_PRESSED) {
-        return set_mario_action(m, ACT_THROWING, 0);
+        return set_mario_action(m, ACT_JUMP_KICK, 0);
     }
 
     if (m->input & INPUT_A_PRESSED) {

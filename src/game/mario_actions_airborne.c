@@ -17,6 +17,7 @@
 #include "rumble_init.h"
 
 #include "config.h"
+#include "fludd.h"
 
 void play_flip_sounds(struct MarioState *m, s16 frame1, s16 frame2, s16 frame3) {
     s32 animFrame = m->marioObj->header.gfx.animInfo.animFrame;
@@ -352,35 +353,10 @@ void update_flying(struct MarioState *m) {
     m->slideVelZ = m->vel[2];
 }
 
-u8 wearing_fludd(struct MarioState *m) {
-    ModelID32 modelID = 0;
-    if(m->heldObj != NULL)modelID = obj_get_model_id(m->heldObj);
-
-    if(modelID == MODEL_FLUDD){
-        return TRUE;
-    } else {
-        return FALSE;
-    }
-}
-
-void fludd_hover(struct MarioState *m){
-    struct Object *hoverJet = NULL;
-    if (m->controller->buttonPressed & L_TRIG){
-        set_mario_action(m, ACT_HOLD_FREEFALL, 0);
-        spawn_mist_particles();
-        play_sound(SOUND_ACTION_WATER_JUMP, m->pos);
-        if(hoverJet == NULL)hoverJet = spawn_object_relative(0,0,0,0,m->marioObj, MODEL_HOVER_JET, bhvHoverJet);
-    }
-    if (m->controller->buttonDown & L_TRIG){
-        if(m->vel[1] < 2.0f)m->vel[1] += 3.9f; 
-    }
-}
-
 u32 common_air_action_step(struct MarioState *m, u32 landAction, s32 animation, u32 stepArg) {
     u32 stepResult;
-    u8 wearingFludd = wearing_fludd(m);
 
-    if(wearingFludd){
+    if(wearing_fludd(m) != 0){
         fludd_hover(m);
         update_air_with_turn(m);
     } else {
@@ -572,7 +548,7 @@ s32 act_hold_jump(struct MarioState *m) {
     }
 
     if ((m->input & INPUT_B_PRESSED) && !(m->heldObj->oInteractionSubtype & INT_SUBTYPE_HOLDABLE_NPC)) {
-        return set_mario_action(m, ACT_AIR_THROW, 0);
+        return set_mario_action(m, ACT_JUMP_KICK, 0);
     }
 
     if (m->input & INPUT_Z_PRESSED) {
@@ -598,7 +574,7 @@ s32 act_hold_freefall(struct MarioState *m) {
     }
 
     if ((m->input & INPUT_B_PRESSED) && !(m->heldObj->oInteractionSubtype & INT_SUBTYPE_HOLDABLE_NPC)) {
-        return set_mario_action(m, ACT_AIR_THROW, 0);
+        return set_mario_action(m, ACT_JUMP_KICK, 0);
     }
 
     if (m->input & INPUT_Z_PRESSED) {
@@ -1630,7 +1606,11 @@ s32 act_jump_kick(struct MarioState *m) {
     switch (perform_air_step(m, 0)) {
         case AIR_STEP_LANDED:
             if (!check_fall_damage_or_get_stuck(m, ACT_HARD_BACKWARD_GROUND_KB)) {
-                set_mario_action(m, ACT_FREEFALL_LAND, 0);
+                if(wearing_fludd(m) != 0) {
+                    set_mario_action(m, ACT_HOLD_FREEFALL_LAND, 0);
+                } else {
+                    set_mario_action(m, ACT_FREEFALL_LAND, 0);
+                }
             }
             break;
 
