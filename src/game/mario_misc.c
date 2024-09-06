@@ -641,3 +641,14 @@ Gfx *geo_mirror_mario_backface_culling(s32 callContext, struct GraphNode *node, 
     }
     return gfx;
 }
+
+Gfx *geo_switch_torso(s32 callContext, struct GraphNode *node) {
+    struct GraphNodeSwitchCase *switchCase = (struct GraphNodeSwitchCase *) node;
+    ModelID32 modelID = 0;
+
+    if (callContext == GEO_CONTEXT_RENDER) {
+        if(gMarioState->heldObj != NULL)modelID = obj_get_model_id(gMarioState->heldObj);
+        switchCase->selectedCase = (modelID == MODEL_FLUDD) ? 1 : 0;
+    }
+    return NULL;
+}
