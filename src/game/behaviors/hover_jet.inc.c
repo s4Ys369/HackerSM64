@@ -20,8 +20,8 @@ void bhv_hover_jet_init(void){
 void bhv_hover_jet_loop(void) {
 
     cur_obj_update_floor_and_walls();
-    hover_jet_set_offset(50.0f);
-    o->oPosY -= 10.0f;
+    if(o->header.gfx.scale[1] < 5.0f)o->header.gfx.scale[1] += 1.0f;
+    o->oPosY -= 60.0f;
 
     // Delete the object if outside draw distance or grounded
     s16 collisionFlags = object_step();

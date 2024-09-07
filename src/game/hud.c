@@ -366,23 +366,16 @@ static void animate_breath_meter_sliding_out(void) {
  */
 void handle_breath_meter_actions(s16 numBreathWedges) {
     // Show breath meter if health is not full, less than 8
-    if ((numBreathWedges < 8) && (sBreathMeterStoredValue == 8) && sBreathMeterHUD.animation == BREATH_METER_HIDDEN) {
+    if (sBreathMeterHUD.animation == BREATH_METER_HIDDEN) {
         sBreathMeterHUD.animation = BREATH_METER_SHOWING;
         // sBreathMeterHUD.y         = HUD_BREATH_METER_Y;
     }
     // Show breath meter if breath is full, has 8
     if ((numBreathWedges == 8) && (sBreathMeterStoredValue  == 7)) sBreathMeterVisibleTimer  = 0;
     // After breath is full, hide breath meter
-    if ((numBreathWedges == 8) && (sBreathMeterVisibleTimer > 45)) sBreathMeterHUD.animation = BREATH_METER_HIDING;
+    if ((sBreathMeterStoredValue <= 1) && (sBreathMeterVisibleTimer > 45)) sBreathMeterHUD.animation = BREATH_METER_HIDING;
     // Update to match breath value
     sBreathMeterStoredValue = numBreathWedges;
-    // If Mario is swimming, keep breath meter visible
-    if (gPlayerCameraState->action & ACT_FLAG_SWIMMING) {
-        if (sBreathMeterHUD.animation == BREATH_METER_HIDDEN) {
-            sBreathMeterHUD.animation = BREATH_METER_SHOWING;
-        }
-        sBreathMeterVisibleTimer = 0;
-    }
 }
 
 void render_hud_breath_meter(void) {

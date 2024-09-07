@@ -33,6 +33,8 @@
 #include "sound_init.h"
 #include "rumble_init.h"
 
+#include "fludd.h"
+
 
 /**************************************************
  *                    ANIMATIONS                  *
@@ -1341,6 +1343,7 @@ void update_mario_inputs(struct MarioState *m) {
     update_mario_button_inputs(m);
     update_mario_joystick_inputs(m);
     update_mario_geometry_inputs(m);
+    fludd_reset_water_level(m);
 #ifdef VANILLA_DEBUG
     debug_print_speed_action_normal(m);
 #endif
@@ -1767,7 +1770,7 @@ s32 execute_mario_action(UNUSED struct Object *obj) {
         set_submerged_cam_preset_and_spawn_bubbles(gMarioState);
         update_mario_health(gMarioState);
 #ifdef BREATH_METER
-        update_mario_breath(gMarioState);
+        //update_mario_breath(gMarioState);
 #endif
         update_mario_info_for_cam(gMarioState);
         mario_update_hitbox_and_cap_model(gMarioState);

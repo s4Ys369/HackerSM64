@@ -20,30 +20,58 @@
 
 #include "fludd.h"
 
-u8 isWearingFludd = TRUE;
+static u8 isWearingFludd = FALSE;
+static u32 waterLevel = 160;
 
 u8 wearing_fludd(struct MarioState *m) {
     ModelID32 modelID = 0;
     if(m->heldObj != NULL)modelID = obj_get_model_id(m->heldObj);
 
     if(modelID == MODEL_FLUDD){
+        isWearingFludd = TRUE;
         return TRUE;
     } else {
+        isWearingFludd = FALSE;
         return FALSE;
     }
 }
 
-void fludd_hover(struct MarioState *m){
-    struct Object *hoverJet = NULL;
-    if (m->controller->buttonPressed & L_TRIG){
-        spawn_mist_particles_variable(5,0,5.0f);
-        set_mario_action(m, ACT_HOLD_FREEFALL, 0);
-        if(hoverJet == NULL){
-            hoverJet = spawn_object_relative(0,0,0,0,m->marioObj, MODEL_HOVER_JET, bhvHoverJet);
-        }
+void fludd_reset_water_level(struct MarioState *m){
+    if(m->input & INPUT_IN_WATER){
+        waterLevel = 160;
+        m->breath = 0x880;
     }
-    if (m->controller->buttonDown & L_TRIG){
-        spawn_object_relative(0,0,0,0,m->marioObj, MODEL_HOVER_JET, bhvHoverJet);
-        if(m->vel[1] < 2.0f)m->vel[1] += 3.9f; 
+}
+
+void fludd_hover(struct MarioState *m) {
+
+    if(waterLevel <= 1){
+        return;
+    }
+
+
+    if (m->controller->buttonPressed & L_TRIG) {
+        spawn_mist_particles_variable(10, -10, 7.0f);
+        set_mario_action(m, ACT_HOLD_FREEFALL, 0);
+        spawn_object_relative(0, 0, 0, 0, m->marioObj, MODEL_HOVER_JET, bhvHoverJet);
+    }
+
+    if ((m->controller->buttonDown & L_TRIG)) {
+        waterLevel--;
+
+        if (waterLevel % 2 == 0) {
+            spawn_object_relative(0, 0, 0, 0, m->marioObj, MODEL_HOVER_JET, bhvHoverJet);
+        }
+
+        if (m->breath >= 0x100 && (waterLevel % 20 == 0)) {
+            m->breath -= 0x100;
+        }
+
+        if (m->vel[1] < -37.5f) {
+            m->vel[1] = -37.5f;
+        } else {
+            m->vel[1] += 3.7f;
+        }
+
     }
 }
