@@ -1,6 +1,6 @@
 void scroll_hover_jet_hover_jet_mesh_layer_5_vtx_0() {
 	int i = 0;
-	int count = 54;
+	int count = 75;
 	int width = 64 * 0x20;
 
 	static int currentX = 0;
