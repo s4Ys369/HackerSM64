@@ -21,7 +21,7 @@
 #include "fludd.h"
 
 static u8 isWearingFludd = FALSE;
-static u32 waterLevel = 160;
+u32 waterLevel = 160;
 
 u8 wearing_fludd(struct MarioState *m) {
     ModelID32 modelID = 0;
@@ -65,6 +65,11 @@ void fludd_hover(struct MarioState *m) {
 
         if (m->breath >= 0x100 && (waterLevel % 20 == 0)) {
             m->breath -= 0x100;
+        }
+        if (m->breath < 0x100) {
+            // If breath is "zero", set health to "zero"
+            m->breath =  0xFF;
+            m->health =  0xFF;
         }
 
         if (m->vel[1] < -37.5f) {

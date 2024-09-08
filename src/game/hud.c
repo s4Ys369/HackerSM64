@@ -19,6 +19,7 @@
 #include "puppyprint.h"
 
 #include "config.h"
+#include "fludd.h"
 
 /* @file hud.c
  * This file implements HUD rendering and power meter animations.
@@ -306,6 +307,8 @@ void render_breath_meter_segment(s16 numBreathWedges) {
     breathLUT = segmented_to_virtual(&breath_meter_segments_lut);
     Gfx *tempGfxHead = gDisplayListHead;
 
+    if(numBreathWedges == 0)return;
+
     gDPPipeSync(tempGfxHead++);
     gDPSetTextureImage(tempGfxHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, (*breathLUT)[numBreathWedges - 1]);
     gDPLoadSync(tempGfxHead++);
@@ -321,6 +324,7 @@ void render_breath_meter_segment(s16 numBreathWedges) {
  * That includes the base and the colored segment textures.
  */
 void render_dl_breath_meter(s16 numBreathWedges) {
+
     Mtx *mtx = alloc_display_list(sizeof(Mtx));
 
     if (mtx == NULL) {
@@ -331,11 +335,26 @@ void render_dl_breath_meter(s16 numBreathWedges) {
     gSPMatrix(      gDisplayListHead++, VIRTUAL_TO_PHYSICAL(mtx++),
                     G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
     gSPDisplayList( gDisplayListHead++, &dl_breath_meter_base);
-    if (numBreathWedges != 0) {
+    if(numBreathWedges != 0) {
         gSPDisplayList(gDisplayListHead++, &dl_breath_meter_health_segments_begin);
         render_breath_meter_segment(numBreathWedges);
         gSPDisplayList(gDisplayListHead++, &dl_breath_meter_health_segments_end);
     }
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+}
+
+void render_dl_breath_meter_base(void) {
+
+    Mtx *mtx = alloc_display_list(sizeof(Mtx));
+
+    if (mtx == NULL) {
+        return;
+    }
+
+    guTranslate(mtx, (f32) sBreathMeterHUD.x, (f32) sBreathMeterHUD.y, 0);
+    gSPMatrix(      gDisplayListHead++, VIRTUAL_TO_PHYSICAL(mtx++),
+                    G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+    gSPDisplayList( gDisplayListHead++, &dl_breath_meter_base);
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
 
@@ -372,9 +391,6 @@ void handle_breath_meter_actions(s16 numBreathWedges) {
     }
     // Show breath meter if breath is full, has 8
     if ((numBreathWedges == 8) && (sBreathMeterStoredValue  == 7)) sBreathMeterVisibleTimer  = 0;
-    // After breath is full, hide breath meter
-    if ((sBreathMeterStoredValue <= 1) && (sBreathMeterVisibleTimer > 45)) sBreathMeterHUD.animation = BREATH_METER_HIDING;
-    // Update to match breath value
     sBreathMeterStoredValue = numBreathWedges;
 }
 
@@ -387,7 +403,13 @@ void render_hud_breath_meter(void) {
         case BREATH_METER_HIDING:        animate_breath_meter_sliding_out(); break;
         default:                                                             break;
     }
-    render_dl_breath_meter(shownBreathAmount);
+
+    if(waterLevel > 1) {
+        render_dl_breath_meter(sBreathMeterStoredValue);
+    } else {
+        render_dl_breath_meter(sBreathMeterStoredValue-1);
+    }
+
     sBreathMeterVisibleTimer++;
 }
 #endif

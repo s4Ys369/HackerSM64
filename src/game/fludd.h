@@ -5,6 +5,8 @@
 
 #include "types.h"
 
+extern u32 waterLevel;
+
 u8 wearing_fludd(struct MarioState *m);
 void fludd_reset_water_level(struct MarioState *m);
 void fludd_hover(struct MarioState *m);
