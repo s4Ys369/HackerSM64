@@ -341,6 +341,7 @@ void set_mario_initial_action(struct MarioState *m, u32 spawnType, u32 actionArg
 #ifdef PREVENT_DEATH_LOOP
     if (m->isDead) {
         m->health = 0x880;
+        m->breath = 0x880;
         m->isDead = FALSE;
     }
 #endif
