@@ -5,7 +5,7 @@ include util.mk
 # Default target
 default: all
 
-TARGET_STRING := sm64
+TARGET_STRING := 2.4
 
 # Preprocessor definitions
 DEFINES :=
