@@ -92,7 +92,7 @@ FIXLIGHTS ?= 1
 
 DEBUG_MAP_STACKTRACE_FLAG := -D DEBUG_MAP_STACKTRACE
 
-TARGET := sm64
+TARGET := 2.4
 
 
 # GRUCODE - selects which RSP microcode to use.
