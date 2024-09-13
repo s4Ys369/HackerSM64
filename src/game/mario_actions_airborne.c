@@ -1483,6 +1483,9 @@ s32 act_lava_boost(struct MarioState *m) {
 
     switch (perform_air_step(m, 0)) {
         case AIR_STEP_LANDED:
+            if(m->floor->type == SURFACE_HURT){
+                hurt_and_set_mario_action(m, ACT_HARD_BACKWARD_AIR_KB, 0, 0xc);
+            } else
             if (m->floor->type == SURFACE_BURNING) {
                 m->actionState = ACT_STATE_LAVA_BOOST_HIT_LAVA;
                 if (!(m->flags & MARIO_METAL_CAP)) {

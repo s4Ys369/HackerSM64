@@ -18,13 +18,18 @@
 /* Fast64 begin persistent block [scripts] */
 /* Fast64 end persistent block [scripts] */
 
+const LevelScript fast64_bob_loads[] = {
+	LOAD_MODEL_FROM_GEO(MODEL_SAW_BLADE, saw_blade_geo), 
+	RETURN(), 
+};
+
 const LevelScript level_bob_entry[] = {
 	INIT_LEVEL(),
 	LOAD_YAY0(0x07, _bob_segment_7SegmentRomStart, _bob_segment_7SegmentRomEnd), 
 	LOAD_YAY0_TEXTURE(0x09, _generic_yay0SegmentRomStart, _generic_yay0SegmentRomEnd), 
 	LOAD_YAY0(0x0A, _water_skybox_yay0SegmentRomStart, _water_skybox_yay0SegmentRomEnd), 
-	LOAD_YAY0(0x05, _group1_yay0SegmentRomStart, _group1_yay0SegmentRomEnd), 
-	LOAD_RAW(0x0C, _group1_geoSegmentRomStart, _group1_geoSegmentRomEnd), 
+	LOAD_YAY0(0x05, _group4_yay0SegmentRomStart, _group4_yay0SegmentRomEnd), 
+	LOAD_RAW(0x0C, _group4_geoSegmentRomStart, _group4_geoSegmentRomEnd), 
 	LOAD_YAY0(0x06, _group13_yay0SegmentRomStart, _group13_yay0SegmentRomEnd), 
 	LOAD_RAW(0x0D, _group13_geoSegmentRomStart, _group13_geoSegmentRomEnd), 
 	LOAD_YAY0(0x08, _common0_yay0SegmentRomStart, _common0_yay0SegmentRomEnd), 
@@ -32,8 +37,9 @@ const LevelScript level_bob_entry[] = {
 	ALLOC_LEVEL_POOL(),
 	MARIO(MODEL_MARIO, 0x00000001, bhvMario), 
 	JUMP_LINK(script_func_global_1), 
-	JUMP_LINK(script_func_global_2), 
+	JUMP_LINK(script_func_global_5), 
 	JUMP_LINK(script_func_global_14), 
+	JUMP_LINK(fast64_bob_loads), 
 	LOAD_MODEL_FROM_GEO(MODEL_BOB_BUBBLY_TREE, bubbly_tree_geo), 
 	LOAD_MODEL_FROM_GEO(MODEL_BOB_CHAIN_CHOMP_GATE, bob_geo_000440), 
 	LOAD_MODEL_FROM_GEO(MODEL_BOB_SEESAW_PLATFORM, bob_geo_000458), 
@@ -47,7 +53,8 @@ const LevelScript level_bob_entry[] = {
 		WARP_NODE(0xF1, LEVEL_BOB, 0x01, 0x0A, WARP_NO_CHECKPOINT),
 		MARIO_POS(0x01, 0, 0, 280, 0),
 		OBJECT(MODEL_NONE, 0, 280, 0, 0, 0, 0, (0x0A << 16), bhvSpinAirborneWarp),
-		OBJECT(MODEL_FLUDD, 0, 162, -763, 0, 0, 0, 0x00000000, bhvBreakableBoxSmall),
+		OBJECT(MODEL_SAW_BLADE, 1347, 450, -300, 0, 0, 0, 0x00000000, bhvSawBlade),
+		OBJECT(MODEL_SAW_BLADE, 1347, 450, 300, 0, 0, 0, 0x00000000, bhvSawBlade),
 		TERRAIN(bob_area_1_collision),
 		MACRO_OBJECTS(bob_area_1_macro_objs),
 		SET_BACKGROUND_MUSIC(0x00, SEQ_LEVEL_GRASS),

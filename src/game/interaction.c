@@ -1922,6 +1922,8 @@ void mario_handle_special_floors(struct MarioState *m) {
             case SURFACE_TIMER_END:
                 pss_end_slide(m);
                 break;
+            case SURFACE_HURT:
+                hurt_and_set_mario_action(m, ACT_HARD_BACKWARD_AIR_KB, 0, 0xc);
         }
 
         if (!(m->action & (ACT_FLAG_AIR | ACT_FLAG_SWIMMING))) {

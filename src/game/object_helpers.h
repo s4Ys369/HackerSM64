@@ -199,6 +199,7 @@ void obj_translate_xyz_random(struct Object *obj, f32 rangeLength);
 void obj_translate_xz_random(struct Object *obj, f32 rangeLength);
 void cur_obj_set_pos_via_transform(void);
 void cur_obj_spawn_particles(struct SpawnParticlesInfo *info);
+void cur_obj_spawn_particles_offset(struct SpawnParticlesInfo *info, f32 xOffset, f32 yOffset, f32 zOffset);
 s32 cur_obj_reflect_move_angle_off_wall(void);
 
 #define WAYPOINT_FLAGS_END -1

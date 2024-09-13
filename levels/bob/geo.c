@@ -19,3 +19,4 @@
 #include "levels/bob/areas/1/geo.inc.c"
 
 #include "levels/bob/geo.inc.c"
+#include "levels/bob/saw_blade/geo.inc.c"
