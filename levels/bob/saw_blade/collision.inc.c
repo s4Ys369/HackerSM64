@@ -42,7 +42,7 @@ const Collision saw_blade_collision[] = {
 	COL_TRI(1, 4, 6),
 	COL_TRI(6, 8, 10),
 	COL_TRI(10, 12, 14),
-	COL_TRI_INIT(SURFACE_DEFAULT, 4),
+	COL_TRI_INIT(SURFACE_NOT_SLIPPERY, 4),
 	COL_TRI(13, 9, 5),
 	COL_TRI(6, 10, 14),
 	COL_TRI(5, 0, 13),

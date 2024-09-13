@@ -39,5 +39,6 @@ void bhv_saw_blade_hitbox_loop(void){
 
 void bhv_saw_blade_loop(void){
     o->oPosX -= 20.0f;
-    cur_obj_spawn_particles_offset(&sSawSparks, -300.0f, -450.0f, 0.0f);
+    struct Surface *floor = cur_obj_update_floor_height_and_get_floor();
+    if (floor != NULL && floor->type == SURFACE_DEFAULT)cur_obj_spawn_particles_offset(&sSawSparks, -300.0f, -450.0f, 0.0f);
 }
