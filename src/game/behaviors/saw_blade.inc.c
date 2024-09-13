@@ -26,19 +26,23 @@ struct ObjectHitbox sSawHitbox = {
 };
 
 struct Object *hurtObj = NULL;
+s8 speed = 0;
 void bhv_saw_blade_init(void){
+    speed = (s8)GET_BPARAM2(o->oBehParams);
     hurtObj = spawn_object_relative(0, -500, 0, 0, o, MODEL_NONE, bhvSawBladeHitbox);
+
 }
 
 void bhv_saw_blade_hitbox_loop(void){
     obj_set_hitbox(o,&sSawHitbox);
     o->hitboxDownOffset = o->parentObj->header.gfx.scale[1] * 500.0f;
-    o->oPosX -= 20.0f;
+    o->oPosX += speed;
 }
 
 
 void bhv_saw_blade_loop(void){
-    o->oPosX -= 20.0f;
+    o->oPosX += speed;
+
     struct Surface *floor = cur_obj_update_floor_height_and_get_floor();
     if (floor != NULL && floor->type == SURFACE_DEFAULT)cur_obj_spawn_particles_offset(&sSawSparks, -300.0f, -450.0f, 0.0f);
 }
