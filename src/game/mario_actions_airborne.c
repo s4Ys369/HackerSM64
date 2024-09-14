@@ -548,7 +548,11 @@ s32 act_hold_jump(struct MarioState *m) {
     }
 
     if ((m->input & INPUT_B_PRESSED) && !(m->heldObj->oInteractionSubtype & INT_SUBTYPE_HOLDABLE_NPC)) {
-        return set_mario_action(m, ACT_JUMP_KICK, 0);
+        if(wearing_fludd(m)){
+            return set_mario_action(m, ACT_JUMP_KICK, 0);
+        } else {
+            return set_mario_action(m, ACT_THROWING, 0);
+        }
     }
 
     if (m->input & INPUT_Z_PRESSED) {
@@ -574,7 +578,11 @@ s32 act_hold_freefall(struct MarioState *m) {
     }
 
     if ((m->input & INPUT_B_PRESSED) && !(m->heldObj->oInteractionSubtype & INT_SUBTYPE_HOLDABLE_NPC)) {
-        return set_mario_action(m, ACT_JUMP_KICK, 0);
+        if(wearing_fludd(m)){
+            return set_mario_action(m, ACT_JUMP_KICK, 0);
+        } else {
+            return set_mario_action(m, ACT_THROWING, 0);
+        }
     }
 
     if (m->input & INPUT_Z_PRESSED) {
@@ -1272,7 +1280,7 @@ s32 act_getting_blown(struct MarioState *m) {
 }
 
 s32 act_air_hit_wall(struct MarioState *m) {
-    if (m->heldObj != NULL) {
+    if (m->heldObj != NULL && !wearing_fludd(m)) {
         mario_drop_held_object(m);
     }
 
@@ -1451,7 +1459,7 @@ s32 act_hold_butt_slide_air(struct MarioState *m) {
                 m->vel[1] = 0.0f;
             }
 
-            mario_drop_held_object(m);
+            if(!wearing_fludd(m))mario_drop_held_object(m);
             m->particleFlags |= PARTICLE_VERTICAL_STAR;
             set_mario_action(m, ACT_BACKWARD_AIR_KB, 0);
             break;
@@ -1609,11 +1617,7 @@ s32 act_jump_kick(struct MarioState *m) {
     switch (perform_air_step(m, 0)) {
         case AIR_STEP_LANDED:
             if (!check_fall_damage_or_get_stuck(m, ACT_HARD_BACKWARD_GROUND_KB)) {
-                if(wearing_fludd(m) != 0) {
-                    set_mario_action(m, ACT_HOLD_FREEFALL_LAND, 0);
-                } else {
-                    set_mario_action(m, ACT_FREEFALL_LAND, 0);
-                }
+                set_mario_action(m, ACT_HOLD_FREEFALL_LAND, 0);
             }
             break;
 

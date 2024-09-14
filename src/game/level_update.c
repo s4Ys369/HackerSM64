@@ -34,6 +34,7 @@
 #include "debug.h"
 
 #include "config.h"
+#include "fludd.h"
 
 // TODO: Make these ifdefs better
 const char *credits01[] = { "1GAME DIRECTOR", "SHIGERU MIYAMOTO" };
@@ -342,6 +343,7 @@ void set_mario_initial_action(struct MarioState *m, u32 spawnType, u32 actionArg
     if (m->isDead) {
         m->health = 0x880;
         m->breath = 0x880;
+        fludd_reset_water_level(m);
         m->isDead = FALSE;
     }
 #endif

@@ -37,6 +37,11 @@ u8 wearing_fludd(struct MarioState *m) {
 }
 
 void fludd_reset_water_level(struct MarioState *m){
+    waterLevel = 160;
+    m->breath = 0x880;
+}
+
+void fludd_refill_water_level(struct MarioState *m){
     if(m->input & INPUT_IN_WATER){
         waterLevel = 160;
         m->breath = 0x880;
@@ -50,13 +55,13 @@ void fludd_hover(struct MarioState *m) {
     }
 
 
-    if (m->controller->buttonPressed & A_BUTTON) {
+    if (m->controller->buttonPressed & A_BUTTON && m->action & ACT_FLAG_AIR) {
         spawn_mist_particles_variable(10, -10, 7.0f);
         set_mario_action(m, ACT_HOLD_FREEFALL, 0);
         spawn_object_relative(0, 0, 0, 0, m->marioObj, MODEL_HOVER_JET, bhvHoverJet);
     }
 
-    if ((m->controller->buttonDown & A_BUTTON)) {
+    if ((m->controller->buttonDown & A_BUTTON && m->action & ACT_FLAG_AIR)) {
         waterLevel--;
 
         if (waterLevel % 2 == 0) {
@@ -69,7 +74,6 @@ void fludd_hover(struct MarioState *m) {
         if (m->breath < 0x100) {
             // If breath is "zero", set health to "zero"
             m->breath =  0xFF;
-            m->health =  0xFF;
         }
 
         if (m->vel[1] < -37.5f) {

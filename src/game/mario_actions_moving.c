@@ -16,6 +16,7 @@
 #include "rumble_init.h"
 
 #include "config.h"
+#include "fludd.h"
 
 struct LandingAction {
     s16 numFrames;
@@ -499,7 +500,7 @@ s32 check_ground_dive_or_punch(struct MarioState *m) {
 }
 
 s32 begin_braking_action(struct MarioState *m) {
-    mario_drop_held_object(m);
+    if(!wearing_fludd(m))mario_drop_held_object(m);
 
     if (m->actionState == ACT_STATE_WALKING_REACH_WALL) {
         m->faceAngle[1] = m->actionArg;
@@ -755,7 +756,7 @@ s32 act_walking(struct MarioState *m) {
     Vec3f startPos;
     s16 startYaw = m->faceAngle[1];
 
-    mario_drop_held_object(m);
+    if(!wearing_fludd(m))mario_drop_held_object(m);
 
     if (should_begin_sliding(m)) {
         return set_mario_action(m, ACT_BEGIN_SLIDING, 0);
@@ -871,8 +872,12 @@ s32 act_hold_walking(struct MarioState *m) {
         return set_mario_action(m, ACT_HOLD_BEGIN_SLIDING, 0);
     }
 
-    if (m->input & INPUT_B_PRESSED) {
-        return set_mario_action(m, ACT_JUMP_KICK, 0);
+    if ((m->input & INPUT_B_PRESSED)) {
+        if(wearing_fludd(m)){
+            return set_mario_action(m, ACT_JUMP_KICK, 0);
+        } else {
+            return set_mario_action(m, ACT_THROWING, 0);
+        }
     }
 
     if (m->input & INPUT_A_PRESSED) {
@@ -887,7 +892,14 @@ s32 act_hold_walking(struct MarioState *m) {
         return drop_and_set_mario_action(m, ACT_CROUCH_SLIDE, 0);
     }
 
-    m->intendedMag *= 0.7f;
+    f32 magMultiplier = 0.0f;
+    if(wearing_fludd(m)){
+        magMultiplier = 0.7f;
+    } else {
+        magMultiplier = 0.4f;
+    }
+
+    m->intendedMag *= magMultiplier;
 
     update_walking_speed(m);
 
@@ -905,7 +917,7 @@ s32 act_hold_walking(struct MarioState *m) {
 
     anim_and_audio_for_hold_walk(m);
 
-    if (0.7f * m->intendedMag - m->forwardVel > 10.0f) {
+    if (magMultiplier * m->intendedMag - m->forwardVel > 10.0f) {
         m->particleFlags |= PARTICLE_DUST;
     }
 
@@ -1143,8 +1155,12 @@ s32 act_hold_decelerating(struct MarioState *m) {
         return set_mario_action(m, ACT_HOLD_BEGIN_SLIDING, 0);
     }
 
-    if (m->input & INPUT_B_PRESSED) {
-        return set_mario_action(m, ACT_THROWING, 0);
+    if ((m->input & INPUT_B_PRESSED)) {
+        if(wearing_fludd(m)){
+            return set_mario_action(m, ACT_JUMP_KICK, 0);
+        } else {
+            return set_mario_action(m, ACT_THROWING, 0);
+        }
     }
 
     if (m->input & INPUT_A_PRESSED) {

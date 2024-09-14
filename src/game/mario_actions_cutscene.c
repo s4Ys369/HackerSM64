@@ -28,6 +28,8 @@
 #include "sound_init.h"
 #include "rumble_init.h"
 
+#include "fludd.h"
+
 static struct Object *sIntroWarpPipeObj;
 static struct Object *sEndPeachObj;
 static struct Object *sEndRightToadObj;
@@ -1192,7 +1194,7 @@ s32 act_death_exit(struct MarioState *m) {
     // one unit of health
     m->health = 0x0100;
 #ifdef BREATH_METER
-    m->breath = 0x880;
+    fludd_reset_water_level(m);
 #endif
     return FALSE;
 }
