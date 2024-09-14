@@ -1488,10 +1488,10 @@ void update_mario_health(struct MarioState *m) {
 
 #ifdef BREATH_METER
 void update_mario_breath(struct MarioState *m) {
-    if (m->breath >= 0x100 && m->health >= 0x100) {
+    if (m->health >= 0x100) {
         if (m->pos[1] < (m->waterLevel - 140) && !(m->flags & MARIO_METAL_CAP) && !(m->action & ACT_FLAG_INTANGIBLE)) {
-            m->breath--;
-            if (m->breath < 0x300) {
+            m->health--;
+            if (m->health < 0x300) {
                 // Play a noise to alert the player when Mario is close to drowning.
                 play_sound(SOUND_MOVING_ALMOST_DROWNING, gGlobalSoundSource);
 #if ENABLE_RUMBLE
@@ -1508,14 +1508,13 @@ void update_mario_breath(struct MarioState *m) {
         } else if (!(m->input & INPUT_IN_POISON_GAS)) {
             m->breath += 0x1A;
         }
-        if (m->breathCounter > 0) {
-            m->breath += 0x40;
-            m->breathCounter--;
+        if (m->healCounter > 0) {
+            m->health += 0x40;
+            m->healCounter--;
         }
-        if (m->breath > 0x880) m->breath = 0x880;
-        if (m->breath < 0x100) {
+        if (m->health > 0x880) m->health = 0x880;
+        if (m->health < 0x100) {
             // If breath is "zero", set health to "zero"
-            m->breath =  0xFF;
             m->health =  0xFF;
         }
     }
@@ -1770,7 +1769,7 @@ s32 execute_mario_action(UNUSED struct Object *obj) {
         set_submerged_cam_preset_and_spawn_bubbles(gMarioState);
         update_mario_health(gMarioState);
 #ifdef BREATH_METER
-        //update_mario_breath(gMarioState);
+        update_mario_breath(gMarioState);
 #endif
         update_mario_info_for_cam(gMarioState);
         mario_update_hitbox_and_cap_model(gMarioState);
