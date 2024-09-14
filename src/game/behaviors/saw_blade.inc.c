@@ -2,7 +2,7 @@
 
 static struct SpawnParticlesInfo sSawSparks = {
     /* behParam:        */ 3,
-    /* count:           */ 20,
+    /* count:           */ 3,
     /* model:           */ MODEL_SPARKLES,
     /* offsetY:         */ 0,
     /* forwardVelBase:  */ 10,
@@ -38,6 +38,13 @@ void bhv_saw_blade_init(void){
     hurtObj = spawn_object_relative(0, -500, 0, 0, o, MODEL_NONE, bhvSawBladeHitbox);
     hurtObj->oBehParams = o->oBehParams;
 
+    s32 numSaws = count_objects_with_behavior(bhvSawBlade);
+    if(numSaws>6){
+        o->activeFlags |= ACTIVE_FLAG_INITIATED_TIME_STOP;
+    } else {
+        o->activeFlags &= ~ACTIVE_FLAG_INITIATED_TIME_STOP;
+    }
+
 }
 
 void bhv_saw_blade_hitbox_loop(void){
@@ -48,20 +55,13 @@ void bhv_saw_blade_hitbox_loop(void){
 }
 
 
-u32 coolDown = 0;
 void bhv_saw_blade_loop(void){
 
     o->oPosX += speed;
 
     if(o->oPosX <= -3000.0f){
-        coolDown++;
-        if(coolDown > 20) {
-            create_respawner(MODEL_SAW_BLADE, bhvSawBlade, 0);
-            mark_obj_for_deletion(o);
-            coolDown = 0;
-
-        } 
-        
+        create_respawner(MODEL_SAW_BLADE, bhvSawBlade, 0);
+        mark_obj_for_deletion(o);  
     }
 
     // Floor check
