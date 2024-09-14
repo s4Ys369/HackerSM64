@@ -394,6 +394,7 @@ const BehaviorScript bhvSawBlade[] = {
 	BEGIN(OBJ_LIST_SURFACE),
 	OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE | OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_NO_AUTO_DISPLACEMENT),
 	LOAD_COLLISION_DATA(saw_blade_collision),
+    SET_HOME(),
     CALL_NATIVE(bhv_saw_blade_init),
 	BEGIN_LOOP(),
 		ADD_INT(oFaceAngleRoll, 5000),
@@ -405,6 +406,7 @@ const BehaviorScript bhvSawBlade[] = {
 const BehaviorScript bhvSawBladeHitbox[] = {
     BEGIN(OBJ_LIST_GENACTOR),
     OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
+    SET_HOME(),
     BEGIN_LOOP(),
         CALL_NATIVE(bhv_saw_blade_hitbox_loop),
     END_LOOP(),
