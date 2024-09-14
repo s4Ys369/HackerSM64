@@ -1505,8 +1505,6 @@ void update_mario_breath(struct MarioState *m) {
                 gRumblePakTimer = 0;
 #endif
             }
-        } else if (!(m->input & INPUT_IN_POISON_GAS)) {
-            m->health += 0x1A;
         }
         if (m->healCounter > 0) {
             m->health += 0x40;
