@@ -152,6 +152,7 @@ const LevelScript level_wf_entry[] = {
         JUMP_LINK(script_func_local_2),
         JUMP_LINK(script_func_local_3),
         JUMP_LINK(script_func_local_4),
+        OBJECT(/*model*/ MODEL_FLUDD, /*pos*/  2800, 1256,  5120, /*angle*/ 0, 0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvBreakableBoxSmall),
         TERRAIN(/*terrainData*/ wf_seg7_collision_070102D8),
         MACRO_OBJECTS(/*objList*/ wf_seg7_macro_objs),
         SHOW_DIALOG(/*index*/ 0x00, DIALOG_030),
