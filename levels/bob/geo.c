@@ -20,3 +20,4 @@
 
 #include "levels/bob/geo.inc.c"
 #include "levels/bob/saw_blade/geo.inc.c"
+#include "levels/bob/saw_arm/geo.inc.c"

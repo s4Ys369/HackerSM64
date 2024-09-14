@@ -4,6 +4,7 @@
 #include "types.h"
 
 /* fast64 object exports get inserted here */
+extern const BehaviorScript bhvSawArm[];
 extern const BehaviorScript bhvSawBlade[];
 extern const BehaviorScript bhvSawBladeHitbox[];
 extern const BehaviorScript bhvHoverJet[];

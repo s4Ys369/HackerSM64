@@ -4,6 +4,7 @@
 #define MODEL_NONE                             0x00
 
 /* fast64 object exports get inserted here */
+#define MODEL_SAW_ARM                     201
 #define MODEL_SAW_BLADE                   199
 #define MODEL_HOVER_JET                   198
 #define MODEL_FLUDD                       197

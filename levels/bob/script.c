@@ -19,6 +19,7 @@
 /* Fast64 end persistent block [scripts] */
 
 const LevelScript fast64_bob_loads[] = {
+	LOAD_MODEL_FROM_GEO(MODEL_SAW_ARM, saw_arm_geo), 
 	LOAD_MODEL_FROM_GEO(MODEL_SAW_BLADE, saw_blade_geo), 
 	RETURN(), 
 };
@@ -51,14 +52,10 @@ const LevelScript level_bob_entry[] = {
 		WARP_NODE(0x0A, LEVEL_BOB, 0x01, 0x0A, WARP_NO_CHECKPOINT),
 		WARP_NODE(0xF0, LEVEL_BOB, 0x01, 0x0A, WARP_NO_CHECKPOINT),
 		WARP_NODE(0xF1, LEVEL_BOB, 0x01, 0x0A, WARP_NO_CHECKPOINT),
-		MARIO_POS(0x01, 0, 0, 280, 0),
-		OBJECT(MODEL_NONE, 0, 280, 0, 0, 0, 0, (0x0A << 16), bhvSpinAirborneWarp),
-		OBJECT(MODEL_SAW_BLADE, 1400, 450, -350, 0, 0, 0, (0xEC << 16), bhvSawBlade),
-		OBJECT(MODEL_SAW_BLADE, 1500, 600, 350, 0, 0, 0, (0xEC << 16), bhvSawBlade),
-		OBJECT(MODEL_SAW_BLADE, 1600, 750, -700, 0, 0, 0, (0xEC << 16), bhvSawBlade),
-		OBJECT(MODEL_SAW_BLADE, 1700, 900, 700, 0, 0, 0, (0xEC << 16), bhvSawBlade),
-		OBJECT(MODEL_SAW_BLADE, 1800, 1050, -900, 0, 0, 0, (0xEC << 16), bhvSawBlade),
-		OBJECT(MODEL_SAW_BLADE, 1900, 1050, 900, 0, 0, 0, (0xEC << 16), bhvSawBlade),
+		MARIO_POS(0x01, 0, 0, 5030, 0),
+		OBJECT(MODEL_NONE, 0, 5030, 0, 0, 0, 0, (0x0A << 16), bhvSpinAirborneWarp),
+		OBJECT(MODEL_SAW_BLADE, 1400, 5200, -500, 0, 0, 0, (0xEC << 16), bhvSawBlade),
+		OBJECT(MODEL_SAW_BLADE, 1650, 5200, 500, 0, 0, 0, (0xEC << 16), bhvSawBlade),
 		TERRAIN(bob_area_1_collision),
 		MACRO_OBJECTS(bob_area_1_macro_objs),
 		SET_BACKGROUND_MUSIC(0x00, SEQ_LEVEL_GRASS),
@@ -67,7 +64,7 @@ const LevelScript level_bob_entry[] = {
 		/* Fast64 end persistent block [area commands] */
 	END_AREA(),
 	FREE_LEVEL_POOL(),
-	MARIO_POS(0x01, 0, 0, 280, 0),
+	MARIO_POS(0x01, 0, 0, 5030, 0),
 	CALL(0, lvl_init_or_update),
 	CALL_LOOP(1, lvl_init_or_update),
 	CLEAR_LEVEL(),

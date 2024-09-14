@@ -28,6 +28,7 @@ struct ObjectHitbox sSawHitbox = {
 };
 
 struct Object *hurtObj = NULL;
+struct Object *sawArm = NULL;
 s8 speed = 0;
 void bhv_saw_blade_init(void){
     speed = (s8)GET_BPARAM2(o->oBehParams);
@@ -36,20 +37,19 @@ void bhv_saw_blade_init(void){
 
     // Hitbox for the front edge of the blade
     hurtObj = spawn_object_relative(0, -500, 0, 0, o, MODEL_NONE, bhvSawBladeHitbox);
+    sawArm = spawn_object(o, MODEL_SAW_ARM, bhvSawArm);
     hurtObj->oBehParams = o->oBehParams;
-
-    s32 numSaws = count_objects_with_behavior(bhvSawBlade);
-    if(numSaws>6){
-        o->activeFlags |= ACTIVE_FLAG_INITIATED_TIME_STOP;
-    } else {
-        o->activeFlags &= ~ACTIVE_FLAG_INITIATED_TIME_STOP;
-    }
 
 }
 
 void bhv_saw_blade_hitbox_loop(void){
     obj_set_hitbox(o,&sSawHitbox);
     o->hitboxDownOffset = o->parentObj->header.gfx.scale[1] * 500.0f;
+    o->oPosX += speed;
+    if(o->oPosX <= -3000.0f)mark_obj_for_deletion(o);
+}
+
+void bhv_saw_arm_loop(void){
     o->oPosX += speed;
     if(o->oPosX <= -3000.0f)mark_obj_for_deletion(o);
 }

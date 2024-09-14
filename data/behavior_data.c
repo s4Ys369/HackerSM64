@@ -390,6 +390,14 @@ enum BehaviorCommands {
 
 
 /* fast64 object exports get inserted here */
+const BehaviorScript bhvSawArm[] = {
+	BEGIN(OBJ_LIST_UNIMPORTANT),
+	OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
+	BEGIN_LOOP(),
+		CALL_NATIVE(bhv_saw_arm_loop),
+	END_LOOP(),
+};
+
 const BehaviorScript bhvSawBlade[] = {
 	BEGIN(OBJ_LIST_SURFACE),
 	OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE | OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_NO_AUTO_DISPLACEMENT),

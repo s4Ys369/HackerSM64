@@ -37,4 +37,8 @@ extern const LevelScript level_bob_entry[];
 
 #include "levels/bob/saw_blade/geo_header.h"
 
+#include "levels/bob/saw_arm/collision_header.h"
+
+#include "levels/bob/saw_arm/geo_header.h"
+
 #endif

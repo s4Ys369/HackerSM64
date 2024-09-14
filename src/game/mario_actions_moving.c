@@ -500,7 +500,7 @@ s32 check_ground_dive_or_punch(struct MarioState *m) {
 }
 
 s32 begin_braking_action(struct MarioState *m) {
-    if(!wearing_fludd(m))mario_drop_held_object(m);
+    if(wearing_fludd(m) == FALSE)mario_drop_held_object(m);
 
     if (m->actionState == ACT_STATE_WALKING_REACH_WALL) {
         m->faceAngle[1] = m->actionArg;
@@ -756,7 +756,7 @@ s32 act_walking(struct MarioState *m) {
     Vec3f startPos;
     s16 startYaw = m->faceAngle[1];
 
-    if(!wearing_fludd(m))mario_drop_held_object(m);
+    if(wearing_fludd(m) == FALSE)mario_drop_held_object(m);
 
     if (should_begin_sliding(m)) {
         return set_mario_action(m, ACT_BEGIN_SLIDING, 0);

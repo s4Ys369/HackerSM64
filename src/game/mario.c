@@ -1053,7 +1053,7 @@ s32 set_jumping_action(struct MarioState *m, u32 action, u32 actionArg) {
  * Drop anything Mario is holding and set a new action.
  */
 s32 drop_and_set_mario_action(struct MarioState *m, u32 action, u32 actionArg) {
-    if(!wearing_fludd(m))mario_stop_riding_and_holding(m);
+    if(wearing_fludd(m) == FALSE)mario_stop_riding_and_holding(m);
 
     return set_mario_action(m, action, actionArg);
 }
@@ -1343,7 +1343,7 @@ void update_mario_inputs(struct MarioState *m) {
     update_mario_button_inputs(m);
     update_mario_joystick_inputs(m);
     update_mario_geometry_inputs(m);
-    if(wearing_fludd(m))fludd_refill_water_level(m);
+    if(wearing_fludd(m) == FALSE)fludd_refill_water_level(m);
 #ifdef VANILLA_DEBUG
     debug_print_speed_action_normal(m);
 #endif

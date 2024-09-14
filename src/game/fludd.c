@@ -25,7 +25,11 @@ u32 waterLevel = 160;
 
 u8 wearing_fludd(struct MarioState *m) {
     ModelID32 modelID = 0;
-    if(m->heldObj != NULL)modelID = obj_get_model_id(m->heldObj);
+    if(m->heldObj != NULL){
+        modelID = obj_get_model_id(m->heldObj);
+    } else {
+        return FALSE;
+    }
 
     if(modelID == MODEL_FLUDD){
         isWearingFludd = TRUE;

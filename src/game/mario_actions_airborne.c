@@ -356,7 +356,7 @@ void update_flying(struct MarioState *m) {
 u32 common_air_action_step(struct MarioState *m, u32 landAction, s32 animation, u32 stepArg) {
     u32 stepResult;
 
-    if(wearing_fludd(m) != 0){
+    if(wearing_fludd(m) == TRUE){
         fludd_hover(m);
         update_air_with_turn(m);
     } else {
@@ -514,10 +514,6 @@ s32 act_backflip(struct MarioState *m) {
 s32 act_freefall(struct MarioState *m) {
     s32 animation = MARIO_ANIM_GENERAL_FALL;
 
-    if (m->input & INPUT_A_PRESSED) {
-        return set_mario_action(m, ACT_DIVE, 0);
-    }
-
     if (m->input & INPUT_B_PRESSED) {
         return set_mario_action(m, ACT_DIVE, 0);
     }
@@ -548,7 +544,7 @@ s32 act_hold_jump(struct MarioState *m) {
     }
 
     if ((m->input & INPUT_B_PRESSED) && !(m->heldObj->oInteractionSubtype & INT_SUBTYPE_HOLDABLE_NPC)) {
-        if(wearing_fludd(m)){
+        if(wearing_fludd(m) == TRUE){
             return set_mario_action(m, ACT_JUMP_KICK, 0);
         } else {
             return set_mario_action(m, ACT_THROWING, 0);
@@ -1280,7 +1276,7 @@ s32 act_getting_blown(struct MarioState *m) {
 }
 
 s32 act_air_hit_wall(struct MarioState *m) {
-    if (m->heldObj != NULL && !wearing_fludd(m)) {
+    if (m->heldObj != NULL && wearing_fludd(m) == FALSE) {
         mario_drop_held_object(m);
     }
 
@@ -1459,7 +1455,7 @@ s32 act_hold_butt_slide_air(struct MarioState *m) {
                 m->vel[1] = 0.0f;
             }
 
-            if(!wearing_fludd(m))mario_drop_held_object(m);
+            if(wearing_fludd(m) == FALSE)mario_drop_held_object(m);
             m->particleFlags |= PARTICLE_VERTICAL_STAR;
             set_mario_action(m, ACT_BACKWARD_AIR_KB, 0);
             break;
