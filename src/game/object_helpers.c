@@ -380,9 +380,6 @@ struct Object *spawn_object_at_origin(struct Object *parent, UNUSED s32 unusedAr
 
     geo_obj_init((struct GraphNodeObject *) &obj->header.gfx, gLoadedGraphNodes[model], gVec3fZero, gVec3sZero);
 
-    // Origin spawn visual glitch fix
-    obj->header.gfx.node.flags &= ~GRAPH_RENDER_ACTIVE;
-
     return obj;
 }
 
@@ -1707,8 +1704,6 @@ void cur_obj_spawn_particles_offset(struct SpawnParticlesInfo *info, f32 xOffset
         scale = random_float() * (info->sizeRange * 0.1f) + info->sizeBase * 0.1f;
 
         particle = spawn_object(o, info->model, bhvWhitePuffExplosion);
-        // Origin fix
-        particle->header.gfx.node.flags |= GRAPH_RENDER_ACTIVE;
 
         particle->oBehParams2ndByte = info->behParam;
         particle->oMoveAngleYaw = random_u16();
