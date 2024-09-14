@@ -1506,7 +1506,7 @@ void update_mario_breath(struct MarioState *m) {
 #endif
             }
         } else if (!(m->input & INPUT_IN_POISON_GAS)) {
-            m->breath += 0x1A;
+            m->health += 0x1A;
         }
         if (m->healCounter > 0) {
             m->health += 0x40;
