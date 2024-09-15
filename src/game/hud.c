@@ -605,7 +605,7 @@ void render_hud(void) {
         }
 
 #ifdef BREATH_METER
-        if (wearing_fludd(gMarioState)) render_hud_breath_meter();
+        if (wearing_fludd(gMarioState) == TRUE) render_hud_breath_meter();
 #endif
 
         if (hudDisplayFlags & HUD_DISPLAY_FLAG_CAMERA_AND_POWER) {

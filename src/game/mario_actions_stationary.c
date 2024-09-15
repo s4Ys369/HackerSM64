@@ -504,7 +504,7 @@ s32 act_in_quicksand(struct MarioState *m) {
 }
 
 s32 act_crouching(struct MarioState *m) {
-    if(wearing_fludd(m))mario_drop_held_object(m);
+    if(wearing_fludd(m) == TRUE)mario_drop_held_object(m);
     if (m->input & INPUT_STOMPED) {
         return set_mario_action(m, ACT_SHOCKWAVE_BOUNCE, 0);
     }
@@ -936,7 +936,7 @@ s32 act_hold_jump_land_stop(struct MarioState *m) {
     }
 
     if ((m->input & INPUT_B_PRESSED)) {
-        if(wearing_fludd(m)){
+        if(wearing_fludd(m) == TRUE){
             return set_mario_action(m, ACT_JUMP_KICK, 0);
         } else {
             return set_mario_action(m, ACT_THROWING, 0);
@@ -961,7 +961,7 @@ s32 act_hold_freefall_land_stop(struct MarioState *m) {
     }
 
     if ((m->input & INPUT_B_PRESSED)) {
-        if(wearing_fludd(m)){
+        if(wearing_fludd(m) == TRUE){
             return set_mario_action(m, ACT_JUMP_KICK, 0);
         } else {
             return set_mario_action(m, ACT_THROWING, 0);

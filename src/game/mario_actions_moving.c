@@ -873,7 +873,7 @@ s32 act_hold_walking(struct MarioState *m) {
     }
 
     if ((m->input & INPUT_B_PRESSED)) {
-        if(wearing_fludd(m)){
+        if(wearing_fludd(m) == TRUE){
             return set_mario_action(m, ACT_JUMP_KICK, 0);
         } else {
             return set_mario_action(m, ACT_THROWING, 0);
@@ -893,7 +893,7 @@ s32 act_hold_walking(struct MarioState *m) {
     }
 
     f32 magMultiplier = 0.0f;
-    if(wearing_fludd(m)){
+    if(wearing_fludd(m) == TRUE){
         magMultiplier = 0.7f;
     } else {
         magMultiplier = 0.4f;
@@ -1156,7 +1156,7 @@ s32 act_hold_decelerating(struct MarioState *m) {
     }
 
     if ((m->input & INPUT_B_PRESSED)) {
-        if(wearing_fludd(m)){
+        if(wearing_fludd(m) == TRUE){
             return set_mario_action(m, ACT_JUMP_KICK, 0);
         } else {
             return set_mario_action(m, ACT_THROWING, 0);
