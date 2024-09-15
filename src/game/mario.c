@@ -1343,7 +1343,7 @@ void update_mario_inputs(struct MarioState *m) {
     update_mario_button_inputs(m);
     update_mario_joystick_inputs(m);
     update_mario_geometry_inputs(m);
-    if(wearing_fludd(m) == FALSE)fludd_refill_water_level(m);
+    if(wearing_fludd(m) == TRUE)fludd_refill_water_level(m);
 #ifdef VANILLA_DEBUG
     debug_print_speed_action_normal(m);
 #endif

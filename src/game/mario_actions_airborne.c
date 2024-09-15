@@ -544,11 +544,7 @@ s32 act_hold_jump(struct MarioState *m) {
     }
 
     if ((m->input & INPUT_B_PRESSED) && !(m->heldObj->oInteractionSubtype & INT_SUBTYPE_HOLDABLE_NPC)) {
-        if(wearing_fludd(m) == TRUE){
-            return set_mario_action(m, ACT_JUMP_KICK, 0);
-        } else {
-            return set_mario_action(m, ACT_THROWING, 0);
-        }
+        return set_mario_action(m, ACT_THROWING, 0);
     }
 
     if (m->input & INPUT_Z_PRESSED) {
@@ -574,19 +570,11 @@ s32 act_hold_freefall(struct MarioState *m) {
     }
 
     if ((m->input & INPUT_B_PRESSED) && !(m->heldObj->oInteractionSubtype & INT_SUBTYPE_HOLDABLE_NPC)) {
-        if(wearing_fludd(m) == TRUE){
-            return set_mario_action(m, ACT_JUMP_KICK, 0);
-        } else {
-            return set_mario_action(m, ACT_THROWING, 0);
-        }
+        return set_mario_action(m, ACT_THROWING, 0);
     }
 
     if (m->input & INPUT_Z_PRESSED) {
-        if(wearing_fludd(m) == TRUE){
-            return set_mario_action(m, ACT_GROUND_POUND, 0);
-        } else {
-            return drop_and_set_mario_action(m, ACT_GROUND_POUND, 0);
-        }
+        return drop_and_set_mario_action(m, ACT_GROUND_POUND, 0);
     }
 
     common_air_action_step(m, ACT_HOLD_FREEFALL_LAND, animation, AIR_STEP_CHECK_LEDGE_GRAB);
@@ -618,7 +606,7 @@ s32 act_side_flip(struct MarioState *m) {
 }
 
 s32 act_wall_kick_air(struct MarioState *m) {
-    if (m->input & INPUT_B_PRESSED) {
+    if (m->input & INPUT_B_PRESSED && wearing_fludd(m) == FALSE) {
         return set_mario_action(m, ACT_DIVE, 0);
     }
 
@@ -1617,11 +1605,7 @@ s32 act_jump_kick(struct MarioState *m) {
     switch (perform_air_step(m, 0)) {
         case AIR_STEP_LANDED:
             if (!check_fall_damage_or_get_stuck(m, ACT_HARD_BACKWARD_GROUND_KB)) {
-                if(wearing_fludd(m) == TRUE){
-                    set_mario_action(m, ACT_HOLD_FREEFALL_LAND, 0);
-                } else {
-                    set_mario_action(m, ACT_FREEFALL_LAND, 0);
-                }
+                set_mario_action(m, ACT_FREEFALL_LAND, 0);
             }
             break;
 

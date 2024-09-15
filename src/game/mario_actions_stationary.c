@@ -20,7 +20,11 @@
 #include "fludd.h"
 
 s32 check_common_idle_cancels(struct MarioState *m) {
-    if(wearing_fludd(m) == FALSE)mario_drop_held_object(m);
+    if(wearing_fludd(m) == FALSE){
+        mario_drop_held_object(m);
+    } else {
+        return check_common_hold_idle_cancels(m);
+    }
     if (m->floor->normal.y < COS73) {
         return mario_push_off_steep_floor(m, ACT_FREEFALL, 0);
     }
@@ -94,7 +98,11 @@ s32 check_common_hold_idle_cancels(struct MarioState *m) {
     }
 
     if (m->input & INPUT_B_PRESSED) {
-        return set_mario_action(m, ACT_JUMP_KICK, 0);
+        if(wearing_fludd(m) == FALSE) {
+            return set_mario_action(m, ACT_JUMP_KICK, 0);
+        } else {
+            return set_mario_action(m, ACT_HOLD_JUMP, 0);
+        }
     }
 
     if (m->input & INPUT_Z_DOWN) {
@@ -935,12 +943,8 @@ s32 act_hold_jump_land_stop(struct MarioState *m) {
         return check_common_hold_action_exits(m);
     }
 
-    if ((m->input & INPUT_B_PRESSED)) {
-        if(wearing_fludd(m) == TRUE){
-            return set_mario_action(m, ACT_JUMP_KICK, 0);
-        } else {
-            return set_mario_action(m, ACT_THROWING, 0);
-        }
+    if ((m->input & INPUT_B_PRESSED) && !(m->heldObj->oInteractionSubtype & INT_SUBTYPE_HOLDABLE_NPC)) {
+        return set_mario_action(m, ACT_THROWING, 0);
     }
 
     landing_step(m, MARIO_ANIM_JUMP_LAND_WITH_LIGHT_OBJ, ACT_HOLD_IDLE);
@@ -960,12 +964,8 @@ s32 act_hold_freefall_land_stop(struct MarioState *m) {
         return check_common_hold_action_exits(m);
     }
 
-    if ((m->input & INPUT_B_PRESSED)) {
-        if(wearing_fludd(m) == TRUE){
-            return set_mario_action(m, ACT_JUMP_KICK, 0);
-        } else {
-            return set_mario_action(m, ACT_THROWING, 0);
-        }
+    if ((m->input & INPUT_B_PRESSED) && !(m->heldObj->oInteractionSubtype & INT_SUBTYPE_HOLDABLE_NPC)) {
+        return set_mario_action(m, ACT_THROWING, 0);
     }
 
     landing_step(m, MARIO_ANIM_FALL_LAND_WITH_LIGHT_OBJ, ACT_HOLD_IDLE);

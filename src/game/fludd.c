@@ -59,13 +59,13 @@ void fludd_hover(struct MarioState *m) {
     }
 
 
-    if (m->controller->buttonPressed & A_BUTTON && m->action & ACT_FLAG_AIR) {
+    if (m->controller->buttonPressed & B_BUTTON) {
         spawn_mist_particles_variable(10, -10, 7.0f);
         set_mario_action(m, ACT_HOLD_FREEFALL, 0);
         spawn_object_relative(0, 0, 0, 0, m->marioObj, MODEL_HOVER_JET, bhvHoverJet);
     }
 
-    if ((m->controller->buttonDown & A_BUTTON && m->action & ACT_FLAG_AIR)) {
+    if ((m->controller->buttonDown & B_BUTTON)) {
         waterLevel--;
 
         if (waterLevel % 2 == 0) {
@@ -83,7 +83,7 @@ void fludd_hover(struct MarioState *m) {
         if (m->vel[1] < -37.5f) {
             m->vel[1] = -37.5f;
         } else {
-            m->vel[1] += 3.5f;
+            m->vel[1] += 3.9f;
         }
 
     }

@@ -511,7 +511,11 @@ s32 begin_braking_action(struct MarioState *m) {
         return set_mario_action(m, ACT_BRAKING, 0);
     }
 
-    return set_mario_action(m, ACT_DECELERATING, 0);
+    if(wearing_fludd(m) == TRUE){
+        return set_mario_action(m, ACT_HOLD_DECELERATING, 0);
+    } else {
+        return set_mario_action(m, ACT_DECELERATING, 0);
+    }
 }
 
 void anim_and_audio_for_walk(struct MarioState *m) {
@@ -756,7 +760,11 @@ s32 act_walking(struct MarioState *m) {
     Vec3f startPos;
     s16 startYaw = m->faceAngle[1];
 
-    if(wearing_fludd(m) == FALSE)mario_drop_held_object(m);
+    if(wearing_fludd(m) == FALSE) {
+        mario_drop_held_object(m);
+    } else {
+        return set_mario_action(m, ACT_HOLD_WALKING, 0);
+    }
 
     if (should_begin_sliding(m)) {
         return set_mario_action(m, ACT_BEGIN_SLIDING, 0);
@@ -872,12 +880,8 @@ s32 act_hold_walking(struct MarioState *m) {
         return set_mario_action(m, ACT_HOLD_BEGIN_SLIDING, 0);
     }
 
-    if ((m->input & INPUT_B_PRESSED)) {
-        if(wearing_fludd(m) == TRUE){
-            return set_mario_action(m, ACT_JUMP_KICK, 0);
-        } else {
-            return set_mario_action(m, ACT_THROWING, 0);
-        }
+    if ((m->input & INPUT_B_PRESSED) && !(m->heldObj->oInteractionSubtype & INT_SUBTYPE_HOLDABLE_NPC)) {
+        return set_mario_action(m, ACT_THROWING, 0);
     }
 
     if (m->input & INPUT_A_PRESSED) {
@@ -1155,12 +1159,8 @@ s32 act_hold_decelerating(struct MarioState *m) {
         return set_mario_action(m, ACT_HOLD_BEGIN_SLIDING, 0);
     }
 
-    if ((m->input & INPUT_B_PRESSED)) {
-        if(wearing_fludd(m) == TRUE){
-            return set_mario_action(m, ACT_JUMP_KICK, 0);
-        } else {
-            return set_mario_action(m, ACT_THROWING, 0);
-        }
+    if ((m->input & INPUT_B_PRESSED) && !(m->heldObj->oInteractionSubtype & INT_SUBTYPE_HOLDABLE_NPC)) {
+        return set_mario_action(m, ACT_THROWING, 0);
     }
 
     if (m->input & INPUT_A_PRESSED) {

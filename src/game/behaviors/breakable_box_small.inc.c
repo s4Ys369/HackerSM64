@@ -20,7 +20,10 @@ void bhv_breakable_box_small_init(void) {
     ModelID32 boxModel = obj_get_model_id(o);
     if(boxModel != MODEL_FLUDD)cur_obj_scale(0.4f);
     obj_set_hitbox(o, &sBreakableBoxSmallHitbox);
-    if(boxModel == MODEL_FLUDD)o->oGraphYOffset = o->oGraphYOffset + 50.0f;
+    if(boxModel == MODEL_FLUDD){
+        o->oGraphYOffset = o->oGraphYOffset + 50.0f;
+        o->oInteractionSubtype |= INT_SUBTYPE_HOLDABLE_NPC;
+    }
     o->oAnimState = BREAKABLE_BOX_ANIM_STATE_CORK_BOX;
     o->activeFlags |= ACTIVE_FLAG_DESTRUCTIVE_OBJ_DONT_DESTROY;
 }
