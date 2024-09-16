@@ -46,10 +46,26 @@ void fludd_reset_water_level(struct MarioState *m){
 }
 
 void fludd_refill_water_level(struct MarioState *m){
-    if(m->input & INPUT_IN_WATER){
-        waterLevel = 160;
-        m->breath = 0x880;
+    static u8 soundPlayed = 0;  // Make soundPlayed static so it retains its value across function calls
+
+    if (m->input & INPUT_IN_WATER) {
+        if(waterLevel < 160){
+            waterLevel += 5;
+            if(m->breath < 0x880){
+                m->breath += 0x100;
+            }else{
+              m->breath = 0x880;  
+            }
+        }
+
+        if (!soundPlayed) {
+            play_sound(SOUND_GENERAL_WATER_LEVEL_TRIG, m->pos);
+            soundPlayed = 1;
+        }
+    } else if (waterLevel < 160) {
+        soundPlayed = 0;
     }
+
 }
 
 void fludd_hover(struct MarioState *m) {

@@ -72,10 +72,15 @@ void bhv_saw_blade_loop(void){
         mark_obj_for_deletion(o);  
     }
 
+    cur_obj_play_sound_1(SOUND_GENERAL_ROLLING_LOG);
+
     // Floor check
     struct Surface *floor = cur_obj_update_floor_height_and_get_floor();
     if (floor != NULL && floor->type == SURFACE_DEFAULT){
         f32 dist = o->oFloorHeight - o->oPosY;
-        if (dist >= -450.0f)cur_obj_spawn_particles_offset(&sSawSparks, -300.0f, -450.0f, 0.0f);
+        if (dist >= -450.0f){
+            cur_obj_spawn_particles_offset(&sSawSparks, -300.0f, -450.0f, 0.0f);
+            cur_obj_play_sound_2(SOUND_GENERAL2_SPINDEL_ROLL);
+        }
     }
 }
