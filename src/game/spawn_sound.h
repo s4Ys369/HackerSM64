@@ -17,6 +17,9 @@ struct SoundState {
 
 void cur_obj_play_sound_1(s32 soundMagic);
 void cur_obj_play_sound_2(s32 soundMagic);
+typedef void (*ResetCallback)(u8 *flag);
+void cur_obj_play_sound_oneshot(s32 soundMagic, u8 *flag, void (*play_sfx_func)(s32 soundMagic), ResetCallback reset_callback);
+void reset_sfx_oneshot_flag(u8 *flag);
 void create_sound_spawner(s32 soundMagic);
 void exec_anim_sound_state(struct SoundState *soundStates);
 

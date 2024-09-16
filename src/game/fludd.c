@@ -14,6 +14,7 @@
 #include "mario.h"
 #include "mario_step.h"
 #include "save_file.h"
+#include "spawn_sound.h"
 #include "rumble_init.h"
 
 #include "config.h"
@@ -56,14 +57,12 @@ void fludd_refill_water_level(struct MarioState *m){
             }else{
               m->breath = 0x880;  
             }
+            cur_obj_play_sound_oneshot(SOUND_GENERAL_WATER_LEVEL_TRIG, &soundPlayed, cur_obj_play_sound_2, NULL);
         }
 
-        if (!soundPlayed) {
-            play_sound(SOUND_GENERAL_WATER_LEVEL_TRIG, m->pos);
-            soundPlayed = 1;
-        }
+
     } else if (waterLevel < 160) {
-        soundPlayed = 0;
+        reset_sfx_oneshot_flag(&soundPlayed);
     }
 
 }

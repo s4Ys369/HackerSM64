@@ -78,6 +78,26 @@ void cur_obj_play_sound_2(s32 soundMagic) {
     }
 }
 
+typedef void (*ResetCallback)(u8 *flag);
+void cur_obj_play_sound_oneshot(s32 soundMagic, u8 *flag, void (*play_sfx_func)(s32 soundMagic), ResetCallback reset_callback) {
+    if (*flag == 0) {
+        // Play the sound effect
+        play_sfx_func(soundMagic);
+
+        // Set the flag to 1 to indicate the sound has played
+        *flag = 1;
+
+        // Reset the flag using the callback (if provided)
+        if (reset_callback != NULL) {
+            reset_callback(flag);
+        }
+    }
+}
+
+void reset_sfx_oneshot_flag(u8 *flag) {
+    *flag = 0;  // Reset the flag
+}
+
 /*
  * These 2 functions below are completely unreferenced in all versions
  * of Super Mario 64. They are likely functions which facilitated
