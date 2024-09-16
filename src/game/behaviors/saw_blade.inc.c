@@ -1,4 +1,5 @@
 #include <string.h>
+#include "../object_collision.h"
 
 static struct SpawnParticlesInfo sSawSparks = {
     /* behParam:        */ 3,
@@ -21,10 +22,10 @@ struct ObjectHitbox sSawHitbox = {
     /* damageOrCoinValue: */ 4,
     /* health:            */ 1,
     /* numLootCoins:      */ 3,
-    /* radius:            */ 50,
-    /* height:            */ 50,
+    /* radius:            */ 100,
+    /* height:            */ 900,
     /* hurtboxRadius:     */ 50,
-    /* hurtboxHeight:     */ 1200,
+    /* hurtboxHeight:     */ 900,
 };
 
 struct Object *hurtObj = NULL;
@@ -36,15 +37,20 @@ void bhv_saw_blade_init(void){
     cur_obj_enable_rendering();
 
     // Hitbox for the front edge of the blade
-    hurtObj = spawn_object_relative(0, -500, 0, 0, o, MODEL_NONE, bhvSawBladeHitbox);
+    hurtObj = spawn_object_relative(0, -500, -450, 0, o, MODEL_NONE, bhvSawBladeHitbox);
     sawArm = spawn_object(o, MODEL_SAW_ARM, bhvSawArm);
     hurtObj->oBehParams = o->oBehParams;
 
 }
 
 void bhv_saw_blade_hitbox_loop(void){
+    f32 dist = 50.0f;
+    struct Object *goomba = cur_obj_find_nearest_object_with_behavior(bhvGoomba,&dist);
     obj_set_hitbox(o,&sSawHitbox);
-    o->hitboxDownOffset = o->parentObj->header.gfx.scale[1] * 500.0f;
+    if(goomba != NULL && detect_object_hitbox_overlap(o,goomba)) {
+        goomba->oAction = 4;
+        goomba = NULL;
+    }
     o->oPosX += speed;
     if(o->oPosX <= -3000.0f)mark_obj_for_deletion(o);
 }

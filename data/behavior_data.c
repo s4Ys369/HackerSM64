@@ -412,7 +412,7 @@ const BehaviorScript bhvSawBlade[] = {
 };
 
 const BehaviorScript bhvSawBladeHitbox[] = {
-    BEGIN(OBJ_LIST_GENACTOR),
+    BEGIN(OBJ_LIST_DESTRUCTIVE),
     OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
     SET_HOME(),
     BEGIN_LOOP(),

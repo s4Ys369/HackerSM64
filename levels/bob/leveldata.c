@@ -29,5 +29,4 @@
 #include "levels/bob/leveldata.inc.c"
 #include "levels/bob/saw_blade/collision.inc.c"
 #include "levels/bob/saw_blade/model.inc.c"
-#include "levels/bob/saw_arm/collision.inc.c"
 #include "levels/bob/saw_arm/model.inc.c"
