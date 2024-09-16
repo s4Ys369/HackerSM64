@@ -357,10 +357,6 @@ void bhv_goomba_update(void) {
                 floomba_act_startup();
                 break;
 #endif
-            case 4:
-                mark_goomba_as_dead();
-                obj_die_if_health_non_positive();
-                break;
         }
         if (obj_handle_attacks(&sGoombaHitbox, GOOMBA_ACT_ATTACKED_MARIO,
                                sGoombaAttackHandlers[o->oGoombaSize & 0x1])

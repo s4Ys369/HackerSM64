@@ -22,7 +22,7 @@ struct ObjectHitbox sSawHitbox = {
     /* damageOrCoinValue: */ 4,
     /* health:            */ 1,
     /* numLootCoins:      */ 3,
-    /* radius:            */ 100,
+    /* radius:            */ 50,
     /* height:            */ 900,
     /* hurtboxRadius:     */ 50,
     /* hurtboxHeight:     */ 900,
@@ -48,7 +48,9 @@ void bhv_saw_blade_hitbox_loop(void){
     struct Object *goomba = cur_obj_find_nearest_object_with_behavior(bhvGoomba,&dist);
     obj_set_hitbox(o,&sSawHitbox);
     if(goomba != NULL && detect_object_hitbox_overlap(o,goomba)) {
-        goomba->oAction = 4;
+        gCurrentObject = goomba;
+        obj_die_if_health_non_positive();
+        gCurrentObject = hurtObj;
         goomba = NULL;
     }
     o->oPosX += speed;
