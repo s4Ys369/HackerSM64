@@ -420,6 +420,12 @@ const BehaviorScript bhvSawBladeHitbox[] = {
     END_LOOP(),
 };
 
+const BehaviorScript bhvSawBladeWayPoint[] = {
+    BEGIN(OBJ_LIST_DEFAULT),
+    OR_INT(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    BREAK(),
+};
+
 const BehaviorScript bhvHoverJet[] = {
 	BEGIN(OBJ_LIST_UNIMPORTANT),
 	OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),

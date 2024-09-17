@@ -7,7 +7,7 @@ const GeoLayout bob_area_1_geo[] = {
 		GEO_OPEN_NODE(),
 			GEO_DISPLAY_LIST(LAYER_OPAQUE, bob_dl_Floor_mesh_layer_1),
 		GEO_CLOSE_NODE(),
-		GEO_TRANSLATE_NODE_WITH_DL(LAYER_TRANSPARENT, -2300, 5550, 0, bob_dl_Plane_mesh_layer_5),
+		GEO_TRANSLATE_NODE_WITH_DL(LAYER_TRANSPARENT, -2300, 5500, 0, bob_dl_Plane_mesh_layer_5),
 		GEO_OPEN_NODE(),
 			GEO_DISPLAY_LIST(LAYER_OPAQUE, bob_dl_Plane_mesh_layer_1),
 		GEO_CLOSE_NODE(),

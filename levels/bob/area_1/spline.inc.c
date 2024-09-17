@@ -1,0 +1,8 @@
+const Trajectory bob_area_1_spline_saw_blade1_path[] = {
+	TRAJECTORY_POS( 0, 1200, 5200, 480),
+	TRAJECTORY_POS( 1, 800, 5350, 880),
+	TRAJECTORY_POS( 2, 400, 5200, 480),
+	TRAJECTORY_POS( 3, -400, 5350, 80),
+	TRAJECTORY_POS( 4, -800, 5200, 480),
+	TRAJECTORY_END(),
+};

@@ -7,6 +7,7 @@
 extern const BehaviorScript bhvSawArm[];
 extern const BehaviorScript bhvSawBlade[];
 extern const BehaviorScript bhvSawBladeHitbox[];
+extern const BehaviorScript bhvSawBladeWayPoint[];
 extern const BehaviorScript bhvHoverJet[];
 
 extern const BehaviorScript bhvStarDoor[];
