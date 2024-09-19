@@ -1255,6 +1255,11 @@
 #define /*0x0FC*/ oYoshiChosenHome OBJECT_FIELD_S32(0x1D)
 #define /*0x100*/ oYoshiTargetYaw  OBJECT_FIELD_S32(0x1E)
 
+/* SAW */
+#define /*0x0F4*/ oSawPastEndPoint     OBJECT_FIELD_S32(0x1B)
+#define /*0x0FC*/ oSawPastTriggerPoint OBJECT_FIELD_S32(0x1D)
+#define /*0x100*/ oSawWayPointID   OBJECT_FIELD_S32(0x1E)
+
 
 /*Custom general defines:
 
