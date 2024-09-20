@@ -59,6 +59,7 @@ const LevelScript level_bob_entry[] = {
 		OBJECT(MODEL_SAW_BLADE, 4800, 5200, -475, 0, 0, 0, (0x00 << 24) | (0xEC << 16), bhvSawBlade),
 		OBJECT(MODEL_SAW_BLADE, 5050, 5200, 475, 0, 0, 0, (0x01 << 24) | (0xEC << 16), bhvSawBlade),
 		OBJECT(MODEL_SAW_BLADE, -7700, 5950, 0, 0, 180, 0, (0x02 << 24) | (0x36 << 16), bhvSawBlade),
+		OBJECT(MODEL_STAR, -7800, 5800, 0, 0, 0, 0, (0x00 << 24), bhvStar),
 		OBJECT(MODEL_NONE, -8400, 5200, -475, 0, 0, 0, (0x00 << 24) | (0x00 << 16), bhvSawBladeWayPoint),
 		OBJECT(MODEL_NONE, -8400, 5200, 475, 0, 0, 0, (0x01 << 24) | (0x00 << 16), bhvSawBladeWayPoint),
 		OBJECT(MODEL_NONE, -2000, 5200, -475, 0, 0, 0, (0x00 << 24) | (0x01 << 16), bhvSawBladeWayPoint),

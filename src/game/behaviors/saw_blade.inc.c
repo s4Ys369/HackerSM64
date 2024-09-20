@@ -23,7 +23,7 @@ struct ObjectHitbox sSawHitbox = {
     /* numLootCoins:      */ 3,
     /* radius:            */ 50,
     /* height:            */ 900,
-    /* hurtboxRadius:     */ 50,
+    /* hurtboxRadius:     */ 100,
     /* hurtboxHeight:     */ 900,
 };
 
@@ -46,7 +46,7 @@ const f32 sawRadiusY = 450.0f;
 const f32 hurtObjOffestX = 300.0f;
 
 void bhv_saw_blade_init(void){
-    o->oSawWayPointID = (s32)GET_BPARAM1(o->oBehParams); // GET_PARAM1 not working?
+    o->oSawWayPointID = (s32)GET_BPARAM1(o->oBehParams);
     o->oForwardVel = (s8)o->oBehParams2ndByte;
     o->oSawPastEndPoint = 0;
     o->oSawPastTriggerPoint = 0;
@@ -57,7 +57,7 @@ void bhv_saw_blade_init(void){
     f32 offsetX = (o->oForwardVel >= 0) ? sawRadiusX : -sawRadiusX;
 
     // Spawn the hurt object with the calculated offset
-    hurtObj = spawn_object_relative(0, -offsetX, -sawRadiusY, 0, o, MODEL_BLUE_COIN, bhvSawBladeHitbox);
+    hurtObj = spawn_object_relative(0, -offsetX, -sawRadiusY, 0, o, MODEL_NONE, bhvSawBladeHitbox);
     hurtObj->oBehParams = o->oBehParams;
 
     // Set hurtObj's home position relative to the saw's home position
