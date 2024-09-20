@@ -490,6 +490,30 @@ static void obj_die_if_health_non_positive(void) {
     }
 }
 
+static void obj_die(struct Object *obj) {
+    if (obj->oHealth <= 0) {
+        if (obj->oDeathSound == 0) {
+            spawn_mist_particles_with_sound(SOUND_OBJ_DEFAULT_DEATH);
+        } else if (obj->oDeathSound > 0) {
+            spawn_mist_particles_with_sound(obj->oDeathSound);
+        } else {
+            spawn_mist_particles();
+        }
+
+        if ((s32)obj->oNumLootCoins < 0) {
+            spawn_object(obj, MODEL_BLUE_COIN, bhvMrIBlueCoin);
+        } else {
+            obj_spawn_loot_yellow_coins(obj, obj->oNumLootCoins, 20.0f);
+        }
+        // This doesn't do anything
+        obj_spawn_loot_yellow_coins(obj, obj->oNumLootCoins, 20.0f);
+
+
+        obj_mark_for_deletion(obj);
+
+    }
+}
+
 UNUSED static void obj_unused_die(void) {
     o->oHealth = 0;
     obj_die_if_health_non_positive();

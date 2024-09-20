@@ -34,8 +34,8 @@ enum sSawWayPointModes {
 };
 
 enum sSawWayPointBP {
-    END_POINT = 0x00,
-    TRIGGER_POINT = 0x01,
+    END_POINT,
+    TRIGGER_POINT,
 };
 
 struct Object *hurtObj = NULL;
@@ -46,28 +46,38 @@ const f32 sawRadiusY = 450.0f;
 const f32 hurtObjOffestX = 300.0f;
 
 void bhv_saw_blade_init(void){
-    o->oSawWayPointID = GET_BPARAM1(o->oBehParams);
+    o->oSawWayPointID = (s32)GET_BPARAM1(o->oBehParams); // GET_PARAM1 not working?
     o->oForwardVel = (s8)o->oBehParams2ndByte;
     o->oSawPastEndPoint = 0;
     o->oSawPastTriggerPoint = 0;
 
     cur_obj_enable_rendering();
 
-    hurtObj = spawn_object_relative(0, -sawRadiusX, -sawRadiusY, 0, o, MODEL_BLUE_COIN, bhvSawBladeHitbox);
+    // Determine the offset based on the direction of movement (positive or negative)
+    f32 offsetX = (o->oForwardVel >= 0) ? sawRadiusX : -sawRadiusX;
+
+    // Spawn the hurt object with the calculated offset
+    hurtObj = spawn_object_relative(0, -offsetX, -sawRadiusY, 0, o, MODEL_BLUE_COIN, bhvSawBladeHitbox);
     hurtObj->oBehParams = o->oBehParams;
+
+    // Set hurtObj's home position relative to the saw's home position
     vec3f_copy(&hurtObj->oHomeVec, &o->oHomeVec);
-    hurtObj->oHomeX = hurtObj->oHomeX + sawRadiusX;
+    hurtObj->oHomeX = hurtObj->oHomeX + offsetX; // Apply calculated offset based on movement direction
     hurtObj->oHomeY = hurtObj->oHomeY + sawRadiusY;
+
+    // Set the other relevant parameters for hurtObj
     hurtObj->oForwardVel = o->oForwardVel;
-    hurtObj->oSawPastEndPoint = 0;
-    hurtObj->oSawPastTriggerPoint = 0;
+    hurtObj->oSawWayPointID = o->oSawWayPointID;
+    hurtObj->oSawPastEndPoint = o->oSawPastEndPoint;
+    hurtObj->oSawPastTriggerPoint = o->oSawPastTriggerPoint;
 
     sawArm = spawn_object(o, MODEL_SAW_ARM, bhvSawArm);
     sawArm->oBehParams = o->oBehParams;
     sawArm->oForwardVel = o->oForwardVel;
-    sawArm->oSawPastEndPoint = 0;
-    sawArm->oSawPastTriggerPoint = 0;
-    vec3f_copy(&sawArm->oHomeVec, &o->oHomeVec);
+    sawArm->oSawWayPointID = o->oSawWayPointID;
+    sawArm->oSawPastEndPoint = o->oSawPastEndPoint;
+    sawArm->oSawPastTriggerPoint = o->oSawPastTriggerPoint;
+    vec3f_copy(&sawArm->oHomeVec, &o->oHomeVec); //
 
 }
 
@@ -81,17 +91,15 @@ void bhv_saw_path_finding(void) {
         o->oSawPastEndPoint = 0;
     }
 
-    o->oPosX += o->oForwardVel; //
-    if(wayPoint != NULL && (s32)GET_BPARAM1(wayPoint->oBehParams) == o->oSawWayPointID) {
-        if(wayPoint->oBehParams2ndByte == END_POINT) {
-            if(o->oPosX == wayPoint->oPosX){
+    o->oPosX += o->oForwardVel;
+    if((wayPoint != NULL) && ((s32)GET_BPARAM1(wayPoint->oBehParams) == o->oSawWayPointID)) {
+        if(absf(o->oPosX - wayPoint->oPosX) <= 50.0f) {
+            if(wayPoint->oBehParams2ndByte == END_POINT) {
                 vec3f_copy(&o->oPosVec, &o->oHomeVec);
                 o->oSawPastTriggerPoint = 0;
                 o->oSawPastEndPoint = 1;
-                }
             }
-        if(wayPoint->oBehParams2ndByte == TRIGGER_POINT) {
-            if(o->oPosX == wayPoint->oPosX){
+            if(wayPoint->oBehParams2ndByte == TRIGGER_POINT) {
                 o->oSawPastTriggerPoint = 1;
             }
         }
@@ -106,14 +114,17 @@ void bhv_saw_blade_hitbox_loop(void){
 
     struct Object *goomba = cur_obj_find_nearest_object_with_behavior(bhvGoomba,&dist);
     if(goomba != NULL && detect_object_hitbox_overlap(o,goomba)) {
-        gCurrentObject = goomba;
-        obj_die_if_health_non_positive();
-        gCurrentObject = hurtObj;
-        goomba = NULL;
+        obj_die(goomba);
     }
 
     bhv_saw_path_finding();
-    if(o->oPosX > o->parentObj->oPosX || o->oPosX < o->parentObj->oPosX)o->oPosX = o->parentObj->oPosX - sawRadiusX;
+    // Calculate offset based on forward velocity (positive for forward, negative for backward)
+    f32 offsetX = (o->oForwardVel >= 0) ? sawRadiusX : -sawRadiusX;
+
+    // Adjust position based on the parent object's position and the offset.
+    if (absf(o->oPosX - o->parentObj->oPosX) > 10.0f) {
+        o->oPosX = o->parentObj->oPosX + offsetX;
+    }
 
 }
 
@@ -130,10 +141,11 @@ void bhv_saw_blade_loop(void){
 
     // Floor check
     struct Surface *floor = cur_obj_update_floor_height_and_get_floor();
+    f32 sparkOffsetX = (o->oForwardVel >= 0) ? hurtObjOffestX : -hurtObjOffestX;
     if (floor != NULL && floor->type == SURFACE_DEFAULT){
         f32 dist = o->oFloorHeight - o->oPosY;
         if (dist >= -sawRadiusY){
-            cur_obj_spawn_particles_offset(&sSawSparks, -hurtObjOffestX, -sawRadiusY, 0.0f);
+            cur_obj_spawn_particles_offset(&sSawSparks, sparkOffsetX, -sawRadiusY, 0.0f);
             cur_obj_play_sound_2(SOUND_GENERAL2_SPINDEL_ROLL);
         }
     }

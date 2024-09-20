@@ -63,6 +63,7 @@ s32 obj_resolve_object_collisions(s32 *targetYaw);
 s32 obj_bounce_off_walls_edges_objects(s32 *targetYaw);
 s32 obj_resolve_collisions_and_turn(s16 targetYaw, s16 turnSpeed);
 void obj_die_if_health_non_positive(void);
+void obj_die(struct Object *obj);
 void obj_unused_die(void);
 void obj_set_knockback_action(s32 attackType);
 void obj_set_squished_action(void);
