@@ -2587,7 +2587,7 @@ ALIGNED8 static const Texture intro_seg7_texture_070086A0[] = {
 };
 
 // 0x07008EA0 - 0x07009E38
-static const Gfx intro_seg7_dl_07008EA0[] = {
+static const Gfx intro_seg7_dl_07008EA0[] __attribute__((unused))= {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, intro_seg7_texture_070086A0),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
@@ -2884,7 +2884,7 @@ static const Gfx intro_seg7_dl_07008EA0[] = {
 };
 
 // 0x07009E38 - 0x0700ADC0
-static const Gfx intro_seg7_dl_07009E38[] = {
+static const Gfx intro_seg7_dl_07009E38[] __attribute__((unused))= {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, intro_seg7_texture_07007EA0),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
@@ -3183,7 +3183,7 @@ static const Gfx intro_seg7_dl_07009E38[] = {
 };
 
 // 0x0700ADC0 - 0x0700B3A0
-static const Gfx intro_seg7_dl_0700ADC0[] = {
+static const Gfx intro_seg7_dl_0700ADC0[] __attribute__((unused))= {
     gsSPVertex(intro_seg7_vertex_07006AC0, 16, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  3,  1, 0x0),
     gsSP2Triangles( 4,  5,  6, 0x0,  7,  8,  9, 0x0),
