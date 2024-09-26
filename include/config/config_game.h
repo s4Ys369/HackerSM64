@@ -30,14 +30,14 @@
 // #define BREATH_METER
 
 // Number of coins to spawn the "100 coin" star. If you remove the define altogether, then there won't be a 100 coin star at all.
-#define X_COIN_STAR 100
+#define X_COIN_STAR 69
 
 /*
  * Stars don't kick you out of the level (does not play nicely with vanilla)
  * In v2.0 there are numerous issues with this define that can be seen here https://github.com/Reonu/HackerSM64/issues/258
  * Use at your own risk.
 */
-// #define NON_STOP_STARS
+ //#define NON_STOP_STARS
 
 // Uncomment this if you want global star IDs (useful for creating an open world hack ala MVC)
 // #define GLOBAL_STAR_IDS
@@ -72,4 +72,4 @@
 #define PREVENT_DEATH_LOOP
 
 // The level that the game starts in after file select. The levelscript needs to have a MARIO_POS command for this to work.
-#define START_LEVEL LEVEL_CASTLE_GROUNDS
+#define START_LEVEL LEVEL_BOB

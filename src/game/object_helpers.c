@@ -1744,6 +1744,9 @@ s32 cur_obj_is_mario_ground_pounding_platform(void) {
         if (gMarioStates[0].action == ACT_GROUND_POUND_LAND) {
             return TRUE;
         }
+        if (gMarioStates[0].action == ACT_SHELL_POUND_LAND) {
+            return TRUE;
+        }
     }
 
     return FALSE;

@@ -1259,6 +1259,7 @@ s32 act_riding_shell_ground(struct MarioState *m) {
         if (m->forwardVel < 24.0f) {
             mario_set_forward_vel(m, 24.0f);
         }
+        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_MARIO_SHELL];
         return set_mario_action(m, ACT_CROUCH_SLIDE, 0);
     }
 
@@ -1310,7 +1311,7 @@ s32 act_riding_shell_ground(struct MarioState *m) {
 
     adjust_sound_for_speed(m);
 #if ENABLE_RUMBLE
-    reset_rumble_timers();
+    reset_rumble_timers_slip();
 #endif
     return FALSE;
 }
@@ -1442,7 +1443,7 @@ void common_slide_action(struct MarioState *m, u32 endAction, u32 airAction, s32
         case GROUND_STEP_LEFT_GROUND:
             set_mario_action(m, airAction, 0);
             if (m->forwardVel < -50.0f || 50.0f < m->forwardVel) {
-                play_sound(SOUND_MARIO_HOOHOO, m->marioObj->header.gfx.cameraToObject);
+                play_sound(SOUND_OBJ_KOOPA_TALK, m->marioObj->header.gfx.cameraToObject);
             }
             break;
 
@@ -1648,9 +1649,9 @@ s32 common_ground_knockback_action(struct MarioState *m, s32 animation, s32 chec
     }
 
     if (actionArg > 0) {
-        play_sound_if_no_flag(m, SOUND_MARIO_ATTACKED, MARIO_MARIO_SOUND_PLAYED);
+        play_sound_if_no_flag(m, SOUND_OBJ_KOOPA_DAMAGE, MARIO_MARIO_SOUND_PLAYED);
     } else {
-        play_sound_if_no_flag(m, SOUND_MARIO_OOOF2, MARIO_MARIO_SOUND_PLAYED);
+        play_sound_if_no_flag(m, SOUND_OBJ_KOOPA_DAMAGE, MARIO_MARIO_SOUND_PLAYED);
     }
 
     if (m->forwardVel > 32.0f) {
@@ -1697,7 +1698,7 @@ s32 act_hard_backward_ground_kb(struct MarioState *m) {
     }
 
     if (animFrame == 54 && m->prevAction == ACT_SPECIAL_DEATH_EXIT) {
-        play_sound(SOUND_MARIO_MAMA_MIA, m->marioObj->header.gfx.cameraToObject);
+        play_sound(SOUND_OBJ_KOOPA_FLYGUY_DEATH, m->marioObj->header.gfx.cameraToObject);
     }
 
     if (animFrame == 69) {
@@ -1755,7 +1756,7 @@ s32 act_death_exit_land(struct MarioState *m) {
     animFrame = set_mario_animation(m, MARIO_ANIM_FALL_OVER_BACKWARDS);
 
     if (animFrame == 54) {
-        play_sound(SOUND_MARIO_MAMA_MIA, m->marioObj->header.gfx.cameraToObject);
+        play_sound(SOUND_OBJ_KOOPA_FLYGUY_DEATH, m->marioObj->header.gfx.cameraToObject);
     }
     if (animFrame == 68) {
         play_mario_landing_sound(m, SOUND_ACTION_TERRAIN_LANDING);
@@ -1910,7 +1911,7 @@ s32 act_long_jump_land(struct MarioState *m) {
     }
 
     if (!(m->input & INPUT_NONZERO_ANALOG)) {
-        play_sound_if_no_flag(m, SOUND_MARIO_UH_LONG_JUMP_LAND, MARIO_MARIO_SOUND_PLAYED);
+        play_sound_if_no_flag(m, SOUND_OBJ_KOOPA_TALK, MARIO_MARIO_SOUND_PLAYED);
     }
 
     common_landing_action(m,
@@ -1936,7 +1937,7 @@ s32 act_triple_jump_land(struct MarioState *m) {
     }
 
     if (!(m->input & INPUT_NONZERO_ANALOG)) {
-        play_sound_if_no_flag(m, SOUND_MARIO_HAHA, MARIO_MARIO_SOUND_PLAYED);
+        play_sound_if_no_flag(m, SOUND_OBJ_KOOPA_TALK, MARIO_MARIO_SOUND_PLAYED);
     }
 
     common_landing_action(m, MARIO_ANIM_TRIPLE_JUMP_LAND, ACT_FREEFALL);
@@ -1953,7 +1954,7 @@ s32 act_backflip_land(struct MarioState *m) {
     }
 
     if (!(m->input & INPUT_NONZERO_ANALOG)) {
-        play_sound_if_no_flag(m, SOUND_MARIO_HAHA, MARIO_MARIO_SOUND_PLAYED);
+        play_sound_if_no_flag(m, SOUND_OBJ_KOOPA_TALK, MARIO_MARIO_SOUND_PLAYED);
     }
 
     common_landing_action(m, MARIO_ANIM_TRIPLE_JUMP_LAND, ACT_FREEFALL);

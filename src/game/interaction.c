@@ -188,7 +188,7 @@ u32 determine_interaction(struct MarioState *m, struct Object *obj) {
                     interaction = INT_TRIP;
                 }
             }
-        } else if (action == ACT_GROUND_POUND || action == ACT_TWIRLING) {
+        } else if (action == ACT_GROUND_POUND || action == ACT_TWIRLING || action == ACT_SHELL_POUND_LAND) {
             if (m->vel[1] < 0.0f) {
                 interaction = INT_GROUND_POUND_OR_TWIRL;
             }
@@ -1844,10 +1844,25 @@ void mario_process_interactions(struct MarioState *m) {
 }
 
 void check_death_barrier(struct MarioState *m) {
+    struct Object* riddenObj = m->riddenObj;
+    struct Object* heldObj = m->heldObj;
     if (m->pos[1] < m->floorHeight + 2048.0f) {
+        if (riddenObj != NULL) {
+            m->riddenObj = NULL;
+            riddenObj->oInteractStatus = INT_STATUS_STOP_RIDING;
+            obj_mark_for_deletion(riddenObj);
+            drop_and_set_mario_action(m, ACT_FREEFALL, 0);
+        }
+        if (heldObj != NULL) {
+            m->usedObj = NULL;
+            m->heldObj = NULL;
+            heldObj->oInteractStatus = INT_STATUS_NONE;
+            obj_mark_for_deletion(heldObj);
+        }
         if (level_trigger_warp(m, WARP_OP_WARP_FLOOR) == 20 && !(m->flags & MARIO_FALL_SOUND_PLAYED)) {
             play_sound(SOUND_MARIO_WAAAOOOW, m->marioObj->header.gfx.cameraToObject);
         }
+        m->health = 0x880;
     }
 }
 

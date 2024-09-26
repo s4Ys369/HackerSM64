@@ -15,6 +15,7 @@
 
 #include "actors/common0.h"
 #include "actors/common1.h"
+#include "actors/group14.h"
 
 #include "make_const_nonconst.h"
 #include "levels/intro/header.h"
@@ -35,13 +36,19 @@ const LevelScript level_intro_splash_screen[] = {
     LOAD_LEVEL_DATA(intro),
 #if defined(FLOOMBAS) && defined(INTRO_FLOOMBAS)
     LOAD_COMMON0(),
+    LOAD_YAY0(          /*seg*/ SEGMENT_COMMON1_YAY0, _common1_yay0SegmentRomStart, _common1_yay0SegmentRomEnd),
+    LOAD_RAW_WITH_CODE( /*seg*/ SEGMENT_COMMON1_GEO,   _common1_geoSegmentRomStart,  _common1_geoSegmentRomEnd, _common1_geoSegmentBssStart, _common1_geoSegmentBssEnd),
+    LOAD_GROUPB(group14),
 
     // Load "Super Mario 64" logo
     ALLOC_LEVEL_POOL(),
-    LOAD_MODEL_FROM_GEO(MODEL_GOOMBA, goomba_geo),
+    LOAD_MODEL_FROM_GEO(MODEL_KOOPA_WITH_SHELL, koopa_with_shell_geo),
+    LOAD_MODEL_FROM_GEO(MODEL_RED_FLAME, red_flame_geo),
     AREA(/*index*/ 1, intro_geo_splash_screen),
-        OBJECT(/*model*/ MODEL_GOOMBA, /*pos*/ -570, -480, 1500, /*angle*/ 0,  50, 0, /*behParam*/ BP(0x18, 0x00, 0x10, 0x0B), /*beh*/ bhvFloombaStartup),
-        OBJECT(/*model*/ MODEL_GOOMBA, /*pos*/  570, -480, 1500, /*angle*/ 0, -50, 0, /*behParam*/ BP(0x18, 0x00, 0x90, 0x0B), /*beh*/ bhvFloombaStartup),
+        OBJECT(/*model*/ MODEL_KOOPA_WITH_SHELL, /*pos*/ -570, -480, 1500, /*angle*/ 0,  50, 0, /*behParam*/ BP(0x18, 0x00, 0x10, 0x0B), /*beh*/ bhvFloombaStartup),
+        OBJECT(/*model*/ MODEL_KOOPA_WITH_SHELL, /*pos*/  570, -480, 1500, /*angle*/ 0, -50, 0, /*behParam*/ BP(0x18, 0x00, 0x90, 0x0B), /*beh*/ bhvFloombaStartup),
+        OBJECT(/*model*/ MODEL_RED_FLAME, /*pos*/ -550, -430, 1550, /*angle*/ 0,  0, 0, /*behParam*/ BP(0x00, 0x00, 0x00, 0x00), /*beh*/ bhvFlame),
+        OBJECT(/*model*/ MODEL_RED_FLAME, /*pos*/  550, -430, 1550, /*angle*/ 0,  0, 0, /*behParam*/ BP(0x00, 0x00, 0x00, 0x00), /*beh*/ bhvFlame),
     END_AREA(),
     FREE_LEVEL_POOL(),
 
