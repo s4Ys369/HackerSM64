@@ -273,15 +273,15 @@
 /**
  * Ending Peach cutscene text.
  */
-#define TEXT_FILE_MARIO_EXCLAMATION _("Mario!")
+#define TEXT_FILE_MARIO_EXCLAMATION _("Koop!")
 #define TEXT_POWER_STARS_RESTORED __("The power of the Stars is restored to the castle...")
 #define TEXT_THANKS_TO_YOU __("...and it's all thanks to you!")
-#define TEXT_THANK_YOU_MARIO __("Thank you, Mario!")
+#define TEXT_THANK_YOU_MARIO __("Thank you, Koop!")
 #define TEXT_SOMETHING_SPECIAL __("We have to do something special for you...")
 #define TEXT_LISTEN_EVERYBODY _("Listen, everybody,")
 #define TEXT_LETS_HAVE_CAKE _("let's bake a delicious cake...")
-#define TEXT_FOR_MARIO _("...for Mario...")
-#define TEXT_FILE_MARIO_QUESTION _("Mario!")
+#define TEXT_FOR_MARIO _("...for Koop...")
+#define TEXT_FILE_MARIO_QUESTION _("Koop!")
 
 #endif
 
@@ -435,19 +435,19 @@
 // French
 #define TEXT_POWER_STARS_RESTORED_FR _("Grâce aux étoiles, le château a retrouvé ses pouvoirs...")
 #define TEXT_THANKS_TO_YOU_FR        _("...et ceci grâce à toi!")
-#define TEXT_THANK_YOU_MARIO_FR      _("Merci, Mario!")
+#define TEXT_THANK_YOU_MARIO_FR      _("Merci, Koop!")
 #define TEXT_SOMETHING_SPECIAL_FR    _("Tu mérites une récompense...")
 #define TEXT_COME_ON_EVERYBODY_FR    _("Venez les amis...")
 #define TEXT_LETS_HAVE_CAKE_FR       _("Allons préparer un délicieux gâteau...")
-#define TEXT_FOR_MARIO_FR            _("...pour Mario...")
+#define TEXT_FOR_MARIO_FR            _("...pour Koop...")
 // German
 #define TEXT_POWER_STARS_RESTORED_DE _("Die Macht der Sterne ruht wieder sicher im Schloss...")
 #define TEXT_THANKS_TO_YOU_DE        _("...und alles dank Deiner Hilfe!")
-#define TEXT_THANK_YOU_MARIO_DE      _("Vielen Dank, Mario!")
+#define TEXT_THANK_YOU_MARIO_DE      _("Vielen Dank, Koop!")
 #define TEXT_SOMETHING_SPECIAL_DE    _("Wir haben eine Überraschung für Dich...")
 #define TEXT_COME_ON_EVERYBODY_DE    _("Hört alle her...")
 #define TEXT_LETS_HAVE_CAKE_DE       _("Laßt uns einen leckeren Kuchen backen...")
-#define TEXT_FOR_MARIO_DE            _("...für Mario...")
+#define TEXT_FOR_MARIO_DE            _("...für Koop...")
 
 /**
  * Course Table names for Score Menu Save view

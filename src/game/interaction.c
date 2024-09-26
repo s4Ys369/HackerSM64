@@ -1587,12 +1587,9 @@ u32 interact_cap(struct MarioState *m, UNUSED u32 interactType, struct Object *o
             m->capTimer = capTime;
         }
 
-        if ((m->action & ACT_FLAG_IDLE) || m->action == ACT_WALKING) {
-            m->flags |= MARIO_CAP_IN_HAND;
-            set_mario_action(m, ACT_PUTTING_ON_CAP, 0);
-        } else {
-            m->flags |= MARIO_CAP_ON_HEAD;
-        }
+
+        m->flags |= MARIO_CAP_ON_HEAD;
+
 
         play_sound(SOUND_MENU_STAR_SOUND, m->marioObj->header.gfx.cameraToObject);
         play_sound(SOUND_MARIO_HERE_WE_GO, m->marioObj->header.gfx.cameraToObject);
