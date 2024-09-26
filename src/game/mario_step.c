@@ -301,7 +301,13 @@ static s32 perform_ground_quarter_step(struct MarioState *m, Vec3f nextPos) {
                 m->riddenObj = NULL;
             }
 
+            #pragma GCC diagnostic push
+            #pragma GCC diagnostic ignored "-Wimplicit-function-declaration"
+            #pragma GCC diagnostic ignored "-Wint-conversion"
+
             m->usedObj = spawn_object(m->marioObj, MODEL_KOOPA_SHELL, bhvKoopaShellUnderwater);
+
+            #pragma GCC diagnostic pop
             m->usedObj->oFlags |= OBJ_FLAG_HOLDABLE;
             mario_grab_used_object(m);
             m->marioBodyState->grabPos = GRAB_POS_LIGHT_OBJ;
@@ -516,7 +522,13 @@ s32 perform_air_quarter_step(struct MarioState *m, Vec3f intendedPos, u32 stepAr
                 m->riddenObj = NULL;
             }
 
+            #pragma GCC diagnostic push
+            #pragma GCC diagnostic ignored "-Wimplicit-function-declaration"
+            #pragma GCC diagnostic ignored "-Wint-conversion"
+
             m->usedObj = spawn_object(m->marioObj, MODEL_KOOPA_SHELL, bhvKoopaShellUnderwater);
+
+            #pragma GCC diagnostic pop
             m->usedObj->oFlags |= OBJ_FLAG_HOLDABLE;
             mario_grab_used_object(m);
             m->marioBodyState->grabPos = GRAB_POS_LIGHT_OBJ;

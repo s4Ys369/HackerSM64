@@ -40,6 +40,7 @@ const LevelScript level_sa_entry[] = {
     LOAD_RAW(         /*seg*/ 0x0F, _common0_geoSegmentRomStart,  _common0_geoSegmentRomEnd),
     ALLOC_LEVEL_POOL(),
     MARIO(/*model*/ MODEL_MARIO_SHELL, /*behParam*/ 0x00000001, /*beh*/ bhvMario),
+    JUMP_LINK(script_func_global_1),
     JUMP_LINK(script_func_global_5),
     JUMP_LINK(script_func_global_14),
 

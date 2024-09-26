@@ -2097,3 +2097,48 @@ Arrgghh!\n\
 Anyone entering this cave\n\
 without permission will\n\
 meet certain disaster."))
+
+DEFINE_DIALOG(DIALOG_170, 1, 4, 30, 200, _("\
+Welcome to\n\
+Koop Gets the Stomp\n\
+Vanilla Edition!\n\
+\n\
+Let's start with a\n\
+tutorial on Koop's\n\
+moveset, which is\n\
+just like Mario's,\n\
+but with the MarioJams\n\
+Shell Shredding Comp\n\
+shell riding!\n\
+\n\
+To switch between\n\
+Shelled and\n\
+Shredding,\n\
+press the L trigger\n\
+Don't worry if\n\
+Koop loses his shell.\n\
+Just press L again to\n\
+get it back."))
+
+DEFINE_DIALOG(DIALOG_171, 1, 4, 30, 200, _("\
+While Shredding,\n\
+Press B to boost\n\
+and hold Z to\n\
+brake while grounded.\n\
+While in the air,\n\
+Press A again to\n\
+double jump, and\n\
+Z to shell pound"))
+
+DEFINE_DIALOG(DIALOG_172, 1, 4, 30, 200, _("\
+Koop automatically\n\
+grabs his shell\n\
+while shredding\n\
+underwater.\n\
+Press B to boost,\n\
+Hold Z to brake.\n\
+Koop will boost\n\
+when exiting water.\n\
+\n\
+That's everything!\n\
+GL HF!"))

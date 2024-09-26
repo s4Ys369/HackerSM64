@@ -44,6 +44,7 @@ const LevelScript level_bowser_3_entry[] = {
     LOAD_RAW(         /*seg*/ 0x0F, _common0_geoSegmentRomStart,  _common0_geoSegmentRomEnd),
     ALLOC_LEVEL_POOL(),
     MARIO(/*model*/ MODEL_MARIO_SHELL, /*behParam*/ 0x00000001, /*beh*/ bhvMario),
+    JUMP_LINK(script_func_global_1),
     JUMP_LINK(script_func_global_13),
     LOAD_MODEL_FROM_GEO(MODEL_BOWSER_3_FALLING_PLATFORM_1,  bowser_3_geo_000290),
     LOAD_MODEL_FROM_GEO(MODEL_BOWSER_3_FALLING_PLATFORM_2,  bowser_3_geo_0002A8),
