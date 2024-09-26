@@ -9,20 +9,18 @@
 #include "seqplayer.h"
 #include "game/puppyprint.h"
 
-#define ALIGN16(val) (((val) + 0xF) & ~0xF)
-
 struct SharedDma {
     /*0x0*/ u8 *buffer;       // target, points to pre-allocated buffer
     /*0x4*/ uintptr_t source; // device address
-    /*0x8*/ u16 sizeUnused;   // set to bufSize, never read
-    /*0xA*/ u16 bufSize;      // size of buffer
-    /*0xC*/ u8 unused2;       // set to 0, never read
-    /*0xD*/ u8 reuseIndex;    // position in sSampleDmaReuseQueue1/2, if ttl == 0
-    /*0xE*/ u8 ttl;           // duration after which the DMA can be discarded
+    /*0x8*/ u32 bufSize;      // size of buffer (converted from u16 for intentional padding to size 0x10)
+    /*0xC*/ u8 reuseIndex;    // position in sSampleDmaReuseQueue1/2, if ttl == 0
+    /*   */ // u8 pad[3];
 };                            // size = 0x10
 
 // EU only
 void port_eu_init(void);
+
+ALIGNED16 u32 dmaTempBuffer[4];
 
 struct Note *gNotes;
 
@@ -42,7 +40,8 @@ OSMesgQueue gAudioDmaMesgQueue;
 OSMesg gAudioDmaMesg;
 OSIoMesg gAudioDmaIoMesg;
 
-struct SharedDma sSampleDmas[0x60];
+struct SharedDma sSampleDmas[MAX_SIMULTANEOUS_NOTES * 4];
+u8 sSampleTTLs[MAX_SIMULTANEOUS_NOTES * 4];
 u32 gSampleDmaNumListItems; // sh: 0x803503D4
 u32 sSampleDmaListSize1; // sh: 0x803503D8
 
@@ -71,7 +70,6 @@ struct AudioBufferParametersEU gAudioBufferParameters;
 s32 gAiFrequency;
 #endif
 
-u32 sDmaBufSize;
 s32 gMaxAudioCmds;
 s32 gMaxSimultaneousNotes;
 
@@ -86,7 +84,7 @@ s16 gTempoInternalToExternal;
 s8 gAudioUpdatesPerFrame;
 #endif
 
-s8 gSoundMode;
+s8 gSoundMode = SOUND_MODE_STEREO;
 
 #if defined(VERSION_EU)
 s8 gAudioUpdatesPerFrame;
@@ -137,14 +135,8 @@ u8 audioString49[] = "BANK LOAD MISS! FOR %d\n";
  * Performs an asynchronus (normal priority) DMA copy
  */
 void audio_dma_copy_async(uintptr_t devAddr, void *vAddr, size_t nbytes, OSMesgQueue *queue, OSIoMesg *mesg) {
-#if PUPPYPRINT_DEBUG
-    OSTime first = osGetTime();
-#endif
     osInvalDCache(vAddr, nbytes);
     osPiStartDma(mesg, OS_MESG_PRI_NORMAL, OS_READ, devAddr, vAddr, nbytes, queue);
-#if PUPPYPRINT_DEBUG
-    dmaAudioTime[perfIteration] += (osGetTime() - first);
-#endif
 }
 
 /**
@@ -152,48 +144,32 @@ void audio_dma_copy_async(uintptr_t devAddr, void *vAddr, size_t nbytes, OSMesgQ
  * to 0x1000 bytes transfer at once.
  */
 void audio_dma_partial_copy_async(uintptr_t *devAddr, u8 **vAddr, ssize_t *remaining, OSMesgQueue *queue, OSIoMesg *mesg) {
-#if PUPPYPRINT_DEBUG
-    OSTime first = osGetTime();
-#endif
     ssize_t transfer = MIN(*remaining, 0x1000);
     *remaining -= transfer;
     osInvalDCache(*vAddr, transfer);
     osPiStartDma(mesg, OS_MESG_PRI_NORMAL, OS_READ, *devAddr, *vAddr, transfer, queue);
     *devAddr += transfer;
     *vAddr += transfer;
-#if PUPPYPRINT_DEBUG
-    dmaAudioTime[perfIteration] += (osGetTime() - first);
-#endif
 }
 
 void decrease_sample_dma_ttls() {
     u32 i;
 
     for (i = 0; i < sSampleDmaListSize1; i++) {
-#if defined(VERSION_EU)
-        struct SharedDma *temp = &sSampleDmas[i];
-#else
-        struct SharedDma *temp = sSampleDmas + i;
-#endif
-        if (temp->ttl != 0) {
-            temp->ttl--;
-            if (temp->ttl == 0) {
-                temp->reuseIndex = sSampleDmaReuseQueueHead1;
+        if (sSampleTTLs[i] != 0) {
+            sSampleTTLs[i]--;
+            if (sSampleTTLs[i] == 0) {
+                sSampleDmas[i].reuseIndex = sSampleDmaReuseQueueHead1;
                 sSampleDmaReuseQueue1[sSampleDmaReuseQueueHead1++] = (u8) i;
             }
         }
     }
 
     for (i = sSampleDmaListSize1; i < gSampleDmaNumListItems; i++) {
-#if defined(VERSION_EU)
-        struct SharedDma *temp = &sSampleDmas[i];
-#else
-        struct SharedDma *temp = sSampleDmas + i;
-#endif
-        if (temp->ttl != 0) {
-            temp->ttl--;
-            if (temp->ttl == 0) {
-                temp->reuseIndex = sSampleDmaReuseQueueHead2;
+        if (sSampleTTLs[i] != 0) {
+            sSampleTTLs[i]--;
+            if (sSampleTTLs[i] == 0) {
+                sSampleDmas[i].reuseIndex = sSampleDmaReuseQueueHead2;
                 sSampleDmaReuseQueue2[sSampleDmaReuseQueueHead2++] = (u8) i;
             }
         }
@@ -208,21 +184,14 @@ void *dma_sample_data(uintptr_t devAddr, u32 size, s32 arg2, u8 *dmaIndexRef) {
     u32 i;
     u32 dmaIndex;
     ssize_t bufferPos;
-#if PUPPYPRINT_DEBUG
-    OSTime first = osGetTime();
-#endif
 
     if (arg2 != 0 || *dmaIndexRef >= sSampleDmaListSize1) {
         for (i = sSampleDmaListSize1; i < gSampleDmaNumListItems; i++) {
-#if defined(VERSION_EU)
             dma = &sSampleDmas[i];
-#else
-            dma = sSampleDmas + i;
-#endif
             bufferPos = devAddr - dma->source;
             if (0 <= bufferPos && (size_t) bufferPos <= dma->bufSize - size) {
                 // We already have a DMA request for this memory range.
-                if (dma->ttl == 0 && sSampleDmaReuseQueueTail2 != sSampleDmaReuseQueueHead2) {
+                if (sSampleTTLs[i] == 0 && sSampleDmaReuseQueueTail2 != sSampleDmaReuseQueueHead2) {
                     // Move the DMA out of the reuse queue, by swapping it with the
                     // tail, and then incrementing the tail.
                     if (dma->reuseIndex != sSampleDmaReuseQueueTail2) {
@@ -233,16 +202,9 @@ void *dma_sample_data(uintptr_t devAddr, u32 size, s32 arg2, u8 *dmaIndexRef) {
                     }
                     sSampleDmaReuseQueueTail2++;
                 }
-                dma->ttl = 60;
+                sSampleTTLs[i] = 60;
                 *dmaIndexRef = (u8) i;
-#if PUPPYPRINT_DEBUG
-                dmaAudioTime[perfIteration] += (osGetTime() - first);
-#endif
-#if defined(VERSION_EU)
-                return &dma->buffer[(devAddr - dma->source)];
-#else
                 return (devAddr - dma->source) + dma->buffer;
-#endif
             }
         }
 
@@ -252,19 +214,15 @@ void *dma_sample_data(uintptr_t devAddr, u32 size, s32 arg2, u8 *dmaIndexRef) {
             dmaIndex = sSampleDmaReuseQueue2[sSampleDmaReuseQueueTail2];
             sSampleDmaReuseQueueTail2++;
             dma = sSampleDmas + dmaIndex;
+            sSampleTTLs[dmaIndex] = 2;
             hasDma = TRUE;
         }
     } else {
-#if defined(VERSION_EU)
-        dma = sSampleDmas;
-        dma += *dmaIndexRef;
-#else
         dma = sSampleDmas + *dmaIndexRef;
-#endif
         bufferPos = devAddr - dma->source;
         if (0 <= bufferPos && (size_t) bufferPos <= dma->bufSize - size) {
             // We already have DMA for this memory range.
-            if (dma->ttl == 0) {
+            if (sSampleTTLs[*dmaIndexRef] == 0) {
                 // Move the DMA out of the reuse queue, by swapping it with the
                 // tail, and then incrementing the tail.
                 if (dma->reuseIndex != sSampleDmaReuseQueueTail1) {
@@ -275,18 +233,8 @@ void *dma_sample_data(uintptr_t devAddr, u32 size, s32 arg2, u8 *dmaIndexRef) {
                 }
                 sSampleDmaReuseQueueTail1++;
             }
-            dma->ttl = 2;
-#if defined(VERSION_EU)
-    #if PUPPYPRINT_DEBUG
-            dmaAudioTime[perfIteration] += (osGetTime() - first);
-    #endif
+            sSampleTTLs[*dmaIndexRef] = 2;
             return dma->buffer + (devAddr - dma->source);
-#else
-    #if PUPPYPRINT_DEBUG
-            dmaAudioTime[perfIteration] += (osGetTime() - first);
-    #endif
-            return (devAddr - dma->source) + dma->buffer;
-#endif
         }
     }
 
@@ -295,51 +243,28 @@ void *dma_sample_data(uintptr_t devAddr, u32 size, s32 arg2, u8 *dmaIndexRef) {
         // be empty, since TTL 2 is so small.
         dmaIndex = sSampleDmaReuseQueue1[sSampleDmaReuseQueueTail1++];
         dma = sSampleDmas + dmaIndex;
+        sSampleTTLs[dmaIndex] = 2;
         hasDma = TRUE;
     }
 
     transfer = dma->bufSize;
     dmaDevAddr = devAddr & ~0xF;
-    dma->ttl = 2;
     dma->source = dmaDevAddr;
-    dma->sizeUnused = transfer;
-#ifdef VERSION_US
+#ifdef VERSION_US // TODO: Is there a reason this only exists in US?
     osInvalDCache(dma->buffer, transfer);
 #endif
-#if defined(VERSION_EU)
     osPiStartDma(&gCurrAudioFrameDmaIoMesgBufs[gCurrAudioFrameDmaCount++], OS_MESG_PRI_NORMAL,
                      OS_READ, dmaDevAddr, dma->buffer, transfer, &gCurrAudioFrameDmaQueue);
     *dmaIndexRef = dmaIndex;
-#if PUPPYPRINT_DEBUG
-    dmaAudioTime[perfIteration] += (osGetTime() - first);
-#endif
     return (devAddr - dmaDevAddr) + dma->buffer;
-#else
-    gCurrAudioFrameDmaCount++;
-    osPiStartDma(&gCurrAudioFrameDmaIoMesgBufs[gCurrAudioFrameDmaCount - 1], OS_MESG_PRI_NORMAL,
-                 OS_READ, dmaDevAddr, dma->buffer, transfer, &gCurrAudioFrameDmaQueue);
-    *dmaIndexRef = dmaIndex;
-#if PUPPYPRINT_DEBUG
-    dmaAudioTime[perfIteration] += (osGetTime() - first);
-#endif
-    return dma->buffer + (devAddr - dmaDevAddr);
-#endif
 }
 
 
-void init_sample_dma_buffers(UNUSED s32 arg0) {
+void init_sample_dma_buffers() {
     s32 i;
-#if defined(VERSION_EU)
-#define j i
-#else
-    s32 j;
-#endif
-
-#if defined(VERSION_EU)
-    sDmaBufSize = 0x400;
-#else
-    sDmaBufSize = 144 * 9;
-#endif
+    s32 sDmaBufSize;
+    
+    sDmaBufSize = DMA_BUF_SIZE_0;
 
 #if defined(VERSION_EU)
     for (i = 0; i < gMaxSimultaneousNotes * 3 * gAudioBufferParameters.presetUnk4; i++) {
@@ -348,60 +273,39 @@ void init_sample_dma_buffers(UNUSED s32 arg0) {
 #endif
         sSampleDmas[gSampleDmaNumListItems].buffer = soundAlloc(&gNotesAndBuffersPool, sDmaBufSize);
         if (sSampleDmas[gSampleDmaNumListItems].buffer == NULL) {
-#if defined(VERSION_EU)
             break;
-#else
-            goto out1;
-#endif
         }
         sSampleDmas[gSampleDmaNumListItems].bufSize = sDmaBufSize;
         sSampleDmas[gSampleDmaNumListItems].source = 0;
-        sSampleDmas[gSampleDmaNumListItems].sizeUnused = 0;
-        sSampleDmas[gSampleDmaNumListItems].unused2 = 0;
-        sSampleDmas[gSampleDmaNumListItems].ttl = 0;
+        sSampleTTLs[gSampleDmaNumListItems] = 0;
         gSampleDmaNumListItems++;
     }
-#if defined(VERSION_JP) || defined(VERSION_US)
-out1:
-#endif
 
     for (i = 0; (u32) i < gSampleDmaNumListItems; i++) {
         sSampleDmaReuseQueue1[i] = (u8) i;
         sSampleDmas[i].reuseIndex = (u8) i;
     }
 
-    for (j = gSampleDmaNumListItems; j < 0x100; j++) {
-        sSampleDmaReuseQueue1[j] = 0;
+    for (i = gSampleDmaNumListItems; i < ARRAY_COUNT(sSampleDmaReuseQueue1); i++) {
+        sSampleDmaReuseQueue1[i] = 0;
     }
 
     sSampleDmaReuseQueueTail1 = 0;
     sSampleDmaReuseQueueHead1 = (u8) gSampleDmaNumListItems;
     sSampleDmaListSize1 = gSampleDmaNumListItems;
 
-#if defined(VERSION_EU)
-    sDmaBufSize = 0x200;
-#else
-    sDmaBufSize = 160 * 9;
-#endif
+    sDmaBufSize = DMA_BUF_SIZE_1;
+
     for (i = 0; i < gMaxSimultaneousNotes; i++) {
         sSampleDmas[gSampleDmaNumListItems].buffer = soundAlloc(&gNotesAndBuffersPool, sDmaBufSize);
         if (sSampleDmas[gSampleDmaNumListItems].buffer == NULL) {
-#if defined(VERSION_EU)
             break;
-#else
-            goto out2;
-#endif
         }
         sSampleDmas[gSampleDmaNumListItems].bufSize = sDmaBufSize;
         sSampleDmas[gSampleDmaNumListItems].source = 0;
-        sSampleDmas[gSampleDmaNumListItems].sizeUnused = 0;
-        sSampleDmas[gSampleDmaNumListItems].unused2 = 0;
-        sSampleDmas[gSampleDmaNumListItems].ttl = 0;
+        sSampleTTLs[gSampleDmaNumListItems] = 0;
         gSampleDmaNumListItems++;
     }
-#if defined(VERSION_JP) || defined(VERSION_US)
-out2:
-#endif
 
     for (i = sSampleDmaListSize1; (u32) i < gSampleDmaNumListItems; i++) {
         sSampleDmaReuseQueue2[i - sSampleDmaListSize1] = (u8) i;
@@ -410,15 +314,12 @@ out2:
 
     // This probably meant to touch the range size1..size2 as well... but it
     // doesn't matter, since these values are never read anyway.
-    for (j = gSampleDmaNumListItems; j < 0x100; j++) {
-        sSampleDmaReuseQueue2[j] = sSampleDmaListSize1;
+    for (i = gSampleDmaNumListItems; i < ARRAY_COUNT(sSampleDmaReuseQueue2); i++) {
+        sSampleDmaReuseQueue2[i] = sSampleDmaListSize1;
     }
 
     sSampleDmaReuseQueueTail2 = 0;
     sSampleDmaReuseQueueHead2 = gSampleDmaNumListItems - sSampleDmaListSize1;
-#if defined(VERSION_EU)
-#undef j
-#endif
 }
 
 #if defined(VERSION_JP) || defined(VERSION_US)
@@ -442,7 +343,7 @@ void patch_sound(UNUSED struct AudioBankSound *sound, UNUSED u8 *memBase, UNUSED
 #if defined(VERSION_EU)
         else if (sample->loaded == 0x80) {
             PATCH(sample->sampleAddr, offsetBase);
-            u8 *mem = soundAlloc(&gNotesAndBuffersPool, sample->sampleSize); // TODO: Memory leak!
+            u8 *mem = soundAlloc(&gNotesAndBuffersPool, sample->sampleSize); // TODO: Memory issue most likely!
             if (mem == NULL) {
                 sample->sampleAddr = patched;
                 sample->loaded = 1;
@@ -556,8 +457,6 @@ void patch_audio_bank(struct AudioBank *mem, u8 *offset, u32 numInstruments, u32
 }
 
 struct AudioBank *bank_load_immediate(s32 bankId, s32 arg1) {
-    u32 buf[4];
-
     // (This is broken if the length is 1 (mod 16), but that never happens --
     // it's always divisible by 4.)
     s32 alloc = gAlCtlHeader->seqArray[bankId].len + 0xf;
@@ -569,9 +468,9 @@ struct AudioBank *bank_load_immediate(s32 bankId, s32 arg1) {
         return NULL;
     }
 
-    audio_dma_copy_immediate((uintptr_t) ctlData, buf, 0x10);
-    u32 numInstruments = buf[0];
-    u32 numDrums = buf[1];
+    audio_dma_copy_immediate((uintptr_t) ctlData, dmaTempBuffer, 0x10);
+    u32 numInstruments = dmaTempBuffer[0];
+    u32 numDrums = dmaTempBuffer[1];
     audio_dma_copy_immediate((uintptr_t)(ctlData + 0x10), ret, alloc);
     patch_audio_bank(ret, gAlTbl->seqArray[bankId].offset, numInstruments, numDrums);
     gCtlEntries[bankId].numInstruments = (u8) numInstruments;
@@ -583,8 +482,6 @@ struct AudioBank *bank_load_immediate(s32 bankId, s32 arg1) {
 }
 
 struct AudioBank *bank_load_async(s32 bankId, s32 arg1, struct SequencePlayer *seqPlayer) {
-    u32 buf[4];
-
     size_t alloc = gAlCtlHeader->seqArray[bankId].len + 0xf;
     alloc = ALIGN16(alloc);
     alloc -= 0x10;
@@ -594,9 +491,9 @@ struct AudioBank *bank_load_async(s32 bankId, s32 arg1, struct SequencePlayer *s
         return NULL;
     }
 
-    audio_dma_copy_immediate((uintptr_t) ctlData, buf, 0x10);
-    u32 numInstruments = buf[0];
-    u32 numDrums = buf[1];
+    audio_dma_copy_immediate((uintptr_t) ctlData, dmaTempBuffer, 0x10);
+    u32 numInstruments = dmaTempBuffer[0];
+    u32 numDrums = dmaTempBuffer[1];
     seqPlayer->loadingBankId = (u8) bankId;
 #if defined(VERSION_EU)
     gCtlEntries[bankId].numInstruments = numInstruments;
@@ -860,11 +757,8 @@ void load_sequence_internal(u32 player, u32 seqId, s32 loadAsync) {
 
 // (void) must be omitted from parameters to fix stack with -framepointer
 void audio_init() {
-#if defined(VERSION_JP) || defined(VERSION_US) || defined(VERSION_EU)
-    u8 buf[0x10];
-#endif
     s32 i, /*j,*/ k;
-    UNUSED u32 size;
+    u32 size;
     void *data;
 
     gAudioLoadLock = AUDIO_LOCK_UNINITIALIZED;
@@ -924,7 +818,6 @@ void audio_init() {
     gAudioFrameCount = 0;
     gAudioTaskIndex = 0;
     gCurrAiBufferIndex = 0;
-    gSoundMode = 0;
     gAudioTask = NULL;
     gAudioTasks[0].task.t.data_size = 0;
     gAudioTasks[1].task.t.data_size = 0;
@@ -939,10 +832,6 @@ void audio_init() {
     bzero(&gAiBuffers, sizeof(gAiBuffers));
     for (i = 0; i < NUMAIBUFFERS; i++) {
         gAiBuffers[i] = soundAlloc(&gAudioInitPool, AIBUFFER_LEN);
-
-        /*for (j = 0; j < (s32) (AIBUFFER_LEN / sizeof(s16)); j++) {
-            gAiBuffers[i][j] = 0;
-        }*/
     }
 
 #if defined(VERSION_EU)
@@ -950,7 +839,7 @@ void audio_init() {
     gAudioResetStatus = 1;
     audio_shut_down_and_reset_step();
 #else
-    audio_reset_session(&gAudioSessionPresets[0], 0);
+    audio_reset_session(0);
 #endif
 
     // Not sure about these prints
@@ -959,7 +848,7 @@ void audio_init() {
     eu_stubbed_printf_0("Main Heap Initialize.\n");
 
     // Load headers for sounds and sequences
-    gSeqFileHeader = (ALSeqFile *) buf;
+    gSeqFileHeader = (ALSeqFile *) dmaTempBuffer;
     data = gMusicData;
     audio_dma_copy_immediate((uintptr_t) data, gSeqFileHeader, 0x10);
     gSequenceCount = gSeqFileHeader->seqCount;
@@ -970,7 +859,7 @@ void audio_init() {
     alSeqFileNew(gSeqFileHeader, data);
 
     // Load header for CTL (instrument metadata)
-    gAlCtlHeader = (ALSeqFile *) buf;
+    gAlCtlHeader = (ALSeqFile *) dmaTempBuffer;
     data = gSoundDataADSR;
     audio_dma_copy_immediate((uintptr_t) data, gAlCtlHeader, 0x10);
     size = gAlCtlHeader->seqCount * sizeof(ALSeqData) + 4;
@@ -981,7 +870,7 @@ void audio_init() {
     alSeqFileNew(gAlCtlHeader, data);
 
     // Load header for TBL (raw sound data)
-    gAlTbl = (ALSeqFile *) buf;
+    gAlTbl = (ALSeqFile *) dmaTempBuffer;
     audio_dma_copy_immediate((uintptr_t) data, gAlTbl, 0x10);
     size = gAlTbl->seqCount * sizeof(ALSeqData) + 4;
     size = ALIGN16(size);
@@ -990,13 +879,8 @@ void audio_init() {
     alSeqFileNew(gAlTbl, gSoundDataRaw);
 
     // Load bank sets for each sequence
-#ifdef EXPAND_AUDIO_HEAP
-    gAlBankSets = soundAlloc(&gAudioInitPool, 0x400);
-    audio_dma_copy_immediate((uintptr_t) gBankSetsData, gAlBankSets, 0x400);
-#else
-    gAlBankSets = soundAlloc(&gAudioInitPool, 0x100);
-    audio_dma_copy_immediate((uintptr_t) gBankSetsData, gAlBankSets, 0x100);
-#endif
+    gAlBankSets = soundAlloc(&gAudioInitPool, MAX_NUM_SOUNDBANKS * sizeof(s32));
+    audio_dma_copy_immediate((uintptr_t) gBankSetsData, gAlBankSets, MAX_NUM_SOUNDBANKS * sizeof(s32));
 
     init_sequence_players();
     gAudioLoadLock = AUDIO_LOCK_NOT_LOADING;

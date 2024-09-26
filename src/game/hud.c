@@ -26,21 +26,10 @@
  * cannon reticle, and the unused keys.
  **/
 
-#define HUD_POWER_METER_X            140
-#define HUD_POWER_METER_EMPHASIZED_Y 166
-#define HUD_POWER_METER_Y            200
-#define HUD_POWER_METER_HIDDEN_Y     300
-
 #ifdef BREATH_METER
-// #ifdef DISABLE_LIVES
-// #define HUD_BREATH_METER_X         64
-// #define HUD_BREATH_METER_Y        200
-// #define HUD_BREATH_METER_HIDDEN_Y 300
-// #else
 #define HUD_BREATH_METER_X         40
 #define HUD_BREATH_METER_Y         32
 #define HUD_BREATH_METER_HIDDEN_Y -20
-// #endif
 #endif
 
 // ------------- FPS COUNTER ---------------
@@ -52,6 +41,9 @@ u8 curFrameTimeIndex = 0;
 
 #include "PR/os_convert.h"
 
+#ifdef USE_PROFILER
+float profiler_get_fps();
+#else
 // Call once per frame
 f32 calculate_and_update_fps() {
     OSTime newTime = osGetTime();
@@ -64,9 +56,14 @@ f32 calculate_and_update_fps() {
     }
     return ((f32)FRAMETIME_COUNT * 1000000.0f) / (s32)OS_CYCLES_TO_USEC(newTime - oldTime);
 }
+#endif
 
 void print_fps(s32 x, s32 y) {
+#ifdef USE_PROFILER
+    f32 fps = profiler_get_fps();
+#else
     f32 fps = calculate_and_update_fps();
+#endif
     char text[14];
 
     sprintf(text, "FPS %2.2f", fps);
@@ -75,7 +72,6 @@ void print_fps(s32 x, s32 y) {
 #else
     print_text(x, y, text);
 #endif
-
 }
 
 // ------------ END OF FPS COUNER -----------------
@@ -121,29 +117,37 @@ static struct CameraHUD sCameraHUD = { CAM_STATUS_NONE };
  * Renders a rgba16 16x16 glyph texture from a table list.
  */
 void render_hud_tex_lut(s32 x, s32 y, Texture *texture) {
-    gDPPipeSync(gDisplayListHead++);
-    gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, texture);
-    gSPDisplayList(gDisplayListHead++, &dl_hud_img_load_tex_block);
-    gSPTextureRectangle(gDisplayListHead++, x << 2, y << 2, (x + 15) << 2, (y + 15) << 2,
+    Gfx *tempGfxHead = gDisplayListHead;
+
+    gDPPipeSync(tempGfxHead++);
+    gDPSetTextureImage(tempGfxHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, texture);
+    gSPDisplayList(tempGfxHead++, &dl_hud_img_load_tex_block);
+    gSPTextureRectangle(tempGfxHead++, x << 2, y << 2, (x + 15) << 2, (y + 15) << 2,
                         G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10);
+
+    gDisplayListHead = tempGfxHead;
 }
 
 /**
  * Renders a rgba16 8x8 glyph texture from a table list.
  */
 void render_hud_small_tex_lut(s32 x, s32 y, Texture *texture) {
-    gDPSetTile(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0,
+    Gfx *tempGfxHead = gDisplayListHead;
+
+    gDPSetTile(tempGfxHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0,
                 G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD);
-    gDPTileSync(gDisplayListHead++);
-    gDPSetTile(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 2, 0, G_TX_RENDERTILE, 0,
+    gDPTileSync(tempGfxHead++);
+    gDPSetTile(tempGfxHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 2, 0, G_TX_RENDERTILE, 0,
                 G_TX_CLAMP, 3, G_TX_NOLOD, G_TX_CLAMP, 3, G_TX_NOLOD);
-    gDPSetTileSize(gDisplayListHead++, G_TX_RENDERTILE, 0, 0, (8 - 1) << G_TEXTURE_IMAGE_FRAC, (8 - 1) << G_TEXTURE_IMAGE_FRAC);
-    gDPPipeSync(gDisplayListHead++);
-    gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, texture);
-    gDPLoadSync(gDisplayListHead++);
-    gDPLoadBlock(gDisplayListHead++, G_TX_LOADTILE, 0, 0, 8 * 8 - 1, CALC_DXT(8, G_IM_SIZ_16b_BYTES));
-    gSPTextureRectangle(gDisplayListHead++, x << 2, y << 2, (x + 7) << 2, (y + 7) << 2, G_TX_RENDERTILE,
+    gDPSetTileSize(tempGfxHead++, G_TX_RENDERTILE, 0, 0, (8 - 1) << G_TEXTURE_IMAGE_FRAC, (8 - 1) << G_TEXTURE_IMAGE_FRAC);
+    gDPPipeSync(tempGfxHead++);
+    gDPSetTextureImage(tempGfxHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, texture);
+    gDPLoadSync(tempGfxHead++);
+    gDPLoadBlock(tempGfxHead++, G_TX_LOADTILE, 0, 0, 8 * 8 - 1, CALC_DXT(8, G_IM_SIZ_16b_BYTES));
+    gSPTextureRectangle(tempGfxHead++, x << 2, y << 2, (x + 7) << 2, (y + 7) << 2, G_TX_RENDERTILE,
                         0, 0, 4 << 10, 1 << 10);
+
+    gDisplayListHead = tempGfxHead;
 }
 
 /**
@@ -151,14 +155,17 @@ void render_hud_small_tex_lut(s32 x, s32 y, Texture *texture) {
  */
 void render_power_meter_health_segment(s16 numHealthWedges) {
     Texture *(*healthLUT)[] = segmented_to_virtual(&power_meter_health_segments_lut);
+    Gfx *tempGfxHead = gDisplayListHead;
 
-    gDPPipeSync(gDisplayListHead++);
-    gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1,
+    gDPPipeSync(tempGfxHead++);
+    gDPSetTextureImage(tempGfxHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1,
                        (*healthLUT)[numHealthWedges - 1]);
-    gDPLoadSync(gDisplayListHead++);
-    gDPLoadBlock(gDisplayListHead++, G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES));
-    gSP1Triangle(gDisplayListHead++, 0, 1, 2, 0);
-    gSP1Triangle(gDisplayListHead++, 0, 2, 3, 0);
+    gDPLoadSync(tempGfxHead++);
+    gDPLoadBlock(tempGfxHead++, G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES));
+    gSP1Triangle(tempGfxHead++, 0, 1, 2, 0);
+    gSP1Triangle(tempGfxHead++, 0, 2, 3, 0);
+
+    gDisplayListHead = tempGfxHead;
 }
 
 /**
@@ -297,12 +304,16 @@ void render_hud_power_meter(void) {
 void render_breath_meter_segment(s16 numBreathWedges) {
     Texture *(*breathLUT)[];
     breathLUT = segmented_to_virtual(&breath_meter_segments_lut);
-    gDPPipeSync(gDisplayListHead++);
-    gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, (*breathLUT)[numBreathWedges - 1]);
-    gDPLoadSync(gDisplayListHead++);
-    gDPLoadBlock(gDisplayListHead++, G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES));
-    gSP1Triangle(gDisplayListHead++, 0, 1, 2, 0);
-    gSP1Triangle(gDisplayListHead++, 0, 2, 3, 0);
+    Gfx *tempGfxHead = gDisplayListHead;
+
+    gDPPipeSync(tempGfxHead++);
+    gDPSetTextureImage(tempGfxHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, (*breathLUT)[numBreathWedges - 1]);
+    gDPLoadSync(tempGfxHead++);
+    gDPLoadBlock(tempGfxHead++, G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES));
+    gSP1Triangle(tempGfxHead++, 0, 1, 2, 0);
+    gSP1Triangle(tempGfxHead++, 0, 2, 3, 0);
+
+    gDisplayListHead = tempGfxHead;
 }
 
 /**
@@ -388,7 +399,6 @@ void render_hud_breath_meter(void) {
 }
 #endif
 
-#define HUD_TOP_Y 209
 
 /**
  * Renders the amount of lives Mario has.
@@ -415,12 +425,10 @@ void render_debug_mode(void) {
  * Renders the amount of coins collected.
  */
 void render_hud_coins(void) {
-    print_text(168, HUD_TOP_Y, "$"); // 'Coin' glyph
-    print_text(184, HUD_TOP_Y, "*"); // 'X' glyph
-    print_text_fmt_int(198, HUD_TOP_Y, "%d", gHudDisplay.coins);
+    print_text(HUD_COINS_X, HUD_TOP_Y, "$"); // 'Coin' glyph
+    print_text((HUD_COINS_X + 16), HUD_TOP_Y, "*"); // 'X' glyph
+    print_text_fmt_int((HUD_COINS_X + 30), HUD_TOP_Y, "%d", gHudDisplay.coins);
 }
-
-#define HUD_STARS_X 78
 
 /**
  * Renders the amount of stars collected.
@@ -491,7 +499,7 @@ void set_hud_camera_status(s16 status) {
  */
 void render_hud_camera_status(void) {
     Texture *(*cameraLUT)[6] = segmented_to_virtual(&main_hud_camera_lut);
-    s32 x = GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(54);
+    s32 x = GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(HUD_CAMERA_X);
     s32 y = 205;
 
     if (sCameraHUD.status == CAM_STATUS_NONE) {
@@ -563,7 +571,7 @@ void render_hud(void) {
             render_hud_cannon_reticle();
         }
 
-#ifndef DISABLE_LIVES
+#ifdef ENABLE_LIVES
         if (hudDisplayFlags & HUD_DISPLAY_FLAG_LIVES) {
             render_hud_mario_lives();
         }
@@ -600,16 +608,10 @@ void render_hud(void) {
             render_hud_timer();
         }
 
-        if (gSurfacePoolError & NOT_ENOUGH_ROOM_FOR_SURFACES) print_text(10, 40, "SURFACE POOL FULL");
-        if (gSurfacePoolError & NOT_ENOUGH_ROOM_FOR_NODES) print_text(10, 60, "SURFACE NODE POOL FULL");
-
 #ifdef VANILLA_STYLE_CUSTOM_DEBUG
         if (gCustomDebugMode) {
             render_debug_mode();
         }
-#endif
-#ifdef PUPPYPRINT
-        print_set_envcolour(255, 255, 255, 255);
 #endif
     }
 }

@@ -16,7 +16,7 @@ enum Preloads {
 #define IS_SEQUENCE_CHANNEL_VALID(ptr) ((uintptr_t)(ptr) != (uintptr_t)&gSequenceChannelNone)
 
 extern struct Note *gNotes;
-extern u8 sAudioFirstBoot;
+extern u8 sAudioIsInitialized;
 
 // Music in SM64 is played using 3 players:
 // gSequencePlayers[0] is level background music
@@ -87,7 +87,7 @@ void *dma_sample_data(uintptr_t devAddr, u32 size, s32 arg2, u8 *dmaIndexRef, s3
 #else
 void *dma_sample_data(uintptr_t devAddr, u32 size, s32 arg2, u8 *dmaIndexRef);
 #endif
-void init_sample_dma_buffers(s32 arg0);
+void init_sample_dma_buffers();
 #if defined(VERSION_SH)
 void patch_audio_bank(s32 bankId, struct AudioBank *mem, struct PatchStruct *patchInfo);
 #else

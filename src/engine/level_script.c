@@ -5,9 +5,11 @@
 
 #include "sm64.h"
 #include "audio/external.h"
+#include "audio/synthesis.h"
 #include "buffers/framebuffers.h"
 #include "buffers/zbuffer.h"
 #include "game/area.h"
+#include "game/debug.h"
 #include "game/game_init.h"
 #include "game/mario.h"
 #include "game/memory.h"
@@ -27,7 +29,7 @@
 #include "string.h"
 #include "game/puppycam2.h"
 #include "game/puppyprint.h"
-#include "game/puppylights.h"
+#include "game/emutest.h"
 
 #include "config.h"
 
@@ -308,7 +310,7 @@ static void level_cmd_load_mario_head(void) {
 }
 
 static void level_cmd_load_yay0_texture(void) {
-    load_segment_decompress_heap(CMD_GET(s16, 2), CMD_GET(void *, 4), CMD_GET(void *, 8));
+    load_segment_decompress(CMD_GET(s16, 2), CMD_GET(void *, 4), CMD_GET(void *, 8));
     sCurrentCmd = CMD_NEXT;
 }
 
@@ -346,6 +348,9 @@ void unmap_tlbs(void) {
                     osUnmapTLB(gTlbEntries);
                     gTlbSegments[i]--;
                     gTlbEntries--;
+#ifdef PUPPYPRINT_DEBUG
+                    set_segment_memory_printout(i, 0);
+#endif
                 }
             } else {
                 gTlbEntries -= gTlbSegments[i];
@@ -359,6 +364,8 @@ static void level_cmd_clear_level(void) {
     clear_objects();
     clear_area_graph_nodes();
     clear_areas();
+    main_pool_pop_state();
+    // the game does a push on level load and a pop on level unload, we need to add another push to store state after the level has been loaded, so one more pop is needed
     main_pool_pop_state();
     unmap_tlbs();
 
@@ -386,6 +393,7 @@ static void level_cmd_free_level_pool(void) {
             break;
         }
     }
+    main_pool_push_state();
 
     sCurrentCmd = CMD_NEXT;
 }
@@ -423,6 +431,7 @@ static void level_cmd_load_model_from_dl(void) {
     s16 layer = CMD_GET(u16, 0x8);
     void *dl_ptr = CMD_GET(void *, 4);
 
+    assert(model < MODEL_ID_COUNT, "Tried to load an invalid model ID.");
     if (model < MODEL_ID_COUNT) {
         gLoadedGraphNodes[model] =
             (struct GraphNode *) init_graph_node_display_list(sLevelPool, 0, layer, dl_ptr);
@@ -435,6 +444,7 @@ static void level_cmd_load_model_from_geo(void) {
     ModelID16 model = CMD_GET(ModelID16, 2);
     void *geo = CMD_GET(void *, 4);
 
+    assert(model < MODEL_ID_COUNT, "Tried to load an invalid model ID.");
     if (model < MODEL_ID_COUNT) {
         gLoadedGraphNodes[model] = process_geo_layout(sLevelPool, geo);
     }
@@ -448,6 +458,7 @@ static void level_cmd_23(void) {
     void *dl  = CMD_GET(void *, 4);
     s32 scale = CMD_GET(s32, 8);
 
+    assert(model < MODEL_ID_COUNT, "Tried to load an invalid model ID.");
     if (model < MODEL_ID_COUNT) {
         // GraphNodeScale has a GraphNode at the top. This
         // is being stored to the array, so cast the pointer.
@@ -475,7 +486,7 @@ static void level_cmd_init_mario(void) {
 static void level_cmd_place_object(void) {
     if (
         sCurrAreaIndex != -1
-        && ((CMD_GET(u8, 2) & (1 << (gCurrActNum - 1))) || (CMD_GET(u8, 2) == 0x1F))
+        && (CMD_GET(u8, 2) & (1 << (gCurrActNum - 1)))
     ) {
         ModelID16 model = CMD_GET(u32, 0x18);
         struct SpawnInfo *spawnInfo = alloc_only_pool_alloc(sLevelPool, sizeof(struct SpawnInfo));
@@ -512,8 +523,6 @@ static void level_cmd_create_warp_node(void) {
         warpNode->node.destArea = CMD_GET(u8, 4);
         warpNode->node.destNode = CMD_GET(u8, 5);
 
-        warpNode->object = NULL;
-
         warpNode->next = gAreas[sCurrAreaIndex].warpNodes;
         gAreas[sCurrAreaIndex].warpNodes = warpNode;
     }
@@ -537,12 +546,12 @@ static void level_cmd_create_instant_warp(void) {
 
         warp = gAreas[sCurrAreaIndex].instantWarps + CMD_GET(u8, 2);
 
-        warp[0].id = 1;
+        warp[0].id = SURFACE_INSTANT_WARP_1B + CMD_GET(u8, 2);
         warp[0].area = CMD_GET(u8, 3);
 
-        vec3s_set(warp[0].displacement, CMD_GET(s16, 4),
-                                        CMD_GET(s16, 6),
-                                        CMD_GET(s16, 8));
+        warp[0].displacement[0] = CMD_GET(s32, 4);
+        warp[0].displacement[1] = CMD_GET(s32, 8);
+        warp[0].displacement[2] = CMD_GET(s32, 12);
     }
 
     sCurrentCmd = CMD_NEXT;
@@ -603,22 +612,19 @@ static void level_cmd_3A(void) {
 static void level_cmd_create_whirlpool(void) {
     struct Whirlpool *whirlpool;
     s32 index = CMD_GET(u8, 2);
-    s32 beatBowser2 =
-        (save_file_get_flags() & (SAVE_FLAG_HAVE_KEY_2 | SAVE_FLAG_UNLOCKED_UPSTAIRS_DOOR)) != 0;
 
-    if (CMD_GET(u8, 3) == WHIRLPOOL_COND_ALWAYS
-        || (CMD_GET(u8, 3) == WHIRLPOOL_COND_BOWSER2_NOT_BEATEN   && !beatBowser2)
-        || (CMD_GET(u8, 3) == WHIRLPOOL_COND_BOWSER2_BEATEN       && beatBowser2)
-        || (CMD_GET(u8, 3) == WHIRLPOOL_COND_AT_LEAST_SECOND_STAR && gCurrActNum >= 2)) {
-        if (sCurrAreaIndex != -1 && index < 2) {
-            if ((whirlpool = gAreas[sCurrAreaIndex].whirlpools[index]) == NULL) {
-                whirlpool = alloc_only_pool_alloc(sLevelPool, sizeof(struct Whirlpool));
-                gAreas[sCurrAreaIndex].whirlpools[index] = whirlpool;
-            }
-
-            vec3s_set(whirlpool->pos, CMD_GET(s16, 4), CMD_GET(s16, 6), CMD_GET(s16, 8));
-            whirlpool->strength = CMD_GET(s16, 10);
+    if (
+        sCurrAreaIndex != -1
+        && index < ARRAY_COUNT(gAreas[sCurrAreaIndex].whirlpools)
+        && (CMD_GET(u8, 3) & (1 << (gCurrActNum - 1)))
+    ) {
+        if ((whirlpool = gAreas[sCurrAreaIndex].whirlpools[index]) == NULL) {
+            whirlpool = alloc_only_pool_alloc(sLevelPool, sizeof(struct Whirlpool));
+            gAreas[sCurrAreaIndex].whirlpools[index] = whirlpool;
         }
+
+        vec3s_set(whirlpool->pos, CMD_GET(s16, 4), CMD_GET(s16, 6), CMD_GET(s16, 8));
+        whirlpool->strength = CMD_GET(s16, 10);
     }
 
     sCurrentCmd = CMD_NEXT;
@@ -735,18 +741,43 @@ static void level_cmd_show_dialog(void) {
 static void level_cmd_set_music(void) {
     if (sCurrAreaIndex != -1) {
         gAreas[sCurrAreaIndex].musicParam = CMD_GET(s16, 2);
-        gAreas[sCurrAreaIndex].musicParam2 = CMD_GET(s16, 4);
+#ifdef BETTER_REVERB
+        if (gEmulator & EMU_CONSOLE)
+            gAreas[sCurrAreaIndex].betterReverbPreset = CMD_GET(u8, 4);
+        else
+            gAreas[sCurrAreaIndex].betterReverbPreset = CMD_GET(u8, 5);
+#endif
+        gAreas[sCurrAreaIndex].musicParam2 = CMD_GET(s16, 6);
     }
     sCurrentCmd = CMD_NEXT;
 }
 
 static void level_cmd_set_menu_music(void) {
+#ifdef BETTER_REVERB
+    // Must come before set_background_music()
+    if (gEmulator & EMU_CONSOLE)
+        gBetterReverbPresetValue = CMD_GET(u8, 4);
+    else
+        gBetterReverbPresetValue = CMD_GET(u8, 5);
+#endif
     set_background_music(0, CMD_GET(s16, 2), 0);
     sCurrentCmd = CMD_NEXT;
 }
 
 static void level_cmd_fadeout_music(void) {
-    fadeout_music(CMD_GET(s16, 2));
+    s16 dur = CMD_GET(s16, 2);
+    if (sCurrAreaIndex != -1 && dur == 0) {
+        // Allow persistent block overrides for SET_BACKGROUND_MUSIC_WITH_REVERB
+        gAreas[sCurrAreaIndex].musicParam = 0x00;
+        gAreas[sCurrAreaIndex].musicParam2 = 0x00;
+#ifdef BETTER_REVERB
+        gAreas[sCurrAreaIndex].betterReverbPreset = 0x00;
+#endif
+    } else {
+        if (dur < 0)
+            dur = 0;
+        fadeout_music(dur);
+    }
     sCurrentCmd = CMD_NEXT;
 }
 
@@ -797,9 +828,7 @@ static void level_cmd_puppyvolume(void) {
     if ((sPuppyVolumeStack[gPuppyVolumeCount] = mem_pool_alloc(gPuppyMemoryPool, sizeof(struct sPuppyVolume))) == NULL) {
         sCurrentCmd = CMD_NEXT;
         gPuppyError |= PUPPY_ERROR_POOL_FULL;
-#if PUPPYPRINT_DEBUG
         append_puppyprint_log("Puppycamera volume allocation failed.");
-#endif
         return;
     }
 
@@ -831,51 +860,14 @@ static void level_cmd_puppyvolume(void) {
     sCurrentCmd = CMD_NEXT;
 }
 
-static void level_cmd_puppylight_environment(void) {
-#ifdef PUPPYLIGHTS
-    Lights1 temp = gdSPDefLights1(CMD_GET(u8, 2), CMD_GET(u8, 3), CMD_GET(u8, 4),
-                                  CMD_GET(u8, 5), CMD_GET(u8, 6), CMD_GET(u8, 7),
-                                  CMD_GET(u8, 8), CMD_GET(u8, 9), CMD_GET(u8, 10));
-
-    memcpy(&gLevelLight, &temp, sizeof(Lights1));
-    levelAmbient = TRUE;
-#endif
-    sCurrentCmd = CMD_NEXT;
-}
-
-static void level_cmd_puppylight_node(void) {
-#ifdef PUPPYLIGHTS
-    gPuppyLights[gNumLights] = mem_pool_alloc(gLightsPool, sizeof(struct PuppyLight));
-    if (gPuppyLights[gNumLights] == NULL) {
-#if PUPPYPRINT_DEBUG
-        append_puppyprint_log("Puppylight allocation failed.");
-#endif
-        sCurrentCmd = CMD_NEXT;
-        return;
+static void level_cmd_set_echo(void) {
+    if (sCurrAreaIndex >= 0 && sCurrAreaIndex < AREA_COUNT) {
+        gAreaData[sCurrAreaIndex].useEchoOverride = TRUE;
+        if (gEmulator & EMU_CONSOLE)
+            gAreaData[sCurrAreaIndex].echoOverride = CMD_GET(s8, 2);
+        else
+            gAreaData[sCurrAreaIndex].echoOverride = CMD_GET(s8, 3);
     }
-
-    vec4_set(gPuppyLights[gNumLights]->rgba, CMD_GET(u8,   2),
-                                             CMD_GET(u8,   3),
-                                             CMD_GET(u8,   4),
-                                             CMD_GET(u8,   5));
-
-    vec3s_set(gPuppyLights[gNumLights]->pos[0], CMD_GET(s16,  6),
-                                                CMD_GET(s16,  8),
-                                                CMD_GET(s16, 10));
-
-    vec3s_set(gPuppyLights[gNumLights]->pos[1], CMD_GET(s16, 12),
-                                                CMD_GET(s16, 14),
-                                                CMD_GET(s16, 16));
-    gPuppyLights[gNumLights]->yaw       = CMD_GET(s16, 18);
-    gPuppyLights[gNumLights]->epicentre = CMD_GET(u8,  20);
-    gPuppyLights[gNumLights]->flags     = CMD_GET(u8,  21);
-    gPuppyLights[gNumLights]->active    = TRUE;
-    gPuppyLights[gNumLights]->area      = sCurrAreaIndex;
-    gPuppyLights[gNumLights]->room      = CMD_GET(s16, 22);
-
-    gNumLights++;
-
-#endif
     sCurrentCmd = CMD_NEXT;
 }
 
@@ -943,8 +935,7 @@ static void (*LevelScriptJumpTable[])(void) = {
     /*LEVEL_CMD_GET_OR_SET_VAR              */ level_cmd_get_or_set_var,
     /*LEVEL_CMD_PUPPYVOLUME                 */ level_cmd_puppyvolume,
     /*LEVEL_CMD_CHANGE_AREA_SKYBOX          */ level_cmd_change_area_skybox,
-    /*LEVEL_CMD_PUPPYLIGHT_ENVIRONMENT      */ level_cmd_puppylight_environment,
-    /*LEVEL_CMD_PUPPYLIGHT_NODE             */ level_cmd_puppylight_node,
+    /*LEVEL_CMD_SET_ECHO                    */ level_cmd_set_echo,
 };
 
 struct LevelCommand *level_script_execute(struct LevelCommand *cmd) {

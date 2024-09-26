@@ -97,7 +97,7 @@ SECTIONS
    BEGIN_SEG(boot, 0x04000000)
    {
       KEEP(BUILD_DIR/asm/rom_header.o(.text*));
-      KEEP(BUILD_DIR/asm/boot.o(.text*));
+      KEEP(BUILD_DIR/asm/ipl3.o(.text*));
    }
    END_SEG(boot)
 
@@ -147,8 +147,6 @@ SECTIONS
 
 /* hardcoded symbols to satisfy preliminary link for map parser */
 #ifndef DEBUG_MAP_STACKTRACE
-      parse_map               = MAP_PARSER_ADDRESS;
-      find_function_in_stack  = MAP_PARSER_ADDRESS;
       _mapDataSegmentRomStart = 0;
       gMapEntries   = 0;
       gMapEntrySize = 0;
@@ -159,22 +157,27 @@ SECTIONS
    {
       KEEP(BUILD_DIR/asm/entry.o(.text*));
       KEEP(BUILD_DIR/asm/n64_assert.o(.text*));
+#ifdef EEP
+      KEEP(BUILD_DIR/asm/vc_bin.o(.text*));
+#endif
+      KEEP(BUILD_DIR/asm/emux.o(.text*));
+      KEEP(BUILD_DIR/asm/pj64_get_count_factor_asm.o(.text*));
+      KEEP(BUILD_DIR/asm/round.o(.text*));
+      KEEP(BUILD_DIR/asm/fcr31.o(.text*));
 
       BUILD_DIR/src/boot*.o(.text*);
       BUILD_DIR/src/hvqm*.o(.text*);
       BUILD_DIR/src/usb*.o(.text*);
       BUILD_DIR/src/audio*.o(.text*);
 #ifdef S2DEX_TEXT_ENGINE
-      lib/libs2d_engine.a:*(.text*);
+      BUILD_DIR/src/s2d_engine*.o(.text*);
 #endif
-#if defined(ISVPRINT) || defined(UNF)
-      */libultra_d.a:*.o(.text*);
-#else
-      */libultra_rom.a:*.o(.text*);
+#ifdef LIBPL
+      BUILD_DIR/lib/libpl*.o(.text*);
 #endif
+      *ULTRALIB.a:*.o(.text*);
       */libnustd.a:*.o(.text*);
-      */libgcc.a:*.o(.text*);
-      */librtc.a:*.o(.text*);
+      *libgcc.a:*.o(.text*);
       */libz.a:*.o(.text*);
       */libhvqm2.a:*.o(.text*);
       lib/rspboot.o(.text*);
@@ -189,15 +192,13 @@ SECTIONS
       BUILD_DIR/src/boot*.o(.*data*);
       BUILD_DIR/src/audio*.o(.*data*);
 #ifdef S2DEX_TEXT_ENGINE
-      lib/libs2d_engine.a:*(.*data*);
+      BUILD_DIR/src/s2d_engine*.o(.*data*);
 #endif
-#if defined(ISVPRINT) || defined(UNF)
-      */libultra_d.a:*.o(.data*);
-#else
-      */libultra_rom.a:*.o(.data*);
+#ifdef LIBPL
+      BUILD_DIR/lib/libpl*.o(.*data*);
 #endif
+      *ULTRALIB.a:*.o(.data*);
       */libhvqm2.a:*.o(.data*);
-      */librtc.a:*.o(.data*);
       */libz.a:*.o(.data*);
 #include "rspdata.inc.ld"
       BUILD_DIR/lib/aspMain.o(.data*);
@@ -209,15 +210,13 @@ SECTIONS
       BUILD_DIR/src/usb*.o(.rodata*);
       BUILD_DIR/src/audio*.o(.rodata*);
 #ifdef S2DEX_TEXT_ENGINE
-      lib/libs2d_engine.a:*(.rodata*);
+      BUILD_DIR/src/s2d_engine*.o(.rodata*);
 #endif
-#if defined(ISVPRINT) || defined(UNF)
-      */libultra_d.a:*.o(.rodata*);
-#else
-      */libultra_rom.a:*.o(.rodata*);
+#ifdef LIBPL
+      BUILD_DIR/lib/libpl*.o(.rodata*);
 #endif
-      */libgcc.a:*.o(.rodata*);
-      */librtc.a:*.o(.rodata*);
+      *ULTRALIB.a:*.o(.rodata*);
+      *libgcc.a:*.o(.rodata*);
       */libz.a:*.o(.rodata*);
 
       lib/PR/hvqm/hvqm2sp1.o(.rodata*);
@@ -230,19 +229,15 @@ SECTIONS
       BUILD_DIR/src/usb*.o(.*bss*);
       BUILD_DIR/src/audio*.o(.*bss*);
 #ifdef S2DEX_TEXT_ENGINE
-      lib/libs2d_engine.a:*(.*bss*);
+      BUILD_DIR/src/s2d_engine*.o(.*bss*);
 #endif
-#if defined(ISVPRINT) || defined(UNF)
-      */libultra_d.a:*.o(COMMON);
-      */libultra_d.a:*.o(.scommon);
-      */libultra_d.a:*.o(.*bss*);
-#else
-      */libultra_rom.a:*.o(COMMON);
-      */libultra_rom.a:*.o(.scommon);
-      */libultra_rom.a:*.o(.*bss*);
+#ifdef LIBPL
+      BUILD_DIR/lib/libpl*.o(.*bss*);
 #endif
+      *ULTRALIB.a:*.o(COMMON);
+      *ULTRALIB.a:*.o(.scommon);
+      *ULTRALIB.a:*.o(.*bss*);
       */libhvqm2.a:*.o(.bss*);
-      */librtc.a:*.o(.bss*);
       */libz.a:*.o(.bss*);
       . = ALIGN(0x8);
    }

@@ -16,18 +16,13 @@ struct WarpNode {
 
 struct ObjectWarpNode {
     /*0x00*/ struct WarpNode node;
-    /*0x04*/ struct Object *object;
-    /*0x08*/ struct ObjectWarpNode *next;
+    /*0x04*/ struct ObjectWarpNode *next;
 };
-
-// From Surface 0x1B to 0x1E
-#define INSTANT_WARP_INDEX_START  0x00 // Equal and greater than Surface 0x1B
-#define INSTANT_WARP_INDEX_STOP   0x04 // Less than Surface 0x1F
 
 struct InstantWarp {
     /*0x00*/ u8 id; // 0 = 0x1B / 1 = 0x1C / 2 = 0x1D / 3 = 0x1E
     /*0x01*/ u8 area;
-    /*0x02*/ Vec3s displacement;
+    /*0x04*/ Vec3f displacement;
 };
 
 struct SpawnInfo {
@@ -77,6 +72,11 @@ struct Area {
     /*0x34*/ u8 dialog[2]; // Level start dialog number (set by level script cmd 0x30)
     /*0x36*/ u16 musicParam;
     /*0x38*/ u16 musicParam2;
+    /*0x3A*/ u8 useEchoOverride; // Should area echo be overridden using echoOverride?
+    /*0x3B*/ s8 echoOverride; // Value used to override the area echo values defined in level_defines.h
+#ifdef BETTER_REVERB
+    /*0x3C*/ u8 betterReverbPreset;
+#endif
 };
 
 // All the transition data to be used in screen_transition.c
@@ -92,7 +92,7 @@ struct WarpTransitionData {
     /*0x0C*/ s16 endTexX;
     /*0x0E*/ s16 endTexY;
 
-    /*0x10*/ s16 texTimer; // always 0, does seems to affect transition when disabled
+    /*0x10*/ s16 angleSpeed;
 };
 
 enum WarpTransitionFadeDirections {
@@ -184,6 +184,7 @@ void override_viewport_and_clip(Vp *a, Vp *b, u8 c, u8 d, u8 e);
 void print_intro_text(void);
 u32 get_mario_spawn_type(struct Object *obj);
 struct ObjectWarpNode *area_get_warp_node(u8 id);
+struct Object *get_destination_warp_object(u8 warpDestId);
 void clear_areas(void);
 void clear_area_graph_nodes(void);
 void load_area(s32 index);

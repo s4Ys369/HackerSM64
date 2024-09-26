@@ -64,30 +64,14 @@ s32 check_fall_damage(struct MarioState *m, u32 hardFallAction) {
 #ifdef NO_FALL_DAMAGE
     return FALSE;
 #endif
-    f32 fallHeight;
-    f32 damageHeight;
 
-    fallHeight = m->peakHeight - m->pos[1];
+    f32 fallHeight = m->peakHeight - m->pos[1];
 
-#pragma GCC diagnostic push
-#if defined(__clang__)
-#pragma GCC diagnostic ignored "-Wtautological-constant-out-of-range-compare"
-#elif defined(__GNUC__)
-#pragma GCC diagnostic ignored "-Wtype-limits"
-#endif
-
-    //! Never true
-    if (m->actionState == ACT_GROUND_POUND) {
-        damageHeight = 600.0f;
-    } else {
-        damageHeight = 1150.0f;
-    }
-
-#pragma GCC diagnostic pop
+    f32 damageHeight = FALL_DAMAGE_HEIGHT_SMALL;
 
     if (m->action != ACT_TWIRLING && m->floor->type != SURFACE_BURNING) {
         if (m->vel[1] < -55.0f) {
-            if (fallHeight > 3000.0f) {
+            if (fallHeight > FALL_DAMAGE_HEIGHT_LARGE) {
                 m->hurtCounter += (m->flags & MARIO_CAP_ON_HEAD) ? 16 : 24;
 #if ENABLE_RUMBLE
                 queue_rumble_data(5, 80);
@@ -117,11 +101,12 @@ s32 check_kick_or_dive_in_air(struct MarioState *m) {
     return FALSE;
 }
 
-s32 should_get_stuck_in_ground(struct MarioState *m) {
 #ifdef NO_GETTING_BURIED
+s32 should_get_stuck_in_ground(UNUSED struct MarioState *m) {
     return FALSE;
+}
 #else
-
+s32 should_get_stuck_in_ground(struct MarioState *m) {
     u32 terrainType = m->area->terrainType & TERRAIN_MASK;
     struct Surface *floor = m->floor;
     s32 flags = floor->flags;
@@ -135,8 +120,8 @@ s32 should_get_stuck_in_ground(struct MarioState *m) {
     }
 
     return FALSE;
-#endif
 }
+#endif
 
 s32 check_fall_damage_or_get_stuck(struct MarioState *m, u32 hardFallAction) {
     if (should_get_stuck_in_ground(m)) {
@@ -445,15 +430,6 @@ u32 common_air_action_step(struct MarioState *m, u32 landAction, s32 animation, 
 }
 
 s32 act_jump(struct MarioState *m) {
-#ifdef EASIER_LONG_JUMPS
-    if (m->actionTimer < 1) {
-        m->actionTimer++;
-        if (m->input & INPUT_Z_PRESSED && m->forwardVel > 10.0f) {
-            return set_jumping_action(m, ACT_LONG_JUMP, 0);
-        }
-    }
-#endif
-
     if (check_kick_or_dive_in_air(m)) {
         return TRUE;
     }
@@ -1455,7 +1431,7 @@ s32 act_air_hit_wall(struct MarioState *m) {
         mario_drop_held_object(m);
     }
 
-    if (++(m->actionTimer) <= FIRSTY_LAST_FRAME) {
+    if (++(m->actionTimer) <= 2) {
         if (m->input & INPUT_A_PRESSED) {
             m->vel[1] = 52.0f;
             m->faceAngle[1] += 0x8000;
@@ -1481,12 +1457,9 @@ s32 act_air_hit_wall(struct MarioState *m) {
         return set_mario_action(m, ACT_SOFT_BONK, 0);
     }
 
-#if FIRSTY_LAST_FRAME > 1
     set_mario_animation(m, MARIO_ANIM_START_WALLKICK);
-    m->marioObj->header.gfx.angle[1] = m->wallYaw;
-#endif
 
-    return FALSE;
+    return TRUE;
 }
 
 s32 act_forward_rollout(struct MarioState *m) {
