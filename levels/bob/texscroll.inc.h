@@ -1,0 +1,12 @@
+extern void scroll_bob_dl_Cylinder_002_mesh_layer_1_vtx_1();
+extern void scroll_bob_dl_Cylinder_003_mesh_layer_1_vtx_1();
+extern void scroll_bob_dl_Cylinder_004_mesh_layer_1_vtx_1();
+extern void scroll_bob_dl_Cylinder_005_mesh_layer_1_vtx_1();
+extern void scroll_bob_dl_Cylinder_006_mesh_layer_1_vtx_1();
+extern void scroll_bob_dl_Cylinder_007_mesh_layer_1_vtx_1();
+extern void scroll_bob_dl_Cylinder_008_mesh_layer_1_vtx_1();
+extern void scroll_bob_dl_Cylinder_013_mesh_layer_1_vtx_1();
+extern void scroll_bob_dl_Cylinder_014_mesh_layer_1_vtx_1();
+extern void scroll_bob_dl_Cylinder_015_mesh_layer_1_vtx_1();
+extern void scroll_bob_dl_Plane_mesh_layer_1_vtx_0();
+extern void scroll_bob();

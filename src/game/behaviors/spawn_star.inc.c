@@ -141,6 +141,7 @@ void spawn_red_coin_cutscene_star(f32 x, f32 y, f32 z) {
     struct Object *starObj = NULL;
     starObj = spawn_star(starObj, x, y, z);
     starObj->oBehParams2ndByte = SPAWN_STAR_ARC_CUTSCENE_BP_HIDDEN_STAR;
+    starObj->oInteractionSubtype |= INT_SUBTYPE_NO_EXIT;
 }
 
 void spawn_no_exit_star(f32 x, f32 y, f32 z) {

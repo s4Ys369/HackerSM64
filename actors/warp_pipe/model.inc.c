@@ -190,7 +190,7 @@ static const Vtx warp_pipe_seg3_vertex_03009128[] = {
 
 // 0x03009168
 ALIGNED8 static const Texture warp_pipe_seg3_texture_03009168[] = {
-#include "actors/warp_pipe/warp_pipe_top.rgba16.inc.c"
+#include "actors/warp_pipe/custom_warp_pipe_top.rgba16.inc.c"
 };
 
 // 0x03009968 - 0x03009A20
