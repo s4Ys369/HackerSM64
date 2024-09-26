@@ -36,8 +36,10 @@ const LevelScript level_sa_entry[] = {
     LOAD_RAW(         /*seg*/ 0x0C, _group4_geoSegmentRomStart,  _group4_geoSegmentRomEnd),
     LOAD_YAY0(        /*seg*/ 0x06, _group13_yay0SegmentRomStart, _group13_yay0SegmentRomEnd),
     LOAD_RAW(         /*seg*/ 0x0D, _group13_geoSegmentRomStart,  _group13_geoSegmentRomEnd),
+    LOAD_YAY0(        /*seg*/ 0x08, _common0_yay0SegmentRomStart, _common0_yay0SegmentRomEnd),
+    LOAD_RAW(         /*seg*/ 0x0F, _common0_geoSegmentRomStart,  _common0_geoSegmentRomEnd),
     ALLOC_LEVEL_POOL(),
-    MARIO(/*model*/ MODEL_MARIO, /*behParam*/ 0x00000001, /*beh*/ bhvMario),
+    MARIO(/*model*/ MODEL_MARIO_SHELL, /*behParam*/ 0x00000001, /*beh*/ bhvMario),
     JUMP_LINK(script_func_global_5),
     JUMP_LINK(script_func_global_14),
 

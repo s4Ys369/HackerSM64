@@ -1265,33 +1265,35 @@ void update_mario_button_inputs(struct MarioState *m) {
 }
 
     if (m->controller->buttonPressed & L_TRIG){
-        if (m->action & ACT_FLAG_RIDING_SHELL)
-            {
+        if (m->action & ACT_FLAG_RIDING_SHELL){
                 dismount_shell(m);
                 m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_MARIO_SHELL];
-            }
+                return;
+        }
         // Switching underwater might be jank, but seems functional
-        if (m->action & ACT_FLAG_SWIMMING)
-            {
-                if (m->action != ACT_WATER_SHELL_SWIMMING) {
-                    m->usedObj = spawn_object(m->marioObj, MODEL_KOOPA_SHELL, bhvKoopaShellUnderwater);
-                    mario_grab_used_object(m);
-                    m->marioBodyState->grabPos = GRAB_POS_LIGHT_OBJ;
-                    set_mario_action(m, ACT_WATER_SHELL_SWIMMING, (u32)(s32)m->forwardVel);
-                    m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_MARIO];
-                } else {
-                    dismount_shell(m);
-                    set_mario_action(m, ACT_BREASTSTROKE, (u32)(s32)m->forwardVel);
-                    m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_MARIO_SHELL];
-                }
-            }    
-        else if ((m->action == ACT_WALKING) || (m->action == ACT_IDLE) || (m->action == ACT_JUMP)) {
-        struct Object* shellObj = spawn_object_with_scale(m->marioObj, MODEL_KOOPA_SHELL, bhvKoopaShell, 1);
-        set_mario_action(m, ACT_RIDING_SHELL_GROUND, 0);
-        shellObj->oInteractStatus |= INT_STATUS_INTERACTED;
-        shellObj->oAction = 1;
-        m->riddenObj = shellObj;
-        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_MARIO];
+        if (m->action & ACT_FLAG_SWIMMING) {
+            if (m->action != ACT_WATER_SHELL_SWIMMING) {
+                m->usedObj = spawn_object(m->marioObj, MODEL_KOOPA_SHELL, bhvKoopaShellUnderwater);
+                mario_grab_used_object(m);
+                m->marioBodyState->grabPos = GRAB_POS_LIGHT_OBJ;
+                set_mario_action(m, ACT_WATER_SHELL_SWIMMING, (u32)(s32)m->forwardVel);
+                m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_MARIO];
+            } else {
+                dismount_shell(m);
+                set_mario_action(m, ACT_BREASTSTROKE, (u32)(s32)m->forwardVel);
+                m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_MARIO_SHELL];
+            }  
+        } else if ((m->action == ACT_WALKING) || 
+                (m->action == ACT_IDLE) || 
+                (m->action == ACT_JUMP) || 
+                (m->action == ACT_WALL_KICK_AIR) || 
+                (m->action == ACT_FREEFALL)) {
+            struct Object* shellObj = spawn_object_with_scale(m->marioObj, MODEL_KOOPA_SHELL, bhvKoopaShell, 1);
+            set_mario_action(m, ACT_RIDING_SHELL_GROUND, 0);
+            shellObj->oInteractStatus |= INT_STATUS_INTERACTED;
+            shellObj->oAction = 1;
+            m->riddenObj = shellObj;
+            m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_MARIO];
         }
 
     }

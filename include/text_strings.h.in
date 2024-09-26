@@ -192,7 +192,7 @@
  */
 // Main Screens
 #define TEXT_MARIO _("KOOP") // View Score Menu
-#define TEXT_SELECT_FILE _("S4YS 2022")
+#define TEXT_SELECT_FILE _("S4YS 2024")
 #define TEXT_CHECK_FILE _("CHECK FILE")
 #define TEXT_COPY_FILE _("COPY FILE")
 #define TEXT_ERASE_FILE _("ERASE FILE")

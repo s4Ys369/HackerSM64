@@ -3298,21 +3298,9 @@ static const Gfx intro_seg7_dl_0700ADC0[] = {
 };
 
 // 0x0700B3A0 - 0x0700B420
-Lights1 logo_kgs1_lights = gdSPDefLights1(
-    0x7F, 0x7F, 0x7F,
-    0xFE, 0xFE, 0xFE, 0x28, 0x28, 0x28);
 
-Lights1 logo_kgs3_lights = gdSPDefLights1(
-    0x7F, 0x7F, 0x7F,
-    0xFE, 0xFE, 0xFE, 0x28, 0x28, 0x28);
 
-Lights1 logo_kgs0_lights = gdSPDefLights1(
-    0x7F, 0x7F, 0x7F,
-    0xFE, 0xFE, 0xFE, 0x28, 0x28, 0x28);
 
-Lights1 logo_kgs2_lights = gdSPDefLights1(
-    0x7F, 0x7F, 0x7F,
-    0xFE, 0xFE, 0xFE, 0x28, 0x28, 0x28);
 
 Gfx logo_kgs1_ci4_aligner[] = {gsSPEndDisplayList()};
 u8 logo_kgs1_ci4[] = {
@@ -3814,7 +3802,8 @@ Gfx mat_logo_kgs1[] = {
     gsDPPipeSync(),
     gsDPSetTile(G_IM_FMT_CI, G_IM_SIZ_4b, 2, 0, 0, 0, G_TX_CLAMP | G_TX_NOMIRROR, 5, 0, G_TX_CLAMP | G_TX_NOMIRROR, 5, 0),
     gsDPSetTileSize(0, 0, 0, 124, 124),
-    gsSPSetLights1(logo_kgs1_lights),
+    gsSPLightColor(LIGHT_1, 0xfefefeff),
+    gsSPLightColor(LIGHT_2, 0x7f7f7fff),
     gsSPEndDisplayList(),
 };
 
@@ -3836,7 +3825,8 @@ Gfx mat_logo_kgs3[] = {
     gsDPPipeSync(),
     gsDPSetTile(G_IM_FMT_I, G_IM_SIZ_8b, 4, 0, 0, 0, G_TX_CLAMP | G_TX_NOMIRROR, 5, 0, G_TX_CLAMP | G_TX_NOMIRROR, 5, 0),
     gsDPSetTileSize(0, 0, 0, 124, 124),
-    gsSPSetLights1(logo_kgs3_lights),
+    gsSPLightColor(LIGHT_1, 0xfefefeff),
+    gsSPLightColor(LIGHT_2, 0x7f7f7fff),
     gsSPEndDisplayList(),
 };
 
@@ -3859,7 +3849,8 @@ Gfx mat_logo_kgs0[] = {
     gsDPPipeSync(),
     gsDPSetTile(G_IM_FMT_CI, G_IM_SIZ_4b, 2, 0, 0, 0, G_TX_CLAMP | G_TX_NOMIRROR, 5, 0, G_TX_CLAMP | G_TX_NOMIRROR, 5, 0),
     gsDPSetTileSize(0, 0, 0, 124, 124),
-    gsSPSetLights1(logo_kgs0_lights),
+    gsSPLightColor(LIGHT_1, 0xfefefeff),
+    gsSPLightColor(LIGHT_2, 0x7f7f7fff),
     gsSPEndDisplayList(),
 };
 
@@ -3881,7 +3872,8 @@ Gfx mat_logo_kgs2[] = {
     gsDPPipeSync(),
     gsDPSetTile(G_IM_FMT_I, G_IM_SIZ_8b, 4, 0, 0, 0, G_TX_CLAMP | G_TX_NOMIRROR, 5, 0, G_TX_CLAMP | G_TX_NOMIRROR, 5, 0),
     gsDPSetTileSize(0, 0, 0, 124, 124),
-    gsSPSetLights1(logo_kgs2_lights),
+    gsSPLightColor(LIGHT_1, 0xfefefeff),
+    gsSPLightColor(LIGHT_2, 0x7f7f7fff),
     gsSPEndDisplayList(),
 };
 
