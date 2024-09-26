@@ -32,20 +32,19 @@ struct Config {
     u8 tvType;
 };
 
-struct Controller {
-  /*0x00*/ s16 rawStickX;       //
-  /*0x02*/ s16 rawStickY;       //
-  /*0x04*/ f32 stickX;          // [-64, 64] positive is right
-  /*0x08*/ f32 stickY;          // [-64, 64] positive is up
-  /*0x0C*/ f32 stickMag;        // distance from center [0, 64]
-  /*0x10*/ u16 buttonDown;
-  /*0x12*/ u16 buttonPressed;
-  /*0x14*/ OSContStatus *statusData;
-  /*0x18*/ OSContPad *controllerData;
-#if ENABLE_RUMBLE
-  /*0x1C*/ s32 port;
-#endif
-};
+typedef struct Controller {
+    /*0x00*/ s16 rawStickX;               // Analog stick [-128, 128] positive is right. Used for menus.
+    /*0x02*/ s16 rawStickY;               // Analog stick [-128, 128] positive is up. Used for menus.
+    /*0x04*/ f32 stickX;                  // Analog stick [-64, 64] positive is right. Used for gameplay.
+    /*0x08*/ f32 stickY;                  // Analog stick [-64, 64] positive is up. Used for gameplay.
+    /*0x0C*/ f32 stickMag;                // Analog stick distance from center [0, 64]. Used for gameplay.
+    /*0x10*/ u16 buttonDown;              // Buttons held down on the current frame.
+    /*0x12*/ u16 buttonPressed;           // Buttons pressed on the current frame but not held on the previous frame.
+    /*0x14*/ u16 buttonReleased;          // Burrons released on the current frame and held on the previous frame.
+    /*0x18*/ OSContStatus* statusData;    // Pointer to the controller status data in gControllerStatuses.
+    /*0x1C*/ OSContPadEx* controllerData; // Pointer to the raw input data in gControllerPads.
+    /*0x20*/ s32 port;                    // The port index this controller is plugged into [0, 3].
+} Controller; /*0x24*/
 
 // -- Booleans --
 
@@ -98,21 +97,12 @@ typedef s8  ObjAction8;
 typedef s32 ObjAction32;
 typedef s16 ColFlags;
 
-// -- Angle --
-typedef s16 Angle;
-typedef u16 UAngle;
-typedef s32 Angle32;
-typedef Angle Vec3a[3];
-
 // -- Collision --
 typedef ROOM_DATA_TYPE RoomData;
 typedef COLLISION_DATA_TYPE Collision; // Collision is by default an s16, but it's best to have it match the type of COLLISION_DATA_TYPE
 typedef Collision TerrainData;
 typedef Collision Vec3t[3];
 typedef Collision SurfaceType;
-
-typedef f32       Normal;
-typedef Normal    Vec3n[3];
 
 // -- Colors/Textures --
 
@@ -258,9 +248,6 @@ struct GraphNodeObject {
     /*0x4C*/ struct SpawnInfo *spawnInfo;
     /*0x50*/ Mat4 *throwMatrix; // matrix ptr
     /*0x54*/ Vec3f cameraToObject;
-#ifdef OBJECTS_REJ
-    u16 ucode;
-#endif
 };
 
 struct ObjectNode {
@@ -269,27 +256,9 @@ struct ObjectNode {
     struct ObjectNode *prev;
 };
 
-#ifdef PUPPYLIGHTS
-struct PuppyLight {
-    Vec3t pos[2];   // The location of the light. First index is the absolute position, second index are offsets.
-    s16 yaw;        // Used by cubes. Allows epic rotating of the volume.
-    RoomData room;  // Which room to use. -1 is visible from all rooms.
-    s8 epicentre;   // What percentage inside the volume you'll be before maximum light strength is applied. (E.g: 100 will be full strength always, and 0 will be full strength at the centre.)
-    u8 flags;       // Some stuff to define how the volume is used. Mostly just shape stuff, but can potentially have other uses.
-    ColorRGBA rgba; // Colour. Go on, take even the tiniest guess as to what this entails.
-    u8 area;        // Which section of the level this light is stored in.
-    u8 active: 1;   // Whether the light will actually work. Mostly intended to be used for objects.
-};
-#endif
-
 // NOTE: Since ObjectNode is the first member of Object, it is difficult to determine
 // whether some of these pointers point to ObjectNode or Object.
-
-#ifdef PUPPYLIGHTS
-#define MAX_OBJECT_FIELDS 0x51
-#else
 #define MAX_OBJECT_FIELDS 0x50
-#endif
 
 struct Object {
     /*0x000*/ struct ObjectNode header;
@@ -348,9 +317,6 @@ struct Object {
     /*0x218*/ void *collisionData;
     /*0x21C*/ Mat4 transform;
     /*0x25C*/ void *respawnInfo;
-#ifdef PUPPYLIGHTS
-    struct PuppyLight puppylight;
-#endif
 };
 
 struct ObjectHitbox {
@@ -489,10 +455,10 @@ struct MarioState {
            Vec3f prevPos;
              f32 lateralSpeed;
              f32 moveSpeed;
-           Angle movePitch;
-           Angle moveYaw;
-           Angle ceilYaw;
-           Angle wallYaw;
+             s16 movePitch;
+             s16 moveYaw;
+             s16 ceilYaw;
+             s16 wallYaw;
     // -- HackerSM64 MarioState fields end --
 };
 
