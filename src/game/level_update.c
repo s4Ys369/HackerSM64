@@ -178,6 +178,10 @@ u32 pressed_pause(void) {
     u32 dialogActive = get_dialog_id() >= 0;
     u32 intangible = (gMarioState->action & ACT_FLAG_INTANGIBLE) != 0;
 
+    if (gCurrLevelNum == LEVEL_TUTORIAL && gMarioState->numStars == 0) {
+        return FALSE;  // Disable pause in the tutorial with 0 stars
+    }
+
 #ifdef PUPPYPRINT_DEBUG
 #ifdef BETTER_REVERB
     if (sPPDebugPage == PUPPYPRINT_PAGE_RAM || sPPDebugPage == PUPPYPRINT_PAGE_LEVEL_SELECT || sPPDebugPage == PUPPYPRINT_PAGE_BETTER_REVERB) {
@@ -190,6 +194,7 @@ u32 pressed_pause(void) {
 
     if (!intangible && !dialogActive && !gWarpTransition.isActive && sDelayedWarpOp == WARP_OP_NONE
         && (gPlayer1Controller->buttonPressed & START_BUTTON)) {
+        
         return TRUE;
     }
 

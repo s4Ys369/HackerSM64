@@ -5,7 +5,7 @@ include util.mk
 # Default target
 default: all
 
-TARGET_STRING := koop64
+TARGET_STRING := koop64_ve_v1
 
 # Preprocessor definitions
 DEFINES :=
