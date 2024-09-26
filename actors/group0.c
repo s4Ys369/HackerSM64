@@ -27,6 +27,8 @@
 #include "sparkle_animation/model.inc.c"
 
 #ifdef S2DEX_TEXT_ENGINE
-#include "src/s2d_engine/s2d_config.h"
+#include "src/s2d_engine/config.h"
 #include FONT_C_FILE
 #endif
+
+#include "mario_shell/model.inc.c"

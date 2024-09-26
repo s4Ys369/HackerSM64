@@ -2,22 +2,7 @@
 import sys
 import os
 import json
-import subprocess
 
-from tools.detect_baseroms import get_rom_candidates
-
-envmap_table = set([
-    "actors/mario/mario_metal.rgba16.png",
-    "actors/mario_cap/mario_cap_metal.rgba16.png",
-    "actors/star/star_surface.rgba16.png",
-    "actors/water_bubble/water_bubble.rgba16.png",
-    "actors/water_ring/water_ring.rgba16.png",
-    "levels/castle_inside/29.rgba16.png",
-    "levels/castle_inside/30.rgba16.png",
-    "levels/hmc/7.rgba16.png",
-    "levels/castle_inside/16.ia16.png",
-    "levels/cotmc/2.rgba16.png"
-])
 
 def read_asset_map():
     with open("assets.json") as f:
@@ -33,9 +18,8 @@ def read_local_asset_list(f):
         ret.append(line.strip())
     return ret
 
+
 def asset_needs_update(asset, version):
-    if version <= 7 and asset in envmap_table:
-        return True
     if version <= 6 and asset in ["actors/king_bobomb/king_bob-omb_eyes.rgba16.png", "actors/king_bobomb/king_bob-omb_hand.rgba16.png"]:
         return True
     if version <= 5 and asset == "textures/spooky/bbh_textures.00800.rgba16.png":
@@ -77,7 +61,7 @@ def clean_assets(local_asset_file):
 def main():
     # In case we ever need to change formats of generated files, we keep a
     # revision ID in the local asset file.
-    new_version = 8
+    new_version = 7
 
     try:
         local_asset_file = open(".assets-local.txt")
@@ -91,6 +75,13 @@ def main():
     if langs == ["--clean"]:
         clean_assets(local_asset_file)
         sys.exit(0)
+
+    all_langs = ["jp", "us", "eu", "sh"]
+    if not langs or not all(a in all_langs for a in langs):
+        langs_str = " ".join("[" + lang + "]" for lang in all_langs)
+        print("Usage: " + sys.argv[0] + " " + langs_str)
+        print("For each version, baserom.<version>.z64 must exist")
+        sys.exit(1)
 
     asset_map = read_asset_map()
     all_assets = []
@@ -110,30 +101,8 @@ def main():
         # the list of old assets either.
         return
 
-    romLUT = get_rom_candidates()
-
-
-    # verify the correct rom
-    for lang in langs:
-        if lang not in romLUT:
-            print("[%s] Error: No %s ROM detected in this folder."
-                % (sys.argv[0], lang.upper())
-            )
-            if len(romLUT.items()) > 0:
-                print()
-                print("Detected ROMS:")
-            for k,v in romLUT.items():
-                print("    %s ROM found at: %s" % (k.upper(), v))
-            sys.exit(1)
-
-    all_langs = ["jp", "us", "eu", "sh"]
-    if not langs or not all(a in all_langs for a in langs):
-        langs_str = " ".join("[" + lang + "]" for lang in all_langs)
-        print("Usage: " + sys.argv[0] + " " + langs_str)
-        print("For each version, its ROM file must exist in this folder")
-        sys.exit(1)
-
     # Late imports (to optimize startup perf)
+    import subprocess
     import hashlib
     import tempfile
     from collections import defaultdict
@@ -150,7 +119,7 @@ def main():
     todo = defaultdict(lambda: [])
     for (asset, data, exists) in all_assets:
         # Leave existing assets alone if they have a compatible version.
-        if exists and not (local_version == new_version or asset_needs_update(asset, local_version)):
+        if exists and not asset_needs_update(asset, local_version):
             continue
 
         meta = data[:-2]
@@ -165,27 +134,30 @@ def main():
     # Load ROMs
     roms = {}
     for lang in langs:
-        romname = romLUT[lang]
+        fname = "baserom." + lang + ".z64"
         try:
-            with open(romname, "rb") as f:
+            with open(fname, "rb") as f:
                 roms[lang] = f.read()
         except Exception as e:
-            print("Failed to open " + romname + "! " + str(e))
+            print("Failed to open " + fname + "! " + str(e))
             sys.exit(1)
-        # There used to be an SHA1 check here,
-        # but it's unnecessary since we detect the
-        # presence of the correct roms automatically
+        sha1 = hashlib.sha1(roms[lang]).hexdigest()
+        with open("sm64." + lang + ".sha1", "r") as f:
+            expected_sha1 = f.read().split()[0]
+        if sha1 != expected_sha1:
+            print(
+                fname
+                + " has the wrong hash! Found "
+                + sha1
+                + ", expected "
+                + expected_sha1
+            )
+            sys.exit(1)
 
     # Make sure tools exist
-    tools = [ "n64graphics", "skyconv", "mio0", "aifc_decode" ]
-    if os.name == 'nt':
-        tools = [tool + ".exe" for tool in tools]
-        make = "mingw32-make"
-    else:
-        make = "make"
-
-    cmd = [make, "-s", "-C", "tools/"] + tools
-    subprocess.check_call(cmd)
+    subprocess.check_call(
+        ["make", "-s", "-C", "tools/", "n64graphics", "skyconv", "mio0", "aifc_decode"]
+    )
 
     # Go through the assets in roughly alphabetical order (but assets in the same
     # mio0 file still go together).
@@ -193,16 +165,14 @@ def main():
 
     # Import new assets
     for key in keys:
-
         assets = todo[key]
         lang, mio0 = key
-        romname = romLUT[lang]
         if mio0 == "@sound":
             rom = roms[lang]
             args = [
                 "python3",
                 "tools/disassemble_sound.py",
-                romname,
+                "baserom." + lang + ".z64",
             ]
             def append_args(key):
                 size, locs = asset_map["@sound " + key + " " + lang]
@@ -229,7 +199,7 @@ def main():
                     "-d",
                     "-o",
                     str(mio0),
-                    romname,
+                    "baserom." + lang + ".z64",
                     "-",
                 ],
                 check=True,
@@ -265,9 +235,6 @@ def main():
                             check=True,
                         )
                     else:
-                        rotate_envmap = "false"
-                        if asset in envmap_table:
-                            rotate_envmap = "true"
                         w, h = meta
                         fmt = asset.split(".")[-2]
                         subprocess.run(
@@ -283,8 +250,6 @@ def main():
                                 str(w),
                                 "-h",
                                 str(h),
-                                "-r",
-                                rotate_envmap,
                             ],
                             check=True,
                         )
