@@ -85,6 +85,7 @@ s32 act_hold_freefall_land_stop(struct MarioState *m);
 s32 act_air_throw_land(struct MarioState *m);
 s32 act_twirl_land(struct MarioState *m);
 s32 act_ground_pound_land(struct MarioState *m);
+s32 act_shell_pound_land(struct MarioState *m);
 s32 act_first_person(struct MarioState *m);
 s32 check_common_stationary_cancels(struct MarioState *m);
 s32 mario_execute_stationary_action(struct MarioState *m);

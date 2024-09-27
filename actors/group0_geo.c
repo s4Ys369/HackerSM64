@@ -19,3 +19,4 @@
 
 #include "FLUDD/geo.inc.c"
 #include "hover_jet/geo.inc.c"
+#include "mario_shell/geo.inc.c"

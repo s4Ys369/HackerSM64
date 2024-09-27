@@ -228,6 +228,11 @@ static void update_swimming_speed(struct MarioState *m, f32 decelThreshold) {
     f32 buoyancy = get_buoyancy(m);
     f32 maxSpeed = 28.0f;
 
+    //if mario is using a shell he can go much faster
+    if (m->heldObj) {
+        maxSpeed = 130.0f;
+    }
+
     if (m->action & ACT_FLAG_STATIONARY) {
         m->forwardVel -= 2.0f;
     }
@@ -487,17 +492,30 @@ static void play_swimming_noise(struct MarioState *m) {
 
 static s32 check_water_jump(struct MarioState *m) {
     s32 probe = (s32)(m->pos[1] + 1.5f);
-
-    if (m->input & INPUT_A_PRESSED) {
+    
+    if (m->input & INPUT_A_PRESSED || m->action == ACT_WATER_SHELL_SWIMMING) {
         if (probe >= m->waterLevel - 80 && m->faceAngle[0] >= 0 && m->controller->stickY < -60.0f) {
-            vec3_zero(m->angleVel);
+            vec3s_set(m->angleVel, 0, 0, 0);
 
             m->vel[1] = 62.0f;
 
             if (m->heldObj == NULL) {
                 return set_mario_action(m, ACT_WATER_JUMP, 0);
             } else {
-                return set_mario_action(m, ACT_HOLD_WATER_JUMP, 0);
+                //mario is doing a water dash and going WAY too fast. cut his speed a bit
+                if (m->actionState == 5) {
+                    m->forwardVel *= 0.6f;
+                    if (m->forwardVel < 40.0f) {
+                        m->forwardVel = 40.0f;
+                    }
+                }
+                if (m->forwardVel > 50.0f) {
+                    m->forwardVel = 50.0f;
+                }
+                m->actionState = 4;
+                play_sound(SOUND_ACTION_WATER_PLUNGE, m->marioObj->header.gfx.cameraToObject);
+                m->particleFlags |= PARTICLE_WATER_SPLASH;
+                return set_mario_action(m, ACT_HOLD_WATER_JUMP, 4);
             }
         }
     }
@@ -742,26 +760,74 @@ static s32 act_hold_flutter_kick(struct MarioState *m) {
 }
 
 static s32 act_water_shell_swimming(struct MarioState *m) {
+
+    //transfer forward velocity when entering water
+    if (((s32)m->actionArg > 0)) {
+        m->forwardVel = ((s32)m->actionArg);
+        m->actionArg = 0;
+    }
+
+    if (!m->heldObj) {
+        m->usedObj = spawn_object(m->marioObj, MODEL_KOOPA_SHELL, bhvKoopaShellUnderwater);
+        m->usedObj->oFlags |= OBJ_FLAG_HOLDABLE;
+        mario_grab_used_object(m);
+        m->marioBodyState->grabPos = GRAB_POS_LIGHT_OBJ;
+    }
+
+    m->actionTimer += 1;
+
+
     if (m->marioObj->oInteractStatus & INT_STATUS_MARIO_DROP_OBJECT) {
         return drop_and_set_mario_action(m, ACT_WATER_IDLE, 0);
     }
 
-    if (m->input & INPUT_B_PRESSED) {
-        return set_mario_action(m, ACT_WATER_THROW, 0);
+    //underwater shell dash
+    if (m->input & INPUT_B_PRESSED && m->actionState != 5) {
+        //return set_mario_action(m, ACT_WATER_THROW, 0);
+        m->particleFlags |= PARTICLE_VERTICAL_STAR;
+        play_sound(SOUND_OBJ_WATER_BOMB_CANNON, m->marioObj->header.gfx.cameraToObject);
+        m->actionState = 5;
+        m->forwardVel *= 2;
     }
 
+    //water shell timer is really stupid tbh
+/*
     if (m->actionTimer++ == 240) {
         m->heldObj->oInteractStatus = INT_STATUS_STOP_RIDING;
         m->heldObj = NULL;
         stop_shell_music();
         set_mario_action(m, ACT_FLUTTER_KICK, 0);
     }
+    */
 
-    m->forwardVel = approach_f32(m->forwardVel, 30.0f, 2.0f, 1.0f);
+   
+
+   if (m->forwardVel <= 40.0f) {
+       if (m->actionState == 5) {
+           m->actionState = 0;
+       }
+    //braking
+   if (m->input & INPUT_Z_DOWN) {
+        m->forwardVel = approach_f32(m->forwardVel, 0.0f, 2.0f, 0.2f);
+   }
+   //normal speed
+   else {
+       m->forwardVel = approach_f32(m->forwardVel, 40.0f, 2.0f, 1.0f);
+   }
+    }
+    //if dashing, approach the normal speed faster
+    else {
+        m->forwardVel = approach_f32(m->forwardVel, 40.0f, 2.0f, 1.0f);
+        //m->marioObj->header.gfx.angle[2] += 0x2000;
+    }
 
     play_swimming_noise(m);
     set_mario_animation(m, MARIO_ANIM_FLUTTERKICK_WITH_OBJ);
-    common_swimming_step(m, 300);
+    //check to see if mario wants to do the spin jump out of the water
+    if (m->actionTimer > 5) {
+    check_water_jump(m);  
+    }
+    common_swimming_step(m, 0x012C);
 
     return FALSE;
 }
@@ -886,7 +952,7 @@ static s32 act_forward_water_kb(struct MarioState *m) {
 }
 
 static s32 act_water_shocked(struct MarioState *m) {
-    play_sound_if_no_flag(m, SOUND_MARIO_WAAAOOOW, MARIO_ACTION_SOUND_PLAYED);
+    play_sound_if_no_flag(m, SOUND_OBJ_KOOPA_FLYGUY_DEATH, MARIO_ACTION_SOUND_PLAYED);
     play_sound(SOUND_MOVING_SHOCKED, m->marioObj->header.gfx.cameraToObject);
     set_camera_shake_from_hit(SHAKE_SHOCK);
 
@@ -925,7 +991,7 @@ static s32 act_drowning(struct MarioState *m) {
             break;
     }
 
-    play_sound_if_no_flag(m, SOUND_MARIO_DROWNING, MARIO_ACTION_SOUND_PLAYED);
+    play_sound_if_no_flag(m, SOUND_OBJ_KOOPA_FLYGUY_DEATH, MARIO_ACTION_SOUND_PLAYED);
     stationary_slow_down(m);
     perform_water_step(m);
 
@@ -972,7 +1038,7 @@ static s32 act_water_plunge(struct MarioState *m) {
     if (m->actionState == ACT_STATE_WATER_PLUNGE_FALL) {
         play_sound(SOUND_ACTION_WATER_PLUNGE, m->marioObj->header.gfx.cameraToObject);
         if (m->peakHeight - m->pos[1] > FALL_DAMAGE_HEIGHT_SMALL) {
-            play_sound(SOUND_MARIO_HAHA_WATER, m->marioObj->header.gfx.cameraToObject);
+            play_sound(SOUND_OBJ_KOOPA_TALK, m->marioObj->header.gfx.cameraToObject);
         }
 
         m->particleFlags |= PARTICLE_WATER_SPLASH;
@@ -1497,19 +1563,41 @@ static s32 check_common_submerged_cancels(struct MarioState *m) {
         if (waterHeight > m->floorHeight) {
             if (m->pos[1] - waterHeight < 50) {
                 m->pos[1] = waterHeight; // lock mario to top if the falloff isn't big enough
-            } else {
+            } 
+            else if (m->action == ACT_WATER_SHELL_SWIMMING && m->heldObj != NULL) {
+                if (m->forwardVel > 50.0f) {
+                    m->forwardVel = 50.0f;
+                }
+                m->actionState = 4;
+                play_sound(SOUND_ACTION_WATER_PLUNGE, m->marioObj->header.gfx.cameraToObject);
+                m->particleFlags |= PARTICLE_WATER_SPLASH;
+                return set_mario_action(m, ACT_HOLD_WATER_JUMP, 40);
+            }
+            else {
                 // m->pos[1] = m->waterLevel - 80; // Vanilla bug: Downwarp swimming out of waterfalls
                 return transition_submerged_to_airborne(m);
             }
         } else {
-            //! If you press B to throw the shell, there is a ~5 frame window
-            // where your held object is the shell, but you are not in the
-            // water shell swimming action. This allows you to hold the water
-            // shell on land (used for cloning in DDD).
             if (m->action == ACT_WATER_SHELL_SWIMMING && m->heldObj != NULL) {
-                m->heldObj->oInteractStatus = INT_STATUS_STOP_RIDING;
-                m->heldObj = NULL;
-                stop_shell_music();
+                if (m->pos[1] - m->floorHeight > 100) {
+                //exit the water in the shell spin state
+                if (m->forwardVel > 50.0f) {
+                    m->forwardVel = 50.0f;
+                }
+                m->actionState = 4;
+                play_sound(SOUND_ACTION_WATER_PLUNGE, m->marioObj->header.gfx.cameraToObject);
+                m->particleFlags |= PARTICLE_WATER_SPLASH;
+                return set_mario_action(m, ACT_HOLD_WATER_JUMP, 40);
+            }
+            else {
+                //exit the water in a generic air shell state
+                if (m->heldObj != NULL) {
+                    obj_mark_for_deletion(m->heldObj);
+                    m->heldObj = NULL;
+                }
+                set_camera_mode(m->area->camera, m->area->camera->defMode, 1);
+                return set_mario_action(m, ACT_RIDING_SHELL_JUMP, m->actionTimer);
+            }
             }
 
             return transition_submerged_to_walking(m);

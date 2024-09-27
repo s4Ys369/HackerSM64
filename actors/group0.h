@@ -331,9 +331,11 @@ extern const Gfx white_particle_small_dl_end[];
 extern const Gfx white_particle_small_dl[];
 extern const Gfx white_particle_small_unused_dl[];
 
-#include "FLUDD/geo_header.h"
+#include "mario_shell/geo_header.h"
 
 #include "mario/geo_header.h"
+
+#include "FLUDD/geo_header.h"
 
 #include "hover_jet/geo_header.h"
 

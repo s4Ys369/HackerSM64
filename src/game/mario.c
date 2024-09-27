@@ -249,10 +249,10 @@ void play_sound_if_no_flag(struct MarioState *m, u32 soundBits, u32 flags) {
 void play_mario_jump_sound(struct MarioState *m) {
     if (!(m->flags & MARIO_MARIO_SOUND_PLAYED)) {
         if (m->action == ACT_TRIPLE_JUMP) {
-            play_sound(SOUND_MARIO_YAHOO_WAHA_YIPPEE + ((gAudioRandom % 5) << 16),
+            play_sound(SOUND_OBJ_KOOPA_TALK,
                        m->marioObj->header.gfx.cameraToObject);
         } else {
-            play_sound(SOUND_MARIO_YAH_WAH_HOO + ((gAudioRandom % 3) << 16),
+            play_sound(SOUND_OBJ_KOOPA_TALK,
                        m->marioObj->header.gfx.cameraToObject);
         }
         m->flags |= MARIO_MARIO_SOUND_PLAYED;
@@ -286,7 +286,7 @@ void play_sound_and_spawn_particles(struct MarioState *m, u32 soundBits, u32 wav
     }
 
     if ((m->flags & MARIO_METAL_CAP) || soundBits == SOUND_ACTION_UNSTUCK_FROM_GROUND
-        || soundBits == SOUND_MARIO_PUNCH_HOO) {
+        || soundBits == SOUND_OBJ_KOOPA_TALK) {
         play_sound(soundBits, m->marioObj->header.gfx.cameraToObject);
     } else {
         play_sound(m->terrainSoundAddend + soundBits, m->marioObj->header.gfx.cameraToObject);
@@ -1141,23 +1141,41 @@ s32 set_water_plunge_action(struct MarioState *m) {
     m->forwardVel = m->forwardVel / 4.0f;
     m->vel[1] = m->vel[1] / 2.0f;
 
-#ifdef WATER_PLUNGE_UPWARP
+    #ifdef WATER_PLUNGE_UPWARP
     m->pos[1] = m->waterLevel - 100;
-#endif
+    #endif
 
     m->faceAngle[2] = 0;
 
-    vec3_zero(m->angleVel);
+    vec3s_set(m->angleVel, 0, 0, 0);
 
     if (!(m->action & ACT_FLAG_DIVING)) {
         m->faceAngle[0] = 0;
     }
 
-    if (m->area->camera->mode != WATER_SURFACE_CAMERA_MODE) {
-        set_camera_mode(m->area->camera, WATER_SURFACE_CAMERA_MODE, 1);
+    if (m->area->camera->mode != CAMERA_MODE_WATER_SURFACE) {
+        set_camera_mode(m->area->camera, CAMERA_MODE_WATER_SURFACE, 1);
     }
 
+    if (m->actionState == 4 || (m->actionState == 6 && m->heldObj)) {
+        //do the water plunge stuff without entering the water plunge action
+        play_sound(SOUND_ACTION_WATER_PLUNGE, m->marioObj->header.gfx.cameraToObject);
+        if (m->peakHeight - m->pos[1] > 1150.0f) {
+            play_sound(SOUND_OBJ_KOOPA_TALK, m->marioObj->header.gfx.cameraToObject);
+        }
+    m->pos[1] -= 200.0f;
+    m->vel[1] = -30.0f;
+        m->particleFlags |= PARTICLE_WATER_SPLASH;
+#if ENABLE_RUMBLE
+        if (m->prevAction & ACT_FLAG_AIR) {
+            queue_rumble_data(5, 80);
+        }
+#endif
+//cut straight to water shell swimming to avoid being slowed down and action transition hell
+            return set_mario_action(m, ACT_WATER_SHELL_SWIMMING, (u32)(s32)m->forwardVel);
+        }
     return set_mario_action(m, ACT_WATER_PLUNGE, 0);
+        
 }
 
 /**
@@ -1174,7 +1192,9 @@ void squish_mario_model(struct MarioState *m) {
     if (m->squishTimer != 0xFF) {
         // If no longer squished, scale back to default.
         if (m->squishTimer == 0) {
+            if (m->action != ACT_RIDING_SHELL_FALL && m->action != ACT_RIDING_SHELL_JUMP) {
             vec3f_set(m->marioObj->header.gfx.scale, 1.0f, 1.0f, 1.0f);
+            }
         }
         // If timer is less than 16, rubber-band Mario's size scale up and down.
         else if (m->squishTimer <= 16) {
@@ -1222,6 +1242,59 @@ void debug_print_speed_action_normal(struct MarioState *m) {
 void update_mario_button_inputs(struct MarioState *m) {
     if (m->controller->buttonPressed & A_BUTTON) m->input |= INPUT_A_PRESSED;
     if (m->controller->buttonDown    & A_BUTTON) m->input |= INPUT_A_DOWN;
+
+    // Use geo asm or switch for shelled? Nah, classic swap header.gfx.sharedChild.
+    // Stolen from MVC, how could you?
+    void dismount_shell(struct MarioState *m)
+{
+    struct Object* riddenObj = m->riddenObj;
+    struct Object* heldObj = m->heldObj;
+    if (riddenObj != NULL)
+    {
+        m->riddenObj = NULL;
+        riddenObj->oInteractStatus = INT_STATUS_STOP_RIDING;
+        obj_mark_for_deletion(riddenObj);
+    }
+    if (heldObj != NULL)
+    {
+        m->usedObj = NULL;
+        m->heldObj = NULL;
+        heldObj->oInteractStatus = INT_STATUS_NONE;
+        obj_mark_for_deletion(heldObj);
+    }
+    // Use freefall instead of jump to prevent gaining height after dismounting shell
+    set_mario_action(m, ACT_FREEFALL, 0);
+}
+
+    if (m->controller->buttonPressed & L_TRIG){
+        if (m->action & ACT_FLAG_RIDING_SHELL){
+                dismount_shell(m);
+                m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_MARIO_SHELL];
+                return;
+        }
+        // Switching underwater might be jank, but seems functional
+        if (m->action & ACT_FLAG_SWIMMING) {
+            if (m->action != ACT_WATER_SHELL_SWIMMING) {
+                m->usedObj = spawn_object(m->marioObj, MODEL_KOOPA_SHELL, bhvKoopaShellUnderwater);
+                mario_grab_used_object(m);
+                m->marioBodyState->grabPos = GRAB_POS_LIGHT_OBJ;
+                set_mario_action(m, ACT_WATER_SHELL_SWIMMING, (u32)(s32)m->forwardVel);
+                m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_MARIO];
+            } else {
+                dismount_shell(m);
+                set_mario_action(m, ACT_BREASTSTROKE, (u32)(s32)m->forwardVel);
+                m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_MARIO_SHELL];
+            }  
+        } else if (!(m->action & ACT_FLAG_INTANGIBLE)) {
+            struct Object* shellObj = spawn_object_with_scale(m->marioObj, MODEL_KOOPA_SHELL, bhvKoopaShell, 1);
+            set_mario_action(m, ACT_RIDING_SHELL_GROUND, 0);
+            shellObj->oInteractStatus |= INT_STATUS_INTERACTED;
+            shellObj->oAction = 1;
+            m->riddenObj = shellObj;
+            m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_MARIO];
+        }
+
+    }
 
     // Don't update for these buttons if squished.
     if (m->squishTimer == 0) {

@@ -244,7 +244,7 @@ s32 act_start_sleeping(struct MarioState *m) {
     }
 
     if (m->actionState == ACT_STATE_START_SLEEPING_SCRATCH && animFrame == -1) {
-        play_sound(SOUND_MARIO_IMA_TIRED, m->marioObj->header.gfx.cameraToObject);
+        play_sound(SOUND_OBJ_KOOPA_TALK, m->marioObj->header.gfx.cameraToObject);
     }
 
     stationary_ground_step(m);
@@ -1037,6 +1037,11 @@ s32 act_ground_pound_land(struct MarioState *m) {
     return FALSE;
 }
 
+s32 act_shell_pound_land(struct MarioState *m) {
+    m->actionState = 1;
+    return set_mario_action(m, ACT_RIDING_SHELL_GROUND, 0);
+}
+
 s32 act_first_person(struct MarioState *m) {
     s32 exit = (m->input & (INPUT_OFF_FLOOR | INPUT_ABOVE_SLIDE | INPUT_STOMPED)) != 0;
 
@@ -1141,6 +1146,7 @@ s32 mario_execute_stationary_action(struct MarioState *m) {
         case ACT_BRAKING_STOP:            cancel = act_braking_stop(m);                     break;
         case ACT_BUTT_SLIDE_STOP:         cancel = act_butt_slide_stop(m);                  break;
         case ACT_HOLD_BUTT_SLIDE_STOP:    cancel = act_hold_butt_slide_stop(m);             break;
+        case ACT_SHELL_POUND_LAND:        cancel = act_shell_pound_land(m);                 break;
         default:                          cancel = TRUE;                                    break;
     }
     /* clang-format on */

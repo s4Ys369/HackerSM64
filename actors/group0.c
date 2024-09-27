@@ -33,3 +33,4 @@
 
 #include "FLUDD/model.inc.c"
 #include "hover_jet/model.inc.c"
+#include "mario_shell/model.inc.c"
