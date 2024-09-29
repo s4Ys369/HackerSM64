@@ -646,6 +646,7 @@ s32 act_long_jump(struct MarioState *m) {
 
 u8 hasDoubleJumped = FALSE;
 s32 act_riding_shell_air(struct MarioState *m) {
+    mario_drop_held_object(m);
     play_mario_sound(m, SOUND_ACTION_TERRAIN_JUMP, 0);
     set_mario_animation(m, MARIO_ANIM_JUMP_RIDING_SHELL);
 

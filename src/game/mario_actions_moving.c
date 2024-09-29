@@ -1236,6 +1236,7 @@ s32 act_hold_decelerating(struct MarioState *m) {
 
 u16 boostTimer = 0;
 s32 act_riding_shell_ground(struct MarioState *m) {
+    mario_drop_held_object(m);
     hasDoubleJumped = FALSE;
     s16 startYaw = m->faceAngle[1];
 
