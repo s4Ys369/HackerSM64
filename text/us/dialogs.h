@@ -2118,7 +2118,11 @@ press the L trigger\n\
 Don't worry if\n\
 Koop loses his shell.\n\
 Just press L again to\n\
-get it back."))
+get it back.\n\
+\n\
+Shell Shredding by\n\
+CowQuack and axollyon\n\
+"))
 
 DEFINE_DIALOG(DIALOG_171, 1, 4, 30, 200, _("\
 While Shredding,\n\
