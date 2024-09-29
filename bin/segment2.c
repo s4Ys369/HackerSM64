@@ -411,7 +411,7 @@ ALIGNED8 static const Texture texture_hud_char_silver_coin[] = {
 };
 
 ALIGNED8 static const Texture texture_hud_char_mario_head[] = {
-#include "textures/segment2/segment2.05A00.rgba16.inc.c"
+#include "textures/segment2/custom_segment2.05A00.rgba16.inc.c"
 };
 
 ALIGNED8 static const Texture texture_hud_char_star[] = {
@@ -2684,7 +2684,7 @@ const Texture texture_transition_circle_half[] = {
 };
 
 const Texture texture_transition_mario[] = {
-#include "textures/segment2/segment2.10458.ia8.inc.c"
+#include "textures/segment2/custom_segment2.10458.ia8.inc.c"
 };
 
 const Texture texture_transition_bowser_half[] = {
