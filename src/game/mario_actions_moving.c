@@ -1233,6 +1233,8 @@ s32 act_hold_decelerating(struct MarioState *m) {
     return FALSE;
 }
 
+
+u16 boostTimer = 0;
 s32 act_riding_shell_ground(struct MarioState *m) {
     hasDoubleJumped = FALSE;
     s16 startYaw = m->faceAngle[1];
@@ -1255,13 +1257,14 @@ s32 act_riding_shell_ground(struct MarioState *m) {
     }
 
     m->actionTimer++;
+    boostTimer++;
 
     if (m->input & INPUT_A_PRESSED) {
         return set_mario_action(m, ACT_RIDING_SHELL_JUMP, m->actionTimer);
     }
 
     //shell dash
-    if (m->input & INPUT_B_PRESSED && m->actionState != 1 && m->actionTimer >= 60) {
+    if (m->input & INPUT_B_PRESSED && m->actionState != 1 && boostTimer >= 60) {
         m->particleFlags |= PARTICLE_VERTICAL_STAR;
         play_sound(SOUND_OBJ_WATER_BOMB_CANNON, m->marioObj->header.gfx.cameraToObject);
         set_camera_shake_from_hit(SHAKE_HIT_FROM_BELOW);
@@ -1273,6 +1276,7 @@ s32 act_riding_shell_ground(struct MarioState *m) {
         //set state to shell dash, reset timer
         m->actionState = 1;
         m->actionTimer = 0;
+        boostTimer = 0;
     }
 
     //get off the shell
