@@ -644,6 +644,7 @@ s32 act_long_jump(struct MarioState *m) {
     return FALSE;
 }
 
+u8 hasDoubleJumped = FALSE;
 s32 act_riding_shell_air(struct MarioState *m) {
     play_mario_sound(m, SOUND_ACTION_TERRAIN_JUMP, 0);
     set_mario_animation(m, MARIO_ANIM_JUMP_RIDING_SHELL);
@@ -656,7 +657,8 @@ s32 act_riding_shell_air(struct MarioState *m) {
         // double jump
         // putting this in an else statement ensures that the same A press is not used for the double
         // jump
-        if (m->input & INPUT_A_PRESSED && m->actionState != 2 && m->actionState != 3) {
+        if (m->input & INPUT_A_PRESSED && m->actionState != 2 && m->actionState != 3 && hasDoubleJumped == FALSE) {
+            hasDoubleJumped = TRUE;
             m->actionState = 2;
             m->vel[1] = 60.0f;
             m->particleFlags |= PARTICLE_MIST_CIRCLE;
@@ -757,6 +759,7 @@ s32 act_riding_shell_air(struct MarioState *m) {
             break;
 
         case AIR_STEP_SHELL_ENTERED_WATER:
+            hasDoubleJumped = FALSE;
             if (m->riddenObj != NULL) {
                 m->riddenObj->oInteractStatus = INT_STATUS_STOP_RIDING;
                 m->riddenObj = NULL;

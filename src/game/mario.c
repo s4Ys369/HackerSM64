@@ -1287,7 +1287,12 @@ void update_mario_button_inputs(struct MarioState *m) {
             }  
         } else if (!(m->action & ACT_FLAG_INTANGIBLE)) {
             struct Object* shellObj = spawn_object_with_scale(m->marioObj, MODEL_KOOPA_SHELL, bhvKoopaShell, 1);
-            set_mario_action(m, ACT_RIDING_SHELL_GROUND, 0);
+            if (m->action & ACT_FLAG_AIR){
+                set_mario_action(m, ACT_RIDING_SHELL_FALL, 0);
+            } else {
+                set_mario_action(m, ACT_RIDING_SHELL_GROUND, 0);
+            }
+            
             shellObj->oInteractStatus |= INT_STATUS_INTERACTED;
             shellObj->oAction = 1;
             m->riddenObj = shellObj;

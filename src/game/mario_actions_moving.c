@@ -1234,6 +1234,7 @@ s32 act_hold_decelerating(struct MarioState *m) {
 }
 
 s32 act_riding_shell_ground(struct MarioState *m) {
+    hasDoubleJumped = FALSE;
     s16 startYaw = m->faceAngle[1];
 
     //transfer the timer from the previous action
