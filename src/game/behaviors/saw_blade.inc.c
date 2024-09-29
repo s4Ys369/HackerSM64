@@ -1,4 +1,5 @@
 #include "../object_collision.h"
+#include "../rumble_init.h"
 
 static struct SpawnParticlesInfo sSawSparks = {
     /* behParam:        */ 3,
@@ -142,11 +143,14 @@ void bhv_saw_blade_loop(void){
     // Floor check
     struct Surface *floor = cur_obj_update_floor_height_and_get_floor();
     f32 sparkOffsetX = (o->oForwardVel >= 0) ? hurtObjOffestX : -hurtObjOffestX;
-    if (floor != NULL && floor->type == SURFACE_DEFAULT){
+    if (floor != NULL && floor->type == SURFACE_DEFAULT && o->oDistanceToMario <= 2000.0f){
         f32 dist = o->oFloorHeight - o->oPosY;
         if (dist >= -sawRadiusY){
             cur_obj_spawn_particles_offset(&sSawSparks, sparkOffsetX, -sawRadiusY, 0.0f);
             cur_obj_play_sound_2(SOUND_GENERAL2_SPINDEL_ROLL);
+#if ENABLE_RUMBLE
+            reset_rumble_timers_slip();
+#endif
         }
     }
 }
