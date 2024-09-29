@@ -1265,7 +1265,7 @@ s32 act_riding_shell_ground(struct MarioState *m) {
     }
 
     //shell dash
-    if (m->input & INPUT_B_PRESSED && m->actionState != 1 && boostTimer >= 60) {
+    if (m->input & INPUT_B_PRESSED && m->actionState != 1 && boostTimer >= 30) {
         m->particleFlags |= PARTICLE_VERTICAL_STAR;
         play_sound(SOUND_OBJ_WATER_BOMB_CANNON, m->marioObj->header.gfx.cameraToObject);
         set_camera_shake_from_hit(SHAKE_HIT_FROM_BELOW);

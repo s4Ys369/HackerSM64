@@ -420,7 +420,12 @@ void render_hud_breath_meter(void) {
  * Renders the amount of lives Mario has.
  */
 void render_hud_mario_lives(void) {
-    print_text(GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(22), HUD_TOP_Y, "BOOST ,"); // 'Mario Head' glyph
+    if(boostTimer >=30) {
+        print_text(GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(22), HUD_TOP_Y, "BOOST ,"); // 'Mario Head' glyph
+    } else {
+        print_text(GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(22), HUD_TOP_Y, "BOOST");
+        if(boostTimer % 6 == 0)print_text(GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(96), HUD_TOP_Y, "*");
+    }
 }
 
 #ifdef VANILLA_STYLE_CUSTOM_DEBUG
@@ -585,7 +590,7 @@ void render_hud(void) {
             render_hud_cannon_reticle();
         }
 
-        if ((hudDisplayFlags & HUD_DISPLAY_FLAG_LIVES) && (boostTimer >= 60)) {
+        if ((hudDisplayFlags & HUD_DISPLAY_FLAG_LIVES)) {
             render_hud_mario_lives();
         }
 
