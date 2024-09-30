@@ -2632,7 +2632,9 @@ const BehaviorScript bhvBub[] = {
 
 const BehaviorScript bhvExclamationBox[] = {
     BEGIN(OBJ_LIST_SURFACE),
-    OR_INT(oFlags, (OBJ_FLAG_SET_FACE_YAW_TO_MOVE_YAW | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    OR_INT(oFlags, (OBJ_FLAG_SET_FACE_YAW_TO_MOVE_YAW | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE | OBJ_FLAG_EMIT_LIGHT)),
+    SET_LIGHT_COLOR(255, 217, 0),
+    SET_LIGHT_FALLOFF(0, 0, 10),
     LOAD_COLLISION_DATA(exclamation_box_outline_seg8_collision_08025F78),
     OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
     SET_FLOAT(oCollisionDistance, 300),
@@ -2836,7 +2838,9 @@ const BehaviorScript bhvPurpleSwitchHiddenBoxes[] = {
 
 const BehaviorScript bhvBlueCoinSwitch[] = {
     BEGIN(OBJ_LIST_SURFACE),
-    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
+    OR_INT(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE | OBJ_FLAG_EMIT_LIGHT)),
+    SET_LIGHT_COLOR(0, 0, 129),
+    SET_LIGHT_FALLOFF(0, 0, 2),
     LOAD_COLLISION_DATA(blue_coin_switch_seg8_collision_08000E98),
     BEGIN_LOOP(),
         CALL_NATIVE(bhv_blue_coin_switch_loop),
@@ -2846,7 +2850,9 @@ const BehaviorScript bhvBlueCoinSwitch[] = {
 const BehaviorScript bhvHiddenBlueCoin[] = {
     BEGIN(OBJ_LIST_LEVEL),
     SET_INT(oInteractType, INTERACT_COIN),
-    OR_INT(oFlags, (OBJ_FLAG_ACTIVE_FROM_AFAR | OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    OR_INT(oFlags, (OBJ_FLAG_ACTIVE_FROM_AFAR | OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE | OBJ_FLAG_EMIT_LIGHT)),
+    SET_LIGHT_COLOR(0, 0, 65),
+    SET_LIGHT_FALLOFF(0, 0, 2),
     BILLBOARD(),
     SET_HITBOX(/*Radius*/ 100, /*Height*/ 64),
     SET_INT(oDamageOrCoinValue, 5),
@@ -4133,7 +4139,9 @@ const BehaviorScript bhvBowserBombSmoke[] = {
 
 const BehaviorScript bhvCelebrationStar[] = {
     BEGIN(OBJ_LIST_LEVEL),
-    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
+    OR_INT(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE | OBJ_FLAG_EMIT_LIGHT)),
+    SET_LIGHT_COLOR(255, 217, 0),
+    SET_LIGHT_FALLOFF(0, 0, 10),
     CALL_NATIVE(bhv_celebration_star_init),
     BEGIN_LOOP(),
         CALL_NATIVE(bhv_celebration_star_loop),
@@ -4548,7 +4556,9 @@ const BehaviorScript bhvVanishCap[] = {
 
 const BehaviorScript bhvStar[] = {
     BEGIN(OBJ_LIST_LEVEL),
-    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
+    OR_INT(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE | OBJ_FLAG_EMIT_LIGHT)),
+    SET_LIGHT_COLOR(255, 217, 0),
+    SET_LIGHT_FALLOFF(0, 0, 10),
     CALL_NATIVE(bhv_init_room),
     CALL_NATIVE(bhv_collect_star_init),
     BEGIN_LOOP(),
@@ -4577,7 +4587,9 @@ const BehaviorScript bhvHiddenRedCoinStar[] = {
 
 const BehaviorScript bhvRedCoin[] = {
     BEGIN(OBJ_LIST_LEVEL),
-    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
+    OR_INT(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE | OBJ_FLAG_EMIT_LIGHT)),
+    SET_LIGHT_COLOR(255, 0, 0),
+    SET_LIGHT_FALLOFF(0, 0, 10),
     BILLBOARD(),
     SET_INT(oIntangibleTimer, 0),
     SET_INT(oAnimState, OBJ_ANIM_STATE_INIT_ANIM),
@@ -6007,7 +6019,9 @@ const BehaviorScript bhvDDDPole[] = {
 
 const BehaviorScript bhvRedCoinStarMarker[] = {
     BEGIN(OBJ_LIST_DEFAULT),
-    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
+    OR_INT(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE | OBJ_FLAG_EMIT_LIGHT)),
+    SET_LIGHT_COLOR(0, 0, 129),
+    SET_LIGHT_FALLOFF(0, 0, 2),
     DROP_TO_FLOOR(),
     SCALE(/*Unused*/ 0, /*Field*/ 150),
     SET_INT(oFaceAnglePitch, 0x4000),
