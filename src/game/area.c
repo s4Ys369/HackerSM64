@@ -265,6 +265,25 @@ void unload_area(void) {
     }
 }
 
+void load_extra_area(s32 index) {
+    if (gAreaData[index].graphNode != NULL) {
+
+        main_pool_pop_state();
+        main_pool_push_state();//
+
+        if (gAreaData[index].terrainData != NULL) {
+            load_area_terrain(index, gAreaData[index].terrainData, gAreaData[index].surfaceRooms,
+                              gAreaData[index].macroObjects);
+        }
+
+        if (gAreaData[index].objectSpawnInfos != NULL) {
+            spawn_objects_from_info(0, gAreaData[index].objectSpawnInfos);
+        }
+
+        geo_call_global_function_nodes(&gAreaData[index].graphNode->node, GEO_CONTEXT_AREA_LOAD);
+    }
+}
+
 void load_mario_area(void) {
     stop_sounds_in_continuous_banks();
     load_area(gMarioSpawnInfo->areaIndex);
@@ -392,6 +411,42 @@ void play_transition_after_delay(s16 transType, s16 time, u8 red, u8 green, u8 b
     play_transition(transType, time, red, green, blue);
 }
 
+
+// Viewport for picture-in-picture
+Vp gViewport2 = {
+    {
+        // vscale: Width and height divided by 2 (scaled by 4)
+        { 40 * 4, 30 * 4, G_MAXZ / 4, 0 },  // (80, 60)
+        // vtrans: Center of the viewport (scaled by 4)
+        { 70 * 4, 190 * 4, G_MAXZ / 4, 0 }  // Centered at (70, 190)
+    }
+};
+
+// Render the picture-in-picture viewport
+void render_pip(void) {
+    // Set up the PiP viewport
+    gSPViewport(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(&gViewport2));
+
+    // Scissor region to ensure PiP doesn’t exceed its bounds
+    gDPSetScissor(gDisplayListHead++, G_SC_NON_INTERLACE, 30, 160, 109, 220);
+
+    // Set gWarpTransFBSetColor to white
+    set_warp_transition_rgb(255,255,255);
+
+    // Clear viewport fb with color
+    clear_viewport(&gViewport2, gWarpTransFBSetColor);
+
+    // TODO: Load and process special area
+    // '2' is the area index
+    load_extra_area(2); // needs a separate function to not be effected by gCurrentArea
+    struct Area *pipArea = &gAreaData[2];
+    if (pipArea != NULL && !gWarpTransition.pauseRendering) {
+        if (pipArea->graphNode) {
+            geo_process_root(pipArea->graphNode, &gViewport2, gViewportClip, 0); // needs to not update cam
+        }
+    }
+}
+
 void render_game(void) {
     PROFILER_GET_SNAPSHOT_TYPE(PROFILER_DELTA_COLLISION);
     if (gCurrentArea != NULL && !gWarpTransition.pauseRendering) {
@@ -425,10 +480,12 @@ void render_game(void) {
 
         if (gViewportClip != NULL) {
             make_viewport_clip_rect(gViewportClip);
-        } else
+        } else {
             gDPSetScissor(gDisplayListHead++, G_SC_NON_INTERLACE, 0, gBorderHeight, SCREEN_WIDTH,
                           SCREEN_HEIGHT - gBorderHeight);
+        }
 
+        // Handle warp transition
         if (gWarpTransition.isActive) {
             if (gWarpTransDelay == 0) {
                 gWarpTransition.isActive = !render_screen_transition(gWarpTransition.type, gWarpTransition.time,
@@ -444,11 +501,9 @@ void render_game(void) {
                 gWarpTransDelay--;
             }
         }
+
 #ifdef S2DEX_TEXT_ENGINE
         s2d_init();
-
-        // place any custom text engine code here if not using deferred prints
-
         s2d_handle_deferred();
         s2d_stop();
 #endif
@@ -464,12 +519,15 @@ void render_game(void) {
         }
     }
 
-    gViewportOverride = NULL;
-    gViewportClip     = NULL;
 
     profiler_update(PROFILER_TIME_GFX, profiler_get_delta(PROFILER_DELTA_COLLISION) - first);
     profiler_print_times();
 #ifdef PUPPYPRINT_DEBUG
     puppyprint_render_profiler();
 #endif
+
+    // Call PiP logic
+    render_pip();
+    gViewportOverride = NULL;
+    gViewportClip     = NULL;
 }
