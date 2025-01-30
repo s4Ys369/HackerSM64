@@ -17,9 +17,9 @@ This is a fork of the ultrasm64 repo by CrashOveride which includes the followin
 - **MrComit**: General use object defines, JUMP_KICK_FIX
 - **aglab2**: Bugfixes (particularly puppycam), refactor stuff
 - **someone2639**: math.s and crash screen disam, stack trace, map packing, shiftable segments 2, S2DEX engine
-- **Arthurtilly**: Platform Displacement 2
+- **Arthurtilly**: ASCII / UTF-8 support, Multilang, Platform Displacement 2
 - **Fazana**: PuppyLib, ucode swapping, audio load time optimisations (with Arctic), general hacker qol improvements, visual debug
-- **Reonu**: Starting the project/repo, widescreen, reonucam, various defines for hacker QoL
+- **Reonu**: Starting the project + widescreen, reonucam, various defines for hacker QoL, and a custom Spanish (Spain) translation of the game.
 - **JoshDuMan**: Decomp guy, general assistance
 - **Arceveti**: Silhouette, shadow optimisation, better hanging, breath meter, 4 controller support
 - **axollyon**: Console testing, bugfixes, idea-guying, and had a hand in silhouettes
@@ -31,11 +31,20 @@ This is a fork of the ultrasm64 repo by CrashOveride which includes the followin
 - **anonymous_moose**: porting falco's extended bounds to decomp
 - **tuxlovesyou**: `LOAD_MIO0_TEXTURE` macro and moral support
 - **devwizard**: the PJ64 pre-v3.0 detection part of the emulator detector
+- **Sauraen**: Creating the F3DEX3 microcode. HackerSM64 implementation by red.
 
 Thanks to Frame#5375 and AloXado320 for also helping with silhouette stuff
 
-**Lighting Engine by Wiseguy**
-- Lighting Engine is available on a separate branch ([base/lighting-engine](https://github.com/Reonu/HackerSM64/tree/base/lighting-engine)). Instructions on how to use it are in the readme of that branch.
+**Lighting Engine by red**
+- A new lighting engine for the F3DEX3 is included with the repository. Enable `F3DEX3_LIGHTING_ENGINE` within `config_graphics.h` to use.
+- Improvements to the older lighting engine by wiseguy:
+    - Support for variable number of directional lights at once.
+    - Support for vanilla actors.
+        - Limits you to up to 7 extra lights when setup this way (`gLightNumBase = NUMLIGHTS_3`), but for scenes tailored specifically for a lighting engine (`gLightNumBase = NUMLIGHTS_1`), you can have up to 9 variable lights.
+        - Ambient light does not count towards the light limit.
+        - F3DEX3 fixes point lights with kc < 8, allowing for more expressive lighting.
+        - F3DEX3 also fixes point light behavior when close to triangles.
+- See `src/game/f3dex3.c` for more details.
 
 **Puppycam**
 - Puppycam is available on the master branch now, you can toggle it in `config/config_camera.h`. *
@@ -87,9 +96,9 @@ Thanks to Frame#5375 and AloXado320 for also helping with silhouette stuff
 - You can set a test level in `config/config_debug.h` in order to boot straight into it, so you can quickly test the level you're working on. *
 - Allow all surfaces in the game to have a `force` parameter. Activating this doesn't REQUIRE you to set `force` for every surface: If you don't set, it will default to 0x0000 rather than crashing. Increases RAM usage of collision. *
 - The clown font includes the entire English alphabet.
-- Colored ia4 text support. Format: `"@XXXXXXXX[YOUR TEXT]@--------"` (By ArcticJaguar725)
-  - Example Text: `"@FF0000FFRED @00FF00FFGREEN @0000FFFFBLUE @FFFFFF00INVISIBLE @--------NORMAL"`
-  - NOTE: It is not mandatory to reset the text color with `"@--------"`, but text will need to be recolored each time it scrolls in a dialog box, or the custom color will reset.
+- Colored ia4 text support. Format: `"@XXXXXX[YOUR TEXT]@--------"` (By Arthurtilly)
+  - Example Text: `"@FF0000RED @00FF00GREEN @0000FFBLUE @FFFFFFWHITE"`
+  - NOTE: Text will need to be recolored each time it scrolls in a dialog box, or the custom color will reset. The text will use gDialogTextAlpha as the alpha value when changing the color.
 - Toggle visiblity of collision surfaces and object hitboxes with Visual Surface Debug. `config/config_debug.h` has VISUAL_DEBUG which can be turned on to enable this feature.
 - Workaround for infinite death loops caused by using the wrong warp type for death warps. Mario's HP will be restored when being warped to any warp if (and only if) he was warped while dead. *
 
@@ -137,7 +146,6 @@ Thanks to Frame#5375 and AloXado320 for also helping with silhouette stuff
   This does mean that any framebuffer effects will have to be done on buffer 0 if targeting emulators
 - Automatic console and emulator detection: Use the `gEmulator` variable to wrap your code in an emulator check.
 - Separate defines for emulator and console black border height.
-- Getting HVQM FMV support to work with the game is WIP.
 
 Requirements are the same as regular SM64, however a GCC MIPS cross compiler is also required. If you're on Debian-like Linux, you can use the ``gcc-mips-linux-gnu`` package. The toolchain that comes with my SDK is also supported.
 

@@ -50,6 +50,44 @@
 #endif
 
 /*****************
+ * config_graphics.h
+ */
+
+#ifdef DISABLE_INSTANT_INPUT
+    #undef DISABLE_INSTANT_INPUT
+    #define DISABLE_INSTANT_INPUT 0xFFFFFFFF
+#else
+    #define DISABLE_INSTANT_INPUT 0
+#endif
+
+#ifdef F3DEX_VERSION
+    #if F3DEX_VERSION == 2
+        #define F3DEX_GBI_2
+    #elif F3DEX_VERSION == 3 || F3DEX_VERSION == 4
+        #define F3DEX_GBI_3
+    #else
+        #error "Invalid microcode selection. Valid options are 1-4 inclusive."
+    #endif
+#else
+    #error "F3DEX_VERSION is not defined in config/config_graphics.h"
+#endif
+
+#ifdef ENABLE_LINE_UCODE
+    #if F3DEX_VERSION > 2
+        #undef ENABLE_LINE_UCODE
+        #warning "F3DEX3 does not support ENABLE_LINE_UCODE, so it will be disabled."
+    #endif
+#endif
+
+#if !defined(F3DEX_GBI_3) && defined(F3DEX3_LIGHTING_ENGINE)
+    #undef F3DEX3_LIGHTING_ENGINE
+#endif // F3DEX3_LIGHTING_ENGINE
+
+#if !defined(F3DEX_GBI_3) && defined(F3DEX3_FB_MEMCLEAR)
+    #undef F3DEX3_FB_MEMCLEAR
+#endif // F3DEX3_FB_MEMCLEAR
+
+/*****************
  * config_debug.h
  */
 
@@ -112,11 +150,19 @@
     #define UNLOCK_ALL
 #endif // COMPLETE_SAVE_FILE
 
+#ifdef DEBUG_F3DEX3_PROFILER
+    #ifdef F3DEX_GBI_3
+        #undef PUPPYPRINT
+        #define PUPPYPRINT
+    #else
+        #undef DEBUG_F3DEX3_PROFILER
+    #endif
+#endif // DEBUG_F3DEX3_PROFILER
+
 #ifdef DEBUG
     #undef DEBUG_ASSERTIONS
     #define DEBUG_ASSERTIONS
 #endif // DEBUG
-
 
 /*****************
  * config_camera.h
@@ -147,6 +193,17 @@
 #ifndef START_LEVEL
     #define START_LEVEL LEVEL_CASTLE_GROUNDS
 #endif // !START_LEVEL
+
+#ifndef MULTILANG
+    #undef ENABLE_FRENCH
+    #undef ENABLE_GERMAN
+    #undef ENABLE_JAPANESE
+    #undef ENABLE_SPANISH
+#endif // !MULTILANG
+
+#ifdef ENABLE_JAPANESE
+    #define JAPANESE_CHARACTERS
+#endif // ENABLE_JAPANESE
 
 
 /*****************
@@ -195,3 +252,4 @@
     #undef BORDER_HEIGHT_EMULATOR
     #define BORDER_HEIGHT_EMULATOR 0
 #endif // !TARGET_N64
+
