@@ -12,7 +12,7 @@
 /**
  * Disables all debug options (except PUPPYPRINT).
  */
-#define DISABLE_ALL
+// #define DISABLE_ALL
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -30,7 +30,7 @@
  * This allows you to quickly test the level you're working on.
  * If you want the game to boot normally, just comment out the define again.
  */
-#define TEST_LEVEL LEVEL_TUTORIAL
+// #define TEST_LEVEL LEVEL_TUTORIAL
 
 /**
  * Enables debug level select. Hold L while the game boots to turn it on.
@@ -62,7 +62,7 @@
  * Visual debug enables some collision visuals. Tapping Right on the D-pad will cycle between visual hitboxes, visual surfaces, both, and neither.
  * If puppyprint is enabled, then this can be cycled only while the screen is active.
  */
-#define VISUAL_DEBUG
+// #define VISUAL_DEBUG
 
 /**
  * Opens all courses and doors. Used for debugging purposes to unlock all content.
@@ -100,4 +100,4 @@
  * Using pages 2, 3, and 4 can disable certain F3DEX3 features. Read the F3DEX3 README for more information.
  */
 
-//  #define DEBUG_F3DEX3_PROFILER
+#define DEBUG_F3DEX3_PROFILER

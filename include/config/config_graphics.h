@@ -157,7 +157,7 @@
  * Disables instant input.
  * Mostly used for debugging purposes, or for future-proofing a release if concerned.
  */
-//  #define DISABLE_INSTANT_INPUT
+#define DISABLE_INSTANT_INPUT
 
 /**
  * Primary graphics microcode selection
@@ -172,7 +172,7 @@
  * under DEBUG_F3DEX3_PROFILER.
  */
 
-#define F3DEX_VERSION 2
+#define F3DEX_VERSION 3
 
 /**
  * Enables usage of the line microcode. It can be loaded with gSPLoadUcode within a display list.
