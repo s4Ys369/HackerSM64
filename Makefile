@@ -312,41 +312,56 @@ TOOLS_DIR := tools
 
 PYTHON := python3
 
+# Probably a better way to do these checks
+ASSETS_CHECK = $(wildcard textures/generic/*)
+TOOLS_CHECK = $(wildcard tools/aiff_extract_codebook)
+
 ifeq ($(filter clean distclean print-%,$(MAKECMDGOALS)),)
 
   # Make sure assets exist
   NOEXTRACT ?= 0
   ifeq ($(NOEXTRACT),0)
-    DUMMY != $(PYTHON) extract_assets.py us >&2 || echo FAIL
-    ifeq ($(DUMMY),FAIL)
-      $(error Failed to extract assets from US ROM)
-    endif
-    ifneq (,$(shell python3 tools/detect_baseroms.py jp))
-      DUMMY != $(PYTHON) extract_assets.py jp >&2 || echo FAIL
+    ifeq ($(strip $(ASSETS_CHECK)),)
+      DUMMY != $(PYTHON) extract_assets.py us >&2 || echo FAIL
       ifeq ($(DUMMY),FAIL)
-        $(error Failed to extract assets from JP ROM)
+        $(error Failed to extract assets from US ROM)
       endif
-    endif
-    ifneq (,$(shell python3 tools/detect_baseroms.py eu))
-      DUMMY != $(PYTHON) extract_assets.py eu >&2 || echo FAIL
-      ifeq ($(DUMMY),FAIL)
-        $(error Failed to extract assets from EU ROM)
+      ifneq (,$(shell python3 tools/detect_baseroms.py jp))
+        DUMMY != $(PYTHON) extract_assets.py jp >&2 || echo FAIL
+        ifeq ($(DUMMY),FAIL)
+          $(error Failed to extract assets from JP ROM)
+        endif
       endif
-    endif
-    ifneq (,$(shell python3 tools/detect_baseroms.py sh))
-      DUMMY != $(PYTHON) extract_assets.py sh >&2 || echo FAIL
-      ifeq ($(DUMMY),FAIL)
-        $(error Failed to extract assets from SH ROM)
+      ifneq (,$(shell python3 tools/detect_baseroms.py eu))
+        DUMMY != $(PYTHON) extract_assets.py eu >&2 || echo FAIL
+        ifeq ($(DUMMY),FAIL)
+          $(error Failed to extract assets from EU ROM)
+        endif
       endif
+      ifneq (,$(shell python3 tools/detect_baseroms.py sh))
+        DUMMY != $(PYTHON) extract_assets.py sh >&2 || echo FAIL
+        ifeq ($(DUMMY),FAIL)
+          $(error Failed to extract assets from SH ROM)
+        endif
+      endif
+    else
+      $(info Assets already extracted, skipping extraction)
     endif
   endif
 
   # Make tools if out of date
-  $(info Building tools...)
-  DUMMY != $(MAKE) -s -C $(TOOLS_DIR) >&2 || echo FAIL
-    ifeq ($(DUMMY),FAIL)
-      $(error Failed to build tools)
+  NOTOOLS ?= 0
+  ifeq ($(NOTOOLS),0)
+    ifeq ($(strip $(TOOLS_CHECK)),)
+      $(info Building tools...)
+      DUMMY != $(MAKE) -s -C $(TOOLS_DIR) >&2 || echo FAIL
+      ifeq ($(DUMMY),FAIL)
+        $(error Failed to build tools)
+      endif
+    else
+      $(info Tools already built, skipping update)
     endif
+  endif
 
   # Clone any needed submodules
   ifeq ($(LIBPL),1)
