@@ -264,6 +264,7 @@ void mario_stop_riding_object(struct MarioState *m) {
     if (m->riddenObj != NULL) {
         m->riddenObj->oInteractStatus = INT_STATUS_STOP_RIDING;
         stop_shell_music();
+        obj_mark_for_deletion(m->riddenObj);
         m->riddenObj = NULL;
     }
 }

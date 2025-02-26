@@ -1234,17 +1234,9 @@ void debug_print_speed_action_normal(struct MarioState *m) {
 }
 #endif
 
-/**
- * Update the button inputs for Mario.
- */
-void update_mario_button_inputs(struct MarioState *m) {
-    if (m->controller->buttonPressed & A_BUTTON) m->input |= INPUT_A_PRESSED;
-    if (m->controller->buttonDown    & A_BUTTON) m->input |= INPUT_A_DOWN;
-
-    // Use geo asm or switch for shelled? Nah, classic swap header.gfx.sharedChild.
-    // Stolen from MVC, how could you?
-    void dismount_shell(struct MarioState *m)
-{
+// Use geo asm or switch for shelled? Nah, classic swap header.gfx.sharedChild.
+// Stolen from MVC, how could you?
+void dismount_shell(struct MarioState *m) {
     struct Object* riddenObj = m->riddenObj;
     struct Object* heldObj = m->heldObj;
     if (riddenObj != NULL)
@@ -1264,7 +1256,14 @@ void update_mario_button_inputs(struct MarioState *m) {
     set_mario_action(m, ACT_FREEFALL, 0);
 }
 
-    if (m->controller->buttonPressed & L_TRIG){
+/**
+ * Update the button inputs for Mario.
+ */
+void update_mario_button_inputs(struct MarioState *m) {
+    if (m->controller->buttonPressed & A_BUTTON) m->input |= INPUT_A_PRESSED;
+    if (m->controller->buttonDown    & A_BUTTON) m->input |= INPUT_A_DOWN;
+
+    if (m->controller->buttonPressed & L_TRIG && m->shellHealth != 0){
         if (m->action & ACT_FLAG_RIDING_SHELL){
                 dismount_shell(m);
                 m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_MARIO_SHELL];
@@ -1941,6 +1940,8 @@ void init_mario(void) {
         capObject->oForwardVel = 0;
         capObject->oMoveAngleYaw = 0;
     }
+
+    gMarioState->shellHealth = 255;
 }
 
 void init_mario_from_save_file(void) {
@@ -1971,4 +1972,5 @@ void init_mario_from_save_file(void) {
 
     gHudDisplay.coins = 0;
     gHudDisplay.wedges = 8;
+    gMarioState->shellHealth = 255;
 }

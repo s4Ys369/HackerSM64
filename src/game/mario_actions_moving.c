@@ -1226,6 +1226,20 @@ s32 act_riding_shell_ground(struct MarioState *m) {
         m->actionArg = 0;
     }
 
+    if (m->shellHealth > 1) {
+        if (m->floor->type == SURFACE_BURNING) {
+            m->shellHealth -= 2;
+        } else {
+            m->shellHealth--;
+        }
+        
+    } 
+    if (m->shellHealth <= 1) {
+        m->shellHealth = 0;
+        mario_stop_riding_object(m);
+        set_mario_action(m, ACT_FORWARD_GROUND_KB, 0);
+    } else
+
     //this is in place for the transition from water shell to ground shell
     if (!m->riddenObj) {
         m->faceAngle[0] = 0;
