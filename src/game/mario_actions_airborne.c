@@ -648,10 +648,14 @@ s32 act_riding_shell_air(struct MarioState *m) {
         // double jump
         // putting this in an else statement ensures that the same A press is not used for the double
         // jump
-        if (m->input & INPUT_A_PRESSED && m->actionState != 2 && m->actionState != 3) {
+        if (m->input & INPUT_A_PRESSED 
+            && m->doubleJump == FALSE
+            && m->actionState != 2 
+            && m->actionState != 3) {
             m->actionState = 2;
             m->vel[1] = 60.0f;
             m->particleFlags |= PARTICLE_MIST_CIRCLE;
+            m->doubleJump = TRUE;
             play_sound(SOUND_GENERAL_WING_FLAP, m->marioObj->header.gfx.cameraToObject);
         }
     }
@@ -738,6 +742,7 @@ s32 act_riding_shell_air(struct MarioState *m) {
             } else {
                 set_mario_action(m, ACT_RIDING_SHELL_GROUND, m->actionTimer);
             }
+            m->doubleJump = FALSE;
             break;
 
         case AIR_STEP_HIT_WALL:
@@ -753,6 +758,7 @@ s32 act_riding_shell_air(struct MarioState *m) {
                 m->riddenObj->oInteractStatus = INT_STATUS_STOP_RIDING;
                 m->riddenObj = NULL;
             }
+            m->doubleJump = FALSE;
             play_sound(SOUND_ACTION_WATER_PLUNGE, m->marioObj->header.gfx.cameraToObject);
             m->particleFlags |= PARTICLE_WATER_SPLASH;
             m->pos[1] -= 50;

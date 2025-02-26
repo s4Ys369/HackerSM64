@@ -1941,7 +1941,8 @@ void init_mario(void) {
         capObject->oMoveAngleYaw = 0;
     }
 
-    gMarioState->shellHealth = 255;
+    gMarioState->shellHealth = 1020;
+    gMarioState->doubleJump = FALSE;
 }
 
 void init_mario_from_save_file(void) {
@@ -1972,5 +1973,6 @@ void init_mario_from_save_file(void) {
 
     gHudDisplay.coins = 0;
     gHudDisplay.wedges = 8;
-    gMarioState->shellHealth = 255;
+    gMarioState->shellHealth = 1020;
+    gMarioState->doubleJump = FALSE;
 }

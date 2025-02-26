@@ -399,7 +399,7 @@ void render_hud_breath_meter(void) {
 }
 #endif
 
-void render_dl_shell_meter(u8 shellHealth) {
+void render_dl_shell_meter(u16 shellHealth) {
     Mtx *mtx = alloc_display_list(sizeof(Mtx));
 
     if (mtx == NULL) {
@@ -410,7 +410,7 @@ void render_dl_shell_meter(u8 shellHealth) {
                     G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
                     
     gSPDisplayList( gDisplayListHead++, &hud_shell_dl);
-    gDPSetPrimColor(gDisplayListHead++, 0, 0, 255-shellHealth, shellHealth, 0, 200);
+    gDPSetPrimColor(gDisplayListHead++, 0, 0, 255-(u8)(shellHealth/4), (u8)(shellHealth/4), 0, 212);
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
 
@@ -597,7 +597,7 @@ void render_hud(void) {
             render_hud_keys();
         }
 
-        if (gMarioState->shellHealth > 0) render_dl_shell_meter(gMarioState->shellHealth);
+        if (gMarioState->shellHealth > 0 && gMarioState->riddenObj != NULL) render_dl_shell_meter(gMarioState->shellHealth);
 
 #ifdef BREATH_METER
         if (hudDisplayFlags & HUD_DISPLAY_FLAG_BREATH_METER) render_hud_breath_meter();

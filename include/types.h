@@ -463,7 +463,8 @@ struct MarioState {
              s16 ceilYaw;
              s16 wallYaw;
     // -- HackerSM64 MarioState fields end --
-    u8 shellHealth;
+    u16 shellHealth;
+    u8 doubleJump;
 };
 
 #endif // TYPES_H

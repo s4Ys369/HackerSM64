@@ -1227,13 +1227,13 @@ s32 act_riding_shell_ground(struct MarioState *m) {
     }
 
     if (m->shellHealth > 1) {
-        if (m->floor->type == SURFACE_BURNING) {
-            m->shellHealth -= 2;
+        u16 damage = (m->floor->type == SURFACE_BURNING) ? 6 : 2;
+        if (m->shellHealth > damage) {
+            m->shellHealth -= damage;
         } else {
-            m->shellHealth--;
+            m->shellHealth = 0;
         }
-        
-    } 
+    }
     if (m->shellHealth <= 1) {
         m->shellHealth = 0;
         mario_stop_riding_object(m);
@@ -1258,10 +1258,11 @@ s32 act_riding_shell_ground(struct MarioState *m) {
     }
 
     //shell dash
-    if (m->input & INPUT_B_PRESSED && m->actionState != 1 && m->actionTimer >= 60) {
+    if (m->input & INPUT_B_PRESSED && m->actionState != 1 && m->actionTimer >= 10) {
         m->particleFlags |= PARTICLE_VERTICAL_STAR;
         play_sound(SOUND_OBJ_WATER_BOMB_CANNON, m->marioObj->header.gfx.cameraToObject);
         set_camera_shake_from_hit(SHAKE_HIT_FROM_BELOW);
+        m->shellHealth -= 20;
         //make mario go at least max shell speed
         m->forwardVel *= 2.0f;
         if (m->forwardVel < 64.0f) {
