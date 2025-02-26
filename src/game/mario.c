@@ -1949,7 +1949,6 @@ void init_mario(void) {
         capObject->oMoveAngleYaw = 0;
     }
 
-    gMarioState->shellHealth = 1020;
     gMarioState->doubleJump = FALSE;
 }
 

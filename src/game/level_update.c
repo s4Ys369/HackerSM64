@@ -770,10 +770,12 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
                 play_sound(SOUND_MENU_BOWSER_LAUGH, gGlobalSoundSource);
 #ifdef PREVENT_DEATH_LOOP
                 m->isDead = TRUE;
+                if (m->shellHealth > 0) m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_MARIO_SHELL];
 #endif
                 break;
 
             case WARP_OP_WARP_FLOOR:
+                if (m->shellHealth > 0) m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_MARIO_SHELL];
                 if ((m->floor) && (m->floor->force & 0xFF)) {
                     sSourceWarpNodeId = m->floor->force & 0xFF;
                 } else {
