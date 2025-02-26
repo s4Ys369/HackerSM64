@@ -399,6 +399,24 @@ void render_hud_breath_meter(void) {
 }
 #endif
 
+static f32 currentColor = 0.0f;
+static f32 currentAlpha = 212.0f;
+
+void update_shell_meter(u16 shellHealth) {
+    
+    f32 targetColor = (f32)(shellHealth) * 0.25f;
+    f32 targetAlpha = (shellHealth <= 120 && shellHealth % 10 == 0) ? 0.0f : 212.0f;
+
+    f32 colorTime = 0.1f;
+    f32 alphaTime = colorTime * 5.0f; 
+
+    currentColor = lerpf(currentColor, targetColor, colorTime);
+    currentAlpha = lerpf(currentAlpha, targetAlpha, alphaTime);
+
+    gDPSetPrimColor(gDisplayListHead++, 0, 0, 255 - (u8)currentColor, (u8)currentColor, 0, (u8)currentAlpha);
+}
+
+
 void render_dl_shell_meter(u16 shellHealth) {
     Mtx *mtx = alloc_display_list(sizeof(Mtx));
 
@@ -410,7 +428,7 @@ void render_dl_shell_meter(u16 shellHealth) {
                     G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
                     
     gSPDisplayList( gDisplayListHead++, &hud_shell_dl);
-    gDPSetPrimColor(gDisplayListHead++, 0, 0, 255-(u8)(shellHealth/4), (u8)(shellHealth/4), 0, 212);
+    update_shell_meter(shellHealth);
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
 

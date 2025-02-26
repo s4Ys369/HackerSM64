@@ -1532,7 +1532,7 @@ s32 act_squished(struct MarioState *m) {
             } else {
                 if (!(m->flags & MARIO_METAL_CAP) && m->invincTimer == 0) {
                     // cap on: 3 units; cap off: 4.5 units
-                    m->hurtCounter += m->flags & MARIO_CAP_ON_HEAD ? 12 : 18;
+                    m->hurtCounter += m->flags & MARIO_SHELLED ? 12 : 18;
                     play_sound_if_no_flag(m, SOUND_OBJ_KOOPA_DAMAGE, MARIO_MARIO_SOUND_PLAYED);
                 }
 

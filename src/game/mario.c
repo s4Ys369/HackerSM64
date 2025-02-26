@@ -1263,6 +1263,14 @@ void update_mario_button_inputs(struct MarioState *m) {
     if (m->controller->buttonPressed & A_BUTTON) m->input |= INPUT_A_PRESSED;
     if (m->controller->buttonDown    & A_BUTTON) m->input |= INPUT_A_DOWN;
 
+    if (m->marioObj->header.gfx.sharedChild == gLoadedGraphNodes[MODEL_MARIO_SHELL]) {
+        m->flags |= MARIO_SHELLED;
+    } else {
+        m->flags &= ~MARIO_SHELLED;
+    }
+
+    if(m->shellHealth <= 120 && m->shellHealth > 0) play_sound(SOUND_MOVING_ALMOST_DROWNING, gGlobalSoundSource);
+
     if (m->controller->buttonPressed & L_TRIG && m->shellHealth != 0){
         if (m->action & ACT_FLAG_RIDING_SHELL){
                 dismount_shell(m);
