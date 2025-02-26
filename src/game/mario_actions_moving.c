@@ -1262,7 +1262,11 @@ s32 act_riding_shell_ground(struct MarioState *m) {
         m->particleFlags |= PARTICLE_VERTICAL_STAR;
         play_sound(SOUND_OBJ_WATER_BOMB_CANNON, m->marioObj->header.gfx.cameraToObject);
         set_camera_shake_from_hit(SHAKE_HIT_FROM_BELOW);
-        m->shellHealth -= 20;
+        if (m->shellHealth > 20) {
+            m->shellHealth -= 20;
+        } else {
+            m->shellHealth = 0;
+        }
         //make mario go at least max shell speed
         m->forwardVel *= 2.0f;
         if (m->forwardVel < 64.0f) {

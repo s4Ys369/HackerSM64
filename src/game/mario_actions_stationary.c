@@ -1027,7 +1027,11 @@ s32 act_ground_pound_land(struct MarioState *m) {
 
 s32 act_shell_pound_land(struct MarioState *m) {
     m->actionState = 1;
-    m->shellHealth -= 100;
+    if (m->shellHealth > 100) {
+        m->shellHealth -= 100;
+    } else {
+        m->shellHealth = 0;
+    }
     return set_mario_action(m, ACT_RIDING_SHELL_GROUND, 0);
 }
 
