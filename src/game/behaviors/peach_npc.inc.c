@@ -15,7 +15,7 @@ void peach_npc_act_idle(void) {
 
     object_step();
 
-    if (o->oDistanceToMario < 1000.0f) {
+    if (o->oDistanceToMario < 1000.0f && o->oBobombBuddyHasTalkedToMario != BOBOMB_BUDDY_HAS_TALKED) {
         o->oMoveAngleYaw = approach_s16_symmetric(o->oMoveAngleYaw, o->oAngleToMario, 0x140);
     }
 
