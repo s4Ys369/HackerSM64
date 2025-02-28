@@ -173,4 +173,11 @@ void bhv_rr_cruiser_wing_init(void);
 void bhv_rr_cruiser_wing_loop(void);
 void spawn_default_star(f32 x, f32 y, f32 z);
 
+void bhv_alien_init(void);
+void alien_act_idle(void);
+void alien_act_talk(void);
+void alien_act_turn_to_talk(void);
+void alien_actions(void);
+void bhv_alien_loop(void);
+
 #endif // OBJ_BEHAVIORS_H
