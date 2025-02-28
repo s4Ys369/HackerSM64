@@ -180,4 +180,11 @@ void alien_act_turn_to_talk(void);
 void alien_actions(void);
 void bhv_alien_loop(void);
 
+void bhv_peach_npc_init(void);
+void peach_npc_act_idle(void);
+void peach_npc_act_talk(void);
+void peach_npc_act_turn_to_talk(void);
+void peach_npc_actions(void);
+void bhv_peach_npc_loop(void);
+
 #endif // OBJ_BEHAVIORS_H

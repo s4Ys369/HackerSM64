@@ -718,6 +718,7 @@ UNUSED s32 debug_sequence_tracker(s16 debugInputSequence[]) {
 }
 
 #include "behaviors/alien.inc.c"
+#include "behaviors/peach_npc.inc.c"
 
 #include "behaviors/moving_coin.inc.c"
 #include "behaviors/seaweed.inc.c"
